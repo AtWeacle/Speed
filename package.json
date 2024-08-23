@@ -1,0 +1,38 @@
+{
+  "name": "@weacle/speed",
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "servers/*"
+  ],
+  "scripts": {
+    "clean": "yarn clean:turbo",
+    "clean:turbo": "yarn turbo run clean && rm -rf node_modules && yarn cache clean --all",
+    "dev-client": "yarn workspace @weacle/speed-client dev",
+    "dev-server": "yarn workspace @weacle/speed-server dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo run lint",
+    "reset": "yarn clean && yarn install"
+  },
+  "engines": {
+    "npm": "9.x",
+    "node": "18.x",
+    "yarn": "4.x"
+  },
+  "packageManager": "yarn@4.4.0",
+  "dependencies": {
+    "turbo": "^2.0.14"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "homepage": "https://weacle.com/speed",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atweacle/speed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/atweacle/speed/issues"
+  }
+}
