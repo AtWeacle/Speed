@@ -1,12 +1,9 @@
+import { TextareaHTMLAttributes } from 'react'
+
 import '@weacle/speed-client/ui/Textarea/styles.css'
 
-const Textarea = ({ children, ...props }: {
-  children: React.ReactNode,
-  [key: string]: any,
-}): JSX.Element => {
-  return (
-    <textarea className="Textarea" {...props}>{children}</textarea>
-  )
+const Textarea = (props: TextareaHTMLAttributes<HTMLTextAreaElement>): JSX.Element => {
+  return <textarea className="Textarea" {...props} />
 }
 
 export default Textarea
