@@ -55,4 +55,14 @@ app.get('/api/hello', (req, res) => {
 httpServer.listen(PORT, async () => {
   console.log(`HTTP server is running on http://localhost:${PORT}`)
   console.log(`WebSocket server is running on ws://localhost:${PORT}`)
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('❌ ANTHROPIC_API_KEY is not set')
+    process.exit(1)
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('❌ OPENAI_API_KEY is not set')
+    process.exit(1)
+  }
 })
