@@ -19,7 +19,7 @@ const SvgWrapper = styled.div<{ $circleSize: string }>`
 `
 
 const AnimatedCircle = styled.circle<{ $duration: string; }>`
-  stroke: rgba(var(--c-colors-red-rgb), 1);
+  stroke: rgba(var(--color-red-rgb), 1);
   stroke-width: 2px;
   fill: none;
   animation: ${animateStroke} ${({ $duration }) => $duration}s linear infinite;

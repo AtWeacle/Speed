@@ -6,12 +6,12 @@ export const Wrapper = styled.div`
   gap: 5px;
   overflow: clip;
   flex-shrink: 0;
-  background: hsl(var(--c-colors-black-hs), 8%);
+  background: hsl(var(--color-black-hs), 8%);
   border-radius: calc(var(--c-border-radius) * 1.5);
   padding: 10px;
 
   [data-theme="light"] & {
-    background: hsl(var(--c-colors-black-hs), 100%);
+    background: hsl(var(--color-black-hs), 100%);
   }
 `
 export const Controls = styled.div`
@@ -44,5 +44,5 @@ export const Controls = styled.div`
 export const Info = styled.div`
   display: flex;
   font-size: .75rem;
-  color: rgba(var(--c-colors-black-rgb), .5);
+  color: rgba(var(--color-black-rgb), .5);
 `

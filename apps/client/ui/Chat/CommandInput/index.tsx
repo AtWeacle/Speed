@@ -51,7 +51,7 @@ const Wrapper = styled.div`
 
   .stop {
     border-radius: 2px;
-    background: var(--c-colors-red);
+    background: var(--color-red);
     width: 10px;
     height: 10px;
     position: absolute;
@@ -62,7 +62,7 @@ const Wrapper = styled.div`
 
   .circle-marker {
     border-radius: 50%;
-    border: 1px solid oklch(from var(--c-colors-red) l c h / .5);
+    border: 1px solid oklch(from var(--color-red) l c h / .5);
     width: 28px;
     height: 28px;
     position: absolute;
@@ -72,7 +72,7 @@ const Wrapper = styled.div`
   }
 
   .command-input {
-    background-color: var(--c-colors-black-2);
+    background-color: var(--color-black-2);
   }
 `
 const InputWrapper = styled.div`
@@ -80,26 +80,26 @@ const InputWrapper = styled.div`
   align-items: center;
   gap: 5px;
   width: 100%;
-  border: 2px solid var(--c-colors-black-3);
+  border: 2px solid var(--color-black-3);
   border-radius: calc(var(--c-border-radius) * 1.4);
   transition: border .2s ease-in-out;
-  background-color: var(--c-colors-black-3);
+  background-color: var(--color-black-3);
   position: relative;
   padding: 6px 4px 6px 10px;
 
   &[data-valid="false"] {
-    border-color: var(--c-colors-red);
+    border-color: var(--color-red);
   }
 
   &[data-has-content="true"] {
     svg.stop-icon path {
-      fill: var(--c-colors-black-9);
+      fill: var(--color-black-9);
     }
   }
 
   &[data-has-content="true"][data-loading="true"] {
     svg.stop-icon path {
-      fill: var(--c-colors-red);
+      fill: var(--color-red);
     }
   }
 
@@ -117,7 +117,7 @@ const InputWrapper = styled.div`
     min-height: 24px;
     resize: none;
     font-size: .9rem;
-    color: var(--c-colors-black-9);
+    color: var(--color-black-9);
     font-weight: 500;
     background: transparent;
     border: none !important;
@@ -130,7 +130,7 @@ const InputWrapper = styled.div`
     /* padding: 5px; */
     
     &::placeholder {
-      color: var(--c-colors-black-9);
+      color: var(--color-black-9);
     }
 
     ${MEDIA.XS} {
@@ -150,7 +150,7 @@ const InputWrapper = styled.div`
 const Counter = styled.span`
   display: flex;
   margin: 5px 5px 0 auto;
-  color: var(--c-colors-black-5);
+  color: var(--color-black-5);
   font-size: .65rem;
   width: max-content;
   height: fit-content;
@@ -159,7 +159,7 @@ const Counter = styled.span`
   right: 0;
 
   &[data-valid="false"] {
-    color: var(--c-colors-red);
+    color: var(--color-red);
   }
 `
 export default function CommandInput({
@@ -279,7 +279,7 @@ export default function CommandInput({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-    const inputElement = event.target
+    const inputElement = event.target as HTMLInputElement
 
     if (event.key === 'Enter' && event.shiftKey) {
       event.preventDefault()

@@ -20,7 +20,7 @@ const LoadingIndicator: FC<LoaderProps> = ({ noWrapper = false, ...props }) => {
 }
 
 function Loader({
-  color = 'var(--c-colors-deepblack)',
+  color = 'var(--color-deepblack)',
   loaderStyle = {},
   size = '54px',
   strokeWidth = 3,
@@ -38,7 +38,7 @@ function Loader({
       >
         <circle
           strokeWidth={strokeWidth}
-          stroke={color.includes('var(') ? color : `var(--c-colors-${color})`}
+          stroke={color.includes('var(') ? color : `var(--color-${color})`}
           cx="25"
           cy="25"
           r="20"

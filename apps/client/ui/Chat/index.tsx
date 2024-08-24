@@ -18,16 +18,16 @@ const Wrapper = styled.div`
     button {
       background: transparent;
       padding: 10px 15px;
-      color: var(--c-colors-black-4);
+      color: var(--color-black-4);
       border-radius: calc(var(--c-border-radius) * 1.2);
-      border: 1px solid var(--c-colors-black-4);
+      border: 1px solid var(--color-black-4);
       max-width: 140px;
       font-size: .9rem;
       text-align: left;
     }
 
     button:hover {
-      background: var(--c-colors-black-4);
+      background: var(--color-black-4);
     }
   }
 

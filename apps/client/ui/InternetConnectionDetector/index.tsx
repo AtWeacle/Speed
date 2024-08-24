@@ -5,9 +5,9 @@ const Error = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(var(--c-colors-red-rgb), .08);
-  color: var(--c-colors-red);
-  border: 1px solid rgba(var(--c-colors-red-rgb), .1);
+  background: rgba(var(--color-red-rgb), .08);
+  color: var(--color-red);
+  border: 1px solid rgba(var(--color-red-rgb), .1);
   white-space: pre-wrap;
   padding: 10px 15px;
   border-radius: calc(var(--c-border-radius) * .7);

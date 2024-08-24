@@ -15,7 +15,7 @@ import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: rgba(var(--c-colors-coralpink-rgb), .4);
+  background: rgba(var(--color-coralpink-rgb), .4);
   
   line-height: 1.5;
   font-size: .9rem;
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   }
 
   [data-theme="dark"] & {
-    background: rgba(var(--c-colors-black-rgb), .2);
+    background: rgba(var(--color-black-rgb), .2);
   }
 
   &[data-type="system"] {
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
   }
 
   .message-text {
-    background: rgba(var(--c-colors-blue-rgb), .7);
+    background: rgba(var(--color-blue-rgb), .7);
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -60,7 +60,7 @@ const Wrapper = styled.div`
     border-radius: calc(var(--c-border-radius) * 1.5) calc(var(--c-border-radius) * 1.5) calc(var(--c-border-radius) * 1.5) 0;
 
     [data-theme="dark"] & {
-      background: rgba(var(--c-colors-blue-rgb), .15);
+      background: rgba(var(--color-blue-rgb), .15);
     }
 
     .c-link {
@@ -70,7 +70,7 @@ const Wrapper = styled.div`
     }
 
     a {
-      color: var(--c-colors-deepblue);
+      color: var(--color-deepblue);
       text-decoration: underline;
     }
 
@@ -141,7 +141,7 @@ const Message: FC<{
       >
         {pending ?
           <LoadingIndicator
-            color="var(--c-colors-black)"
+            color="var(--color-black)"
             size={24}
             noWrapper
             strokeWidth={8}

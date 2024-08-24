@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     width: 30px;
     height: 30px;
     max-height: 90px;
-    background: rgba(var(--c-colors-black-rgb), .4);
+    background: rgba(var(--color-black-rgb), .4);
     border-radius: 15px;
     /* transition: height .4s ease; */
   }

@@ -4,52 +4,52 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: var(--c-colors-back-2);
+  color: var(--color-black-9);
+  background-color: var(--color-back-2);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --c-colors-aqua: oklch(0.74 0.13 182.74);
-  --c-colors-black: oklch(0.10 0.00 0);
-  --c-colors-blue: oklch(0.79 0.14 219.16);
-  --c-colors-brown: oklch(0.75 0.08 48.10);
-  --c-colors-deepblue: oklch(0.65 0.19 262.02);
-  --c-colors-deeporange: oklch(0.65 0.24 31.75);
-  --c-colors-gray: oklch(0.61 0.00 0);
-  --c-colors-green: oklch(0.76 0.20 151.82);
-  --c-colors-greenyellow: oklch(0.79 0.21 129.21);
-  --c-colors-lavender: oklch(0.66 0.23 305.00);
-  --c-colors-mint: oklch(0.82 0.20 155.54);
-  --c-colors-orange: oklch(0.75 0.18 54.32);
-  --c-colors-pink: oklch(0.70 0.23 350.68);
-  --c-colors-purple: oklch(0.61 0.22 285.24);
-  --c-colors-red: oklch(0.65 0.24 19.70);
-  --c-colors-white: oklch(1.00 0.00 0);
-  --c-colors-yellow: oklch(0.86 0.18 88.96);
+  --color-aqua: oklch(0.74 0.13 182.74);
+  --color-black: oklch(0.10 0.00 0);
+  --color-blue: oklch(0.79 0.14 219.16);
+  --color-brown: oklch(0.75 0.08 48.10);
+  --color-deepblue: oklch(0.65 0.19 262.02);
+  --color-deeporange: oklch(0.65 0.24 31.75);
+  --color-gray: oklch(0.61 0.00 0);
+  --color-green: oklch(0.76 0.20 151.82);
+  --color-greenyellow: oklch(0.79 0.21 129.21);
+  --color-lavender: oklch(0.66 0.23 305.00);
+  --color-mint: oklch(0.82 0.20 155.54);
+  --color-orange: oklch(0.75 0.18 54.32);
+  --color-pink: oklch(0.70 0.23 350.68);
+  --color-purple: oklch(0.61 0.22 285.24);
+  --color-red: oklch(0.65 0.24 19.70);
+  --color-white: oklch(1.00 0.00 0);
+  --color-yellow: oklch(0.86 0.18 88.96);
 
-  --c-colors-black-0: oklch(from var(--c-colors-black) calc(l + .04) c h);
-  --c-colors-black-1: oklch(from var(--c-colors-black) calc(l + .08) c h);
-  --c-colors-black-2: oklch(from var(--c-colors-black) calc(l + .15) c h);
-  --c-colors-black-3: oklch(from var(--c-colors-black) calc(l + .2) c h);
-  --c-colors-black-4: oklch(from var(--c-colors-black) calc(l + .3) c h);
-  --c-colors-black-5: oklch(from var(--c-colors-black) calc(l + .4) c h);
-  --c-colors-black-6: oklch(from var(--c-colors-black) calc(l + .5) c h);
-  --c-colors-black-7: oklch(from var(--c-colors-black) calc(l + .6) c h);
-  --c-colors-black-8: oklch(from var(--c-colors-black) calc(l + .7) c h);
-  --c-colors-black-9: oklch(from var(--c-colors-black) calc(l + .8) c h);
-  --c-colors-black-10: oklch(from var(--c-colors-black) calc(l + .9) c h);
+  --color-black-0: oklch(from var(--color-black) calc(l + .04) c h);
+  --color-black-1: oklch(from var(--color-black) calc(l + .08) c h);
+  --color-black-2: oklch(from var(--color-black) calc(l + .15) c h);
+  --color-black-3: oklch(from var(--color-black) calc(l + .2) c h);
+  --color-black-4: oklch(from var(--color-black) calc(l + .3) c h);
+  --color-black-5: oklch(from var(--color-black) calc(l + .4) c h);
+  --color-black-6: oklch(from var(--color-black) calc(l + .5) c h);
+  --color-black-7: oklch(from var(--color-black) calc(l + .6) c h);
+  --color-black-8: oklch(from var(--color-black) calc(l + .7) c h);
+  --color-black-9: oklch(from var(--color-black) calc(l + .8) c h);
+  --color-black-10: oklch(from var(--color-black) calc(l + .9) c h);
 
   [data-theme="dark"] {
-    --c-colors-aqua: oklch(0.85 0.14 184.20);
-    --c-colors-black: oklch(0.90 0.00 0);
-    --c-colors-gray: oklch(0.58 0.00 0);
-    --c-colors-green: oklch(0.74 0.19 151.99);
-    --c-colors-greenyellow: oklch(0.88 0.22 127.19);
-    --c-colors-white: oklch(0.20 0.00 0);
-    --c-colors-yellow: oklch(0.86 0.18 88.96);
+    --color-aqua: oklch(0.85 0.14 184.20);
+    --color-black: oklch(0.90 0.00 0);
+    --color-gray: oklch(0.58 0.00 0);
+    --color-green: oklch(0.74 0.19 151.99);
+    --color-greenyellow: oklch(0.88 0.22 127.19);
+    --color-white: oklch(0.20 0.00 0);
+    --color-yellow: oklch(0.86 0.18 88.96);
   }
 
   --c-border-radius: 12px;
@@ -57,11 +57,11 @@
 
 a {
   font-weight: 500;
-  color: var(--c-colors-deepblue);
+  color: var(--color-deepblue);
   text-decoration: inherit;
 }
 a:hover {
-  color: oklch(from var(--c-colors-deepblue) calc(l - .1) c h);
+  color: oklch(from var(--color-deepblue) calc(l - .1) c h);
 }
 
 body {
@@ -84,7 +84,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--c-colors-black-3);
+  background-color: var(--color-black-3);
   cursor: pointer;
   transition: border-color 0.25s;
 }
