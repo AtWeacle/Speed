@@ -1348,9 +1348,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@weacle/speed-server@workspace:servers/node":
+"@weacle/speed-node-server@workspace:servers/node":
   version: 0.0.0-use.local
-  resolution: "@weacle/speed-server@workspace:servers/node"
+  resolution: "@weacle/speed-node-server@workspace:servers/node"
   dependencies:
     "@types/express": "npm:^4.17.13"
     "@types/node": "npm:^16.11.7"
