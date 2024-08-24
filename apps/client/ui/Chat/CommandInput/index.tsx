@@ -18,7 +18,8 @@ import { MEDIA } from '@weacle/speed-client/theme/constants'
 import { WS_URL } from '@weacle/speed-client/lib/constants'
 import type {
   MessageStatus,
-} from '@weacle/speed-client/lib/types'
+  SocketMessagePrompt,
+} from '@weacle/speed-lib/types'
 
 import Button from '@weacle/speed-client/ui/Button'
 import Textarea from '@weacle/speed-client/ui/Textarea'
@@ -162,7 +163,7 @@ export default function CommandInput({
   showCounter?: boolean
 }) {
   const setActiveMessageId = useStore(state => state.setActiveMessageId)
-  const addMessage = useStore(state => state.addMessage)
+  const addMessage = useStore(state => state.addMessage) as (message: { id: string, audio?: string, text?: string, role: string }) => void;
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
   const answering = useStore(state => state.answering)
@@ -210,14 +211,6 @@ export default function CommandInput({
         if (data.transcription && data.messageId) {
           const { transcription, messageId } = data
           updateMessage(messageId, { text: transcription })
-        }
-
-        if (data.files) {
-          if (activeMessageId) {
-            const { files } = data
-            updateMessage(activeMessageId, { files })
-            // document.dispatchEvent(new CustomEvent('we.chat.message.scrollBottom'))
-          }
         }
 
       } catch (error) {
@@ -338,11 +331,12 @@ export default function CommandInput({
     const audioUrl = audio ? URL.createObjectURL(audio) : undefined
 
     const userMessageId = nanoid()
-    addMessage({ id: userMessageId, audio: audioUrl, text: prompt?.trim(), type: 'user' })
+    addMessage({ id: userMessageId, audio: audioUrl, text: prompt?.trim(), role: 'user' })
     setPrompt('')
 
     const systemMessageId = nanoid()
-    addMessage({ id: systemMessageId, status: 'pending', type: 'system' })
+    const systemMessage = { id: systemMessageId, status: 'pending', role: 'system' }
+    addMessage(systemMessage)
     setActiveMessageId(systemMessageId)
 
     const thread = document.querySelector('#t38hArd')
@@ -355,10 +349,12 @@ export default function CommandInput({
 
     setAnswering(true)
 
-    sendJsonMessage({
+    sendJsonMessage<SocketMessagePrompt>({
       // audio: audioBase64,
       // messageIdToTranscribe,
+      // role: 'user',
       text: prompt?.trim(),
+      type: 'prompt',
     })
   }
 

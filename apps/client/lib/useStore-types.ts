@@ -1,7 +1,7 @@
 import type {
   ErrorsType,
   Message,
-} from '@weacle/speed-client/lib/types'
+} from '@weacle/speed-lib/types'
 
 
 export type useStoreState = {

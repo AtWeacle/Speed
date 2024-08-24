@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 import { useStoreState } from '@weacle/speed-client/lib/useStore-types'
-import { nanoid } from '@weacle/speed-client/lib/utils/nanoid'
+import { nanoid } from '@weacle/speed-lib/utils/nanoid'
 
 
 const zStore = create<useStoreState>()(persist((set, get) => ({
@@ -35,7 +35,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     messages: [...state.messages, { id: nanoid(), ...message }],
   })),
   addSystemMessage: (text) => set((state) => ({
-    messages: [...state.messages, { id: nanoid(), status: 'done', type: 'system', text }],
+    messages: [...state.messages, { id: nanoid(), status: 'done', role: 'system', text }],
   })),
   clearMessages: () => set(() => ({
     messages: [],
