@@ -5,7 +5,6 @@ import {
 import styled from 'styled-components'
 import Markdown from 'react-markdown'
 
-import { MEDIA } from '@weacle/speed-client/theme/constants'
 import type {
   Message,
 } from '@weacle/speed-client/lib/types'
@@ -15,19 +14,13 @@ import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: rgba(var(--color-coralpink-rgb), .4);
-  
-  line-height: 1.5;
+  line-height: 1.4;
   font-size: .9rem;
-  max-width: 90%;
+  width:  calc(100% - 30px);
   margin: 0 0 5px;
 
-  ${MEDIA.SM} {
-    max-width: calc(90%);
-  }
-
   [data-theme="dark"] & {
-    background: rgba(var(--color-black-rgb), .2);
+    background: var(--color-black-1);
   }
 
   &[data-type="system"] {
@@ -39,7 +32,7 @@ const Wrapper = styled.div`
     align-self: flex-end;
     padding: 15px;
     white-space: pre-wrap;
-    border-radius: calc(var(--c-border-radius) * 1.5) calc(var(--c-border-radius) * 1.5) 0;
+    border-radius: var(--c-border-radius);
   }
 
   &[data-margin-top="true"] {
@@ -52,16 +45,10 @@ const Wrapper = styled.div`
   }
 
   .message-text {
-    background: rgba(var(--color-blue-rgb), .7);
     padding: 15px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    border-radius: calc(var(--c-border-radius) * 1.5) calc(var(--c-border-radius) * 1.5) calc(var(--c-border-radius) * 1.5) 0;
-
-    [data-theme="dark"] & {
-      background: rgba(var(--color-blue-rgb), .15);
-    }
 
     .c-link {
       display: flex;
@@ -100,25 +87,6 @@ const Wrapper = styled.div`
           gap: 2px;
         }
       }
-    }
-  }
-
-  .file {
-    cursor: pointer;
-    transition: transform .2s;
-    width: fit-content;
-  }
-
-  .file:hover {
-    transform: scale(1.01);
-  }
-
-  img {
-    border-radius: calc(var(--c-border-radius) * 1.5);
-    max-width: 100%;
-
-    ${MEDIA.SM} {
-      max-width: 600px;
     }
   }
 `

@@ -16,27 +16,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  min-height: calc(100svh - var(--c-editor-nav-height) - 100px);
-  max-width: 100%;
-  margin: 0 auto;
-  width: 100%;
-  word-break: break-word;
-  grid-area: thread;
-
-  ${MEDIA.XS} {
-    max-width: 100%;
-    margin: 0 10px;
-  }
-
-  ${MEDIA.SM} {
-    max-width: 100%;
-    margin: 0 10px;
-  }
-  
-  ${MEDIA.MD} {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+  min-height: calc(100svh - var(--nav-height) - 100px);
+  margin: 5px auto;
+  width: calc(100% - 10px);
 `
 const Messages: FC = () => {
   const messages = useStore((state) => state.messages)
