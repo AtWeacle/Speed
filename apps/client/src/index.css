@@ -42,18 +42,6 @@
   --c-colors-black-9: oklch(from var(--c-colors-black) calc(l + .8) c h);
   --c-colors-black-10: oklch(from var(--c-colors-black) calc(l + .9) c h);
 
-  --c-colors-front-0: oklch(from var(--c-colors-black) calc(l + 0.05) c h);
-  --c-colors-front-1: oklch(from var(--c-colors-black) calc(l + 0.1) c h);
-  --c-colors-front-2: oklch(from var(--c-colors-black) calc(l + 0.2) c h);
-  --c-colors-front-3: oklch(from var(--c-colors-black) calc(l + 0.3) c h);
-  --c-colors-front-4: oklch(from var(--c-colors-black) calc(l + 0.4) c h);
-  --c-colors-front-5: oklch(from var(--c-colors-black) calc(l + 0.5) c h);
-  --c-colors-front-6: oklch(from var(--c-colors-black) calc(l + 0.6) c h);
-  --c-colors-front-7: oklch(from var(--c-colors-black) calc(l + 0.7) c h);
-  --c-colors-front-8: oklch(from var(--c-colors-black) calc(l + 0.73) c h);
-  --c-colors-front-9: oklch(from var(--c-colors-black) calc(l + 0.76) c h);
-  --c-colors-front-10: oklch(from var(--c-colors-black) calc(l + .8) c h);
-
   --c-colors-text-1: hsl(var(--c-colors-black-hs), 12%);
   --c-colors-text-2: hsl(var(--c-colors-black-hs), 20%);
   --c-colors-text-3: hsl(var(--c-colors-black-hs), 30%);
