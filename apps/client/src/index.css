@@ -42,17 +42,6 @@
   --c-colors-black-9: oklch(from var(--c-colors-black) calc(l + .8) c h);
   --c-colors-black-10: oklch(from var(--c-colors-black) calc(l + .9) c h);
 
-  --c-colors-text-1: hsl(var(--c-colors-black-hs), 12%);
-  --c-colors-text-2: hsl(var(--c-colors-black-hs), 20%);
-  --c-colors-text-3: hsl(var(--c-colors-black-hs), 30%);
-  --c-colors-text-4: hsl(var(--c-colors-black-hs), 40%);
-  --c-colors-text-5: hsl(var(--c-colors-black-hs), 50%);
-  --c-colors-text-6: hsl(var(--c-colors-black-hs), 60%);
-  --c-colors-text-7: hsl(var(--c-colors-black-hs), 70%);
-  --c-colors-text-8: hsl(var(--c-colors-black-hs), 80%);
-  --c-colors-text-9: hsl(var(--c-colors-black-hs), 90%);
-  --c-colors-text-10: hsl(var(--c-colors-black-hs), 95%);
-
   [data-theme="dark"] {
     --c-colors-aqua: oklch(0.85 0.14 184.20);
     --c-colors-black: oklch(0.90 0.00 0);
