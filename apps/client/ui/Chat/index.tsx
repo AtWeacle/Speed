@@ -18,16 +18,16 @@ const Wrapper = styled.div`
     button {
       background: transparent;
       padding: 10px 15px;
-      color: rgba(var(--c-colors-black-rgb), .8);
+      color: var(--c-colors-black-4);
       border-radius: calc(var(--c-border-radius) * 1.2);
-      border: 1px solid rgba(var(--c-colors-black-rgb), .1);
+      border: 1px solid var(--c-colors-black-4);
       max-width: 140px;
       font-size: .9rem;
       text-align: left;
     }
 
     button:hover {
-      background: rgba(var(--c-colors-black-rgb), .05);
+      background: var(--c-colors-black-4);
     }
   }
 
@@ -46,18 +46,6 @@ const Wrapper = styled.div`
     justify-content: center;
     gap: 25px;
     height: 100%;
-  }
-
-  .name {
-    display: flex;
-    width: fit-content;
-    padding: 10px 15px;
-    border-radius: calc(var(--c-border-radius) * 1);
-    background: rgba(var(--c-colors-white-rgb), 1);
-    color: rgba(var(--c-colors-black-rgb), .8);
-    color: rgba(var(--c-colors-orange-rgb), 1);
-    font-size: 1.2rem;
-    font-weight: 500;
   }
 `
 export default function Chat() {

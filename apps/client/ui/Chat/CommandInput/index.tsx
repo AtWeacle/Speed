@@ -6,7 +6,7 @@ import React, {
 import styled from 'styled-components'
 import {
   Mic,
-  SendHorizontal,
+  CircleArrowUp,
   Trash2,
 } from 'lucide-react'
 import useWebSocket from 'react-use-websocket'
@@ -45,17 +45,13 @@ const Wrapper = styled.div`
     max-width: 700px;
   }
 
-  &[data-context="editor"] {
-    margin: 0 auto;
-    
-    ${MEDIA.XS} {
-      max-width: 700px;
-    }
+  ${MEDIA.LG} {
+    max-width: 840px;
   }
 
   .stop {
     border-radius: 2px;
-    background: rgba(var(--c-colors-red-rgb), 1);
+    background: var(--c-colors-red);
     width: 10px;
     height: 10px;
     position: absolute;
@@ -66,7 +62,7 @@ const Wrapper = styled.div`
 
   .circle-marker {
     border-radius: 50%;
-    border: 1px solid rgba(var(--c-colors-red-rgb), .4);
+    border: 1px solid oklch(from var(--c-colors-red) l c h / .5);
     width: 28px;
     height: 28px;
     position: absolute;
@@ -76,39 +72,34 @@ const Wrapper = styled.div`
   }
 
   .command-input {
-    background-color: rgba(var(--c-colors-white-rgb), .3);
+    background-color: var(--c-colors-black-2);
   }
 `
 const InputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 5px;
   width: 100%;
-  border: 2px solid rgba(var(--c-colors-black-rgb), .6);
+  border: 2px solid var(--c-colors-black-3);
   border-radius: calc(var(--c-border-radius) * 1.4);
   transition: border .2s ease-in-out;
-  background-color: rgba(var(--c-colors-white-rgb), .3);
+  background-color: var(--c-colors-black-3);
   position: relative;
   padding: 6px 4px 6px 10px;
 
-  &[data-focused="true"] {
-    border-color: rgba(var(--c-colors-orange-rgb), 1);
-    background-color: rgba(var(--c-colors-white-rgb), 1);
-  }
-
   &[data-valid="false"] {
-    border-color: rgba(var(--c-colors-red-rgb), 1);
+    border-color: var(--c-colors-red);
   }
 
   &[data-has-content="true"] {
     svg.stop-icon path {
-      fill: rgba(var(--c-colors-black-rgb), 1);
+      fill: var(--c-colors-black-9);
     }
   }
 
   &[data-has-content="true"][data-loading="true"] {
     svg.stop-icon path {
-      fill: rgba(var(--c-colors-red-rgb), 1);
+      fill: var(--c-colors-red);
     }
   }
 
@@ -122,26 +113,11 @@ const InputWrapper = styled.div`
     }
   }
 
-  [data-context="editor"] & {
-    border: 0 solid rgba(var(--c-colors-black-rgb), .2);
-    /* background-color: rgba(var(--c-colors-black-rgb), .08); */
-    background: hsl(var(--c-colors-black-hs), 12%);
-
-    &[data-focused="true"] {
-      border-color: rgba(var(--c-colors-black-rgb), .25);
-    }
-  }
-
-  [data-theme="light"] [data-context="editor"] & {
-    background: hsl(var(--c-colors-black-hs), 100%);
-  }
-
   .command-input {
-    padding: 5px;
     min-height: 24px;
     resize: none;
     font-size: .9rem;
-    color: rgba(var(--c-colors-black-rgb), 1);
+    color: var(--c-colors-black-9);
     font-weight: 500;
     background: transparent;
     border: none !important;
@@ -149,10 +125,12 @@ const InputWrapper = styled.div`
     box-shadow: none !important;
     position: relative;
     z-index: 2;
+    padding: 0;
     padding: 8px 0;
+    /* padding: 5px; */
     
     &::placeholder {
-      color: rgba(var(--c-colors-black-rgb), 1);
+      color: var(--c-colors-black-9);
     }
 
     ${MEDIA.XS} {
@@ -162,30 +140,17 @@ const InputWrapper = styled.div`
     ${MEDIA.SM} {
       font-size: 1.1rem;
     }
+  }
 
-    [data-context="editor"] & {
-      color: rgba(var(--c-colors-black-rgb), .9);
-      font-size: 1rem;
-      font-weight: 400;
-
-      &::placeholder {
-        color: rgba(var(--c-colors-black-rgb), .7);
-      }
-
-      ${MEDIA.XS} {
-        font-size: 1rem;
-      }
-
-      ${MEDIA.SM} {
-        font-size: 1rem;
-      }
-    }
+  button {
+    width: 42px;
+    height: 40px;
   }
 `
 const Counter = styled.span`
   display: flex;
   margin: 5px 5px 0 auto;
-  color: rgba(var(--c-colors-gray-rgb), 1);
+  color: var(--c-colors-black-5);
   font-size: .65rem;
   width: max-content;
   height: fit-content;
@@ -194,11 +159,7 @@ const Counter = styled.span`
   right: 0;
 
   &[data-valid="false"] {
-    color: rgba(var(--c-colors-red-rgb), 1);
-  }
-
-  [data-context="editor"] & {
-    top: -22px;
+    color: var(--c-colors-red);
   }
 `
 export default function CommandInput({
@@ -208,7 +169,6 @@ export default function CommandInput({
 }) {
   const setActiveMessageId = useStore(state => state.setActiveMessageId)
   const addMessage = useStore(state => state.addMessage)
-  const clearActions = useStore(state => state.clearActions)
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
   const answering = useStore(state => state.answering)
@@ -284,7 +244,7 @@ export default function CommandInput({
     // }
   }, [recording])
 
-  function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const value = event.target.value
     setPrompt(value)
   }
@@ -295,11 +255,11 @@ export default function CommandInput({
     return value
   }
 
-  function onMouseDown(event: React.MouseEvent<HTMLInputElement>) {
+  function onMouseDown(event: React.MouseEvent<HTMLTextAreaElement>) {
     event.stopPropagation()
   }
 
-  function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+  function onBlur(event: React.FocusEvent<HTMLTextAreaElement>) {
     const validatedValue = getValue(event.target.value)
     setPrompt(validatedValue)
     setFocused(false)
@@ -318,8 +278,8 @@ export default function CommandInput({
     inputElement.style.height = 'auto'
   }
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const inputElement = event.target as HTMLTextAreaElement
+  function onKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    const inputElement = event.target
 
     if (event.key === 'Enter' && event.shiftKey) {
       event.preventDefault()
@@ -342,27 +302,24 @@ export default function CommandInput({
       inputElement.blur()
     }
 
-    setTimeout(() => {
-      inputElement.style.height = 'auto'
-      inputElement.style.height = `${Math.max(24, Math.min(inputElement.scrollHeight, 150))}px`
-    }, 0)
+    updateHeight(event)
   }
 
-  function updateHeight(event: React.ClipboardEvent<HTMLTextAreaElement>) {
+  function updateHeight(event: React.ClipboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLTextAreaElement>) {
     const inputElement = event.target as HTMLTextAreaElement
     setTimeout(() => {
       inputElement.style.height = 'auto'
-      inputElement.style.height = `${Math.max(24, Math.min(inputElement.scrollHeight, 150))}px`
+      const computedStyle = window.getComputedStyle(inputElement)
+      const paddingTop = parseInt(computedStyle.getPropertyValue('padding-top'), 10)
+      const paddingBottom = parseInt(computedStyle.getPropertyValue('padding-bottom'), 10)
+      const height = Math.max(24, Math.min(inputElement.scrollHeight - paddingTop - paddingBottom, 150))
+      inputElement.style.height = `${height}px`
     }, 0)
   }
 
   function streamResponse(text: string, status: MessageStatus = 'pending') {
-    console.log('\n => streamResponse')
     const { activeMessageId, messages, updateMessage } = useStore.getState()
     const activeMessage = messages.find(message => message.id === activeMessageId)
-
-    console.log('\t activeMessage', activeMessage)
-
     if (!activeMessage) return
 
     const newText = (activeMessage.text || '') + text
@@ -403,7 +360,6 @@ export default function CommandInput({
     // const messageIdToTranscribe = audio ? userMessageId : undefined
 
     setAnswering(true)
-    clearActions()
 
     sendJsonMessage({
       // audio: audioBase64,
@@ -495,7 +451,7 @@ export default function CommandInput({
         <Textarea
           className="command-input"
           autoComplete="off"
-          rows="1"
+          rows={1}
           dir="auto"
           spellCheck={false}
           placeholder={"Type a prompt..."}
@@ -509,23 +465,24 @@ export default function CommandInput({
           onFocus={onFocus}
           onBlur={onBlur}
           disabled={answering}
+          style={{ width: '100%' }}
         />
         
-        {recording
+        {!recording
           ? prompt.length > 0 ? <Button
             onClick={onClickSend}
             appearance="text"
             title="Send"
-            style={{ paddingRight: '7px', paddingLeft: '5px', width: 'fit-content' }}
+            style={{ paddingRight: '7px', paddingLeft: '5px', width: '50px' }}
           >
-            <SendHorizontal />
+            <CircleArrowUp size={40} strokeWidth={1.5} />
           </Button> : <Button
             onClick={handleMic}
             appearance="text"
             disabled={!valid}
-            style={{ paddingRight: '7px', paddingLeft: '5px', width: 'fit-content' }}
+            style={{ paddingRight: '7px', paddingLeft: '5px', width: '50px' }}
           >
-            <Mic />
+            <Mic size={32} strokeWidth={1.7} />
           </Button>
           : <>
             <Button
@@ -534,7 +491,7 @@ export default function CommandInput({
               title="Cancel"
               style={{ paddingRight: '5px', paddingLeft: '5px', position: 'relative' }}
             >
-              <Trash2 />
+              <Trash2 size={40} />
             </Button>
             <Button
               onClick={handleMic}
