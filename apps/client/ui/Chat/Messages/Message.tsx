@@ -123,8 +123,6 @@ const Message: FC<{
   const pending = message.status === 'pending'
 
   if (message.role === 'system') {
-
-  console.log(message)
     return (
       <Wrapper
         data-margin-top={String(!!separateFromPrior)}
@@ -155,7 +153,7 @@ const Message: FC<{
                 code(props) {
                   const {children, className, node, ...rest} = props
                   const match = /language-(\w+)/.exec(className || '')
-                  console.log('match', match)
+                  
                   return match ? (
                     <div className="code-block">
                       <div className="code-top">

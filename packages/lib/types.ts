@@ -6,7 +6,6 @@ export type Message = {
   role: MessageRole
   status?: MessageStatus
   text?: string
-  type: MessageType
 }
 
 export type SocketMessageBase = {

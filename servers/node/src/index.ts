@@ -34,11 +34,9 @@ wsServer.on('connection', (ws) => {
   })
 })
 
-
 app.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello from the server!' })
 })
-
 
 httpServer.listen(PORT, async () => {
   console.log(`HTTP server is running on http://localhost:${PORT}`)
