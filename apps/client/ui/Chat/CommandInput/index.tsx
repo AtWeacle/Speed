@@ -70,18 +70,14 @@ const Wrapper = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
-  .command-input {
-    background-color: var(--color-black-2);
-  }
 `
 const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  width: 100%;
+  width: calc(100% - 19px);
   border: 2px solid var(--color-black-3);
-  border-radius: calc(var(--c-border-radius) * 1.4);
+  border-radius: calc(var(--c-border-radius) * 1);
   transition: border .2s ease-in-out;
   background-color: var(--color-black-3);
   position: relative;
@@ -113,21 +109,23 @@ const InputWrapper = styled.div`
     }
   }
 
+  svg {
+    stroke: var(--color-black-9);
+  }
+
   .command-input {
     min-height: 24px;
     resize: none;
     font-size: .9rem;
     color: var(--color-black-9);
-    font-weight: 500;
     background: transparent;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
     position: relative;
     z-index: 2;
-    padding: 0;
     padding: 8px 0;
-    /* padding: 5px; */
+    width: 100%;
     
     &::placeholder {
       color: var(--color-black-9);
@@ -135,10 +133,6 @@ const InputWrapper = styled.div`
 
     ${MEDIA.XS} {
       font-size: 1rem;
-    }
-
-    ${MEDIA.SM} {
-      font-size: 1.1rem;
     }
   }
 
@@ -465,7 +459,6 @@ export default function CommandInput({
           onFocus={onFocus}
           onBlur={onBlur}
           disabled={answering}
-          style={{ width: '100%' }}
         />
         
         {!recording
@@ -475,14 +468,14 @@ export default function CommandInput({
             title="Send"
             style={{ paddingRight: '7px', paddingLeft: '5px', width: '50px' }}
           >
-            <CircleArrowUp size={40} strokeWidth={1.5} />
+            <CircleArrowUp size={40} strokeWidth={1.4} />
           </Button> : <Button
             onClick={handleMic}
             appearance="text"
             disabled={!valid}
             style={{ paddingRight: '7px', paddingLeft: '5px', width: '50px' }}
           >
-            <Mic size={32} strokeWidth={1.7} />
+            <Mic size={30} strokeWidth={1.7} />
           </Button>
           : <>
             <Button
@@ -491,7 +484,7 @@ export default function CommandInput({
               title="Cancel"
               style={{ paddingRight: '5px', paddingLeft: '5px', position: 'relative' }}
             >
-              <Trash2 size={40} />
+              <Trash2 size={30} strokeWidth={1.7} />
             </Button>
             <Button
               onClick={handleMic}

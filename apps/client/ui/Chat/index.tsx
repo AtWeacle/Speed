@@ -9,34 +9,13 @@ const Wrapper = styled.div`
   flex-direction: column;
   position: relative;
   padding: 0;
-  width: calc(100% - 20px);
+  width: 100%;
+  background-color: var(--color-black-2);
+  border-radius: calc(var(--c-border-radius) * 1.2) 0 0 calc(var(--c-border-radius) * 1.2);
 
-  .cmd-shortcuts {
-    display: flex;
-    gap: 10px;
-
-    button {
-      background: transparent;
-      padding: 10px 15px;
-      color: var(--color-black-4);
-      border-radius: calc(var(--c-border-radius) * 1.2);
-      border: 1px solid var(--color-black-4);
-      max-width: 140px;
-      font-size: .9rem;
-      text-align: left;
-    }
-
-    button:hover {
-      background: var(--color-black-4);
-    }
-  }
-
-  .command-nav {
-    position: fixed;
-    bottom: 5px;
-    left: 50%;
+  .command-nav{
+    margin: auto auto 5px auto;
     width: calc(100% - 10px);
-    transform: translate(-50%, 0px);
   }
 
   .command-wrapper {

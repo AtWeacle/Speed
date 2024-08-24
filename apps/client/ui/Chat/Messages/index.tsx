@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   min-height: calc(100svh - var(--c-editor-nav-height) - 100px);
   max-width: 100%;
-  margin: 0 10px;
+  margin: 0 auto;
   width: 100%;
   word-break: break-word;
   grid-area: thread;
