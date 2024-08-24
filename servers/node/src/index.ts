@@ -2,14 +2,14 @@ import 'dotenv/config'
 import dotenv from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
-// import path from 'path'
 import { WebSocketServer } from 'ws'
+import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 
 dotenv.config({ path: '../../.env' })
 
 const app = express()
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
@@ -24,21 +24,9 @@ const wsServer = new WebSocketServer({
 
 const PORT = process.env.SERVER_PORT || '8080'
 
-wsServer.on('connection', (ws: any) => {
-  ws.on('message', (data: any) => {
-    try {
-      const message = data.toString()
-      console.log('Received message:', message)
-
-      ws.send(JSON.stringify({
-        type: 'response',
-        text: `Server received: ${message}`,
-        status: 'done',
-      }))
-      
-    } catch (error) {
-      console.log('Error:', error)
-    }
+wsServer.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    handleIncomingMessage(ws, data)
   })
 
   ws.on('disconnect', () => {
