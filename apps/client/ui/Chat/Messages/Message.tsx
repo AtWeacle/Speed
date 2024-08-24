@@ -4,12 +4,14 @@ import {
 } from 'react'
 import styled from 'styled-components'
 import Markdown from 'react-markdown'
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
 
 import type {
   Message,
 } from '@weacle/speed-client/lib/types'
 
 import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
+import customStyle from '@weacle/speed-client/ui/Chat/Messages/syntaxHighlighterStyles/hljs/custom'
 
 const Wrapper = styled.div`
   display: flex;
@@ -59,6 +61,24 @@ const Wrapper = styled.div`
     a {
       color: var(--color-deepblue);
       text-decoration: underline;
+    }
+
+    code.c-code {
+      font-weight: 600;
+
+      &::before, &::after {
+        content: '\`';
+      }
+    }
+
+    .code-block {
+      .code-top {
+        background: var(--color-black-3);
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        color: var(--color-black-8);
+        font-size: .8rem;
+        padding: 5px 10px;
+      }
     }
 
     p {
@@ -126,6 +146,31 @@ const Message: FC<{
                     <div className="c-link">
                       <a {...rest} target="_blank" />
                     </div>
+                  )
+                },
+                code(props) {
+                  const {children, className, node, ...rest} = props
+                  const match = /language-(\w+)/.exec(className || '')
+                  console.log('match', match)
+                  return match ? (
+                    <div className="code-block">
+                      <div className="code-top">
+                        <span className="code-lang">{match[1]}</span>
+                      </div>
+
+                      <SyntaxHighlighter
+                        {...rest}
+                        ref={null}
+                        PreTag="div"
+                        children={String(children).replace(/\n$/, '')}
+                        language={match[1]}
+                        style={customStyle}
+                      />
+                    </div>
+                  ) : (
+                    <code {...rest} className={`${className ? className : ''} c-code`}>
+                      {children}
+                    </code>
                   )
                 }
               }}
