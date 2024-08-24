@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   overflow: clip;
   flex-shrink: 0;
   background: hsl(var(--color-black-hs), 8%);
-  border-radius: calc(var(--c-border-radius) * 1.5);
+  border-radius: calc(var(--border-radius) * 1.5);
   padding: 10px;
 
   [data-theme="light"] & {

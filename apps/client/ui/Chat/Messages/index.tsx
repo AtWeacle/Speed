@@ -19,6 +19,7 @@ const Wrapper = styled.div`
   min-height: calc(100svh - var(--nav-height) - 100px);
   margin: 5px auto;
   width: calc(100% - 10px);
+  overflow: hidden auto;
 `
 const Messages: FC = () => {
   const messages = useStore((state) => state.messages)

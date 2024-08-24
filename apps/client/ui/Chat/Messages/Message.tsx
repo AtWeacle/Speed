@@ -5,10 +5,15 @@ import {
 import styled from 'styled-components'
 import Markdown from 'react-markdown'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
+import {
+  Mic,
+  CircleArrowUp,
+  Trash2,
+} from 'lucide-react'
 
 import type {
   Message,
-} from '@weacle/speed-client/lib/types'
+} from '@weacle/speed-lib/types'
 
 import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
 import customStyle from '@weacle/speed-client/ui/Chat/Messages/syntaxHighlighterStyles/hljs/custom'
@@ -20,21 +25,22 @@ const Wrapper = styled.div`
   font-size: .9rem;
   width:  calc(100% - 30px);
   margin: 0 0 5px;
+  word-wrap: break-word;
 
   [data-theme="dark"] & {
-    background: var(--color-black-1);
+    background: var(--color-black-4);
   }
 
-  &[data-type="system"] {
+  &[data-role="system"] {
     align-self: flex-start;
     background: transparent;
   }
 
-  &[data-type="user"] {
+  &[data-role="user"] {
     align-self: flex-end;
     padding: 15px;
     white-space: pre-wrap;
-    border-radius: var(--c-border-radius);
+    border-radius: var(--border-radius);
   }
 
   &[data-margin-top="true"] {
@@ -50,7 +56,7 @@ const Wrapper = styled.div`
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 
     .c-link {
       display: flex;
@@ -88,16 +94,12 @@ const Wrapper = styled.div`
     }
 
     ul, ol {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
       margin: 0;
-      margin-block-start: 0;
-      margin-block-end: 0;
-      padding-inline-start: 15px;
+      padding-left: 1.625em;
 
       li {
         margin: 0;
+        padding-left: .375em;
 
         &:first-child {
           margin: 0;
@@ -120,11 +122,13 @@ const Message: FC<{
   const systemMessageRef = useRef<HTMLDivElement>(null)
   const pending = message.status === 'pending'
 
-  if (message.type === 'system') {
+  if (message.role === 'system') {
+
+  console.log(message)
     return (
       <Wrapper
         data-margin-top={String(!!separateFromPrior)}
-        data-type={message.type}
+        data-role={message.role}
         ref={systemMessageRef}
       >
         {pending ?
@@ -185,7 +189,7 @@ const Message: FC<{
 
   return (
     <Wrapper
-      data-type={message.type}
+      data-role={message.role}
       data-margin-top={String(!!separateFromPrior)}
     >
       {message.audio ?
