@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import Chat from '@weacle/speed-client/ui/Chat'
 import DirectoryPanel from '@weacle/speed-client/ui/DirectoryPanel'
 import ConnectionManager from '@weacle/speed-client/ui/ConnectionManager'
-import './App.css'
 
 const Layout = styled.div`
   --dir-panel-width: 400px;

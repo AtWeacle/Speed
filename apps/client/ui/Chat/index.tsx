@@ -9,9 +9,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   position: relative;
   padding: 0;
-  width: 100%;
+  width: calc(100svw - calc(var(--layout-margin) * 2) - var(--dir-panel-width));
   background-color: var(--color-black-2);
-  border-radius: calc(var(--c-border-radius) * 1.2) 0 0 calc(var(--c-border-radius) * 1.2);
+  border-radius: calc(var(--border-radius) * 1.2) 0 0 calc(var(--border-radius) * 1.2);
 
   .command-nav{
     margin: auto auto 5px auto;

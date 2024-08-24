@@ -10,7 +10,7 @@ const Error = styled.div`
   border: 1px solid rgba(var(--color-red-rgb), .1);
   white-space: pre-wrap;
   padding: 10px 15px;
-  border-radius: calc(var(--c-border-radius) * .7);
+  border-radius: calc(var(--border-radius) * .7);
   font-size: .85rem;
   font-weight: 600;
 

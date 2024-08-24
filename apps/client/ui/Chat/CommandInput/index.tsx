@@ -77,7 +77,7 @@ const InputWrapper = styled.div`
   gap: 5px;
   width: calc(100% - 19px);
   border: 2px solid var(--color-black-3);
-  border-radius: calc(var(--c-border-radius) * 1);
+  border-radius: calc(var(--border-radius) * 1);
   transition: border .2s ease-in-out;
   background-color: var(--color-black-3);
   position: relative;
