@@ -1905,6 +1905,7 @@ __metadata:
     globals: "npm:^15.9.0"
     lucide-react: "npm:^0.435.0"
     react: "npm:^18.3.1"
+    react-complex-tree: "npm:^2.4.5"
     react-dom: "npm:^18.3.1"
     react-syntax-highlighter: "npm:^15.5.0"
     react-use-websocket: "npm:^4.8.1"
@@ -5096,6 +5097,15 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10c0/b201c4b66049369a60e766318caff5cb3cc5a900efd89bdac431463822d976ad0670912c931fdbdcf5543207daf6f6833bca57aa116e1661d2ea91e12ca692c4
+  languageName: node
+  linkType: hard
+
+"react-complex-tree@npm:^2.4.5":
+  version: 2.4.5
+  resolution: "react-complex-tree@npm:2.4.5"
+  peerDependencies:
+    react: ">=16.0.0"
+  checksum: 10c0/08f12c6c08b3f70b56fccfccb5b440ba9ea78658c2cffcf00ddfa8d999776a0e0fcd00ccb74e89d20a57e7004334c16b537122d1866c959f7051d89f42d9759d
   languageName: node
   linkType: hard
 
