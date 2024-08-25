@@ -62,6 +62,27 @@ const TreeContainer = styled.div`
   margin: 5px;
   border-radius: calc(var(--border-radius) * .8);
   background-color: var(--color-black-1);
+
+  --rct-bar-color: var(--color-deepblue);
+  --rct-bar-width: 4px;
+  --rct-arrow-container-size: 24px;
+  --rct-color-focustree-item-selected-bg: oklch(from var(--color-deepblue) l c h / 0.15);
+
+  .rct-tree-item-arrow {
+    svg {
+      width: 12px;
+
+      path {
+        stroke-width: 1px;
+        stroke: var(--color-black-7);
+        fill: var(--color-black-7);
+      }
+    }
+  }
+
+  .rct-tree-item-li {
+    width: calc(100% - 5px);
+  }
 `
 const Title = styled.h6`
   margin: 0;
@@ -93,8 +114,8 @@ function Directory() {
   const excludedFiles = useStore(state => state.excludedFiles)
   const selectedItems = useStore(state => state.selectedItems)
   const setSelectedItems = useStore(state => state.setSelectedItems)
-  const clearSelectedItems = useStore(state => state.clearSelectedItems)
-  const selectAllItems = useStore(state => state.selectAllItems)
+  // const clearSelectedItems = useStore(state => state.clearSelectedItems)
+  // const selectAllItems = useStore(state => state.selectAllItems)
 
   const [loading, setLoading] = useState(false)
 
