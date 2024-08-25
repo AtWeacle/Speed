@@ -1,7 +1,5 @@
 import React from 'react'
 
-import '@weacle/speed-client/ui/Button/styles.css'
-
 const Button = ({
   appearance = 'normal',
   children,
