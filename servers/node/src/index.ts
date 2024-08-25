@@ -4,6 +4,11 @@ import express from 'express'
 import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
+import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
+
+import type {
+  DirectoryTree,
+} from '@weacle/speed-lib/types'
 
 dotenv.config({ path: '../../.env' })
 
@@ -34,8 +39,20 @@ wsServer.on('connection', (ws) => {
   })
 })
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from the server!' })
+app.get('/api/directory-tree', (req, res) => {
+  const directoryPath = req.query.path as string
+  const excludes = (req.query.excludes as string || '').split(',')
+
+  if (!directoryPath) {
+    return res.status(400).json({ error: 'Directory path is required' })
+  }
+
+  try {
+    const tree: DirectoryTree = getDirectoryTree(directoryPath, excludes)
+    res.json(tree)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get directory tree' })
+  }
 })
 
 httpServer.listen(PORT, async () => {
