@@ -9,6 +9,10 @@ import {
   type TreeItemIndex,
 } from 'react-complex-tree'
 import 'react-complex-tree/lib/style-modern.css'
+import {
+  ChevronDown,
+  ChevronRight,
+} from 'lucide-react'
 
 import type {
   DirectoryTree,
@@ -25,6 +29,12 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: var(--color-black-2);
   border-radius: 0 0 calc(var(--border-radius) * 1.2) 0;
+`
+const Title = styled.h6`
+  margin: 0;
+  padding: 5px 10px;
+  font-size: .8rem;
+  color: var(--color-black-8);
 `
 const DirectoryPath = styled.div`
   display: flex;
@@ -70,13 +80,8 @@ const TreeContainer = styled.div`
 
   .rct-tree-item-arrow {
     svg {
-      width: 12px;
-
-      path {
-        stroke-width: 1px;
-        stroke: var(--color-black-7);
-        fill: var(--color-black-7);
-      }
+      width: 20px;
+      stroke: var(--color-black-8);
     }
   }
 
@@ -84,11 +89,7 @@ const TreeContainer = styled.div`
     width: calc(100% - 5px);
   }
 `
-const Title = styled.h6`
-  margin: 0;
-  padding: 5px 10px;
-  font-size: .8rem;
-  color: var(--color-black-8);
+const ItemArrow = styled.span`
 `
 // const ButtonContainer = styled.div`
 //   display: flex;
@@ -139,6 +140,7 @@ function Directory() {
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
+      setSelectedItems([])
       fetchDirectoryTree()
     }
   }
@@ -188,6 +190,14 @@ function Directory() {
             dataProvider={new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({ ...item, data }))}
             getItemTitle={item => item.data}
             onSelectItems={onSelectItems}
+            renderItemArrow={({ item, context }) => item.isFolder
+              ? <ItemArrow
+                {...context.arrowProps}
+                className='rct-tree-item-arrow'
+                onClick={() => context.toggleExpandedState()}
+              >
+                {context.isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+              </ItemArrow> : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>}
             viewState={{
               'tree-1': {
                 selectedItems,
@@ -198,6 +208,7 @@ function Directory() {
           </UncontrolledTreeEnvironment>
         }</>)}
       </TreeContainer>
+      
       {/* <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
         <Button onClick={selectAllItems}>Select All</Button>
