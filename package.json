@@ -27,7 +27,7 @@
   "devDependencies": {
     "prettier": "^3.3.3"
   },
-  "homepage": "https://weacle.com/speed",
+  "homepage": "https://speed.weacle.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atweacle/speed.git"
