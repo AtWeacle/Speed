@@ -3,6 +3,7 @@ import { anthropic } from '@weacle/speed-node-server/src/llms/anthropic/client'
 type GetCompletionParams = {
   callback: (chunk: { content?: string | null, finishReason: CompletionFinishReason }) => void
   // maxToken?: number
+  model?: string
   prompt: string
   // responseFormat?: { type: 'text' | 'json_object' }
   systemPrompt?: string
@@ -21,6 +22,7 @@ type ChatCompletionResponse = {
 export default async function stream({
   callback,
   // maxToken,
+  model = 'claude-3-5-sonnet-20240620',
   prompt,
   // responseFormat,
   temperature = 0,
@@ -33,7 +35,7 @@ export default async function stream({
         role: 'user',
         content: prompt,
       }],
-      model: 'claude-3-5-sonnet-20240620',
+      model,
       max_tokens: 4096,
       temperature,
     }).on('text', (text) => {

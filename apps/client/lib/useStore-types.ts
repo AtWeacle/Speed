@@ -1,5 +1,6 @@
 import type {
   ErrorsType,
+  LllModel,
   Message,
 } from '@weacle/speed-lib/types'
 
@@ -27,6 +28,9 @@ export type useStoreState = {
 
   prompt: string
   setPrompt: (prompt: string) => void
+
+  promptModel: LllModel
+  setPromptModel: (model: LllModel) => void
 
   systemPrompt: string
   setSystemPrompt: (systemPrompt: string) => void

@@ -55,6 +55,12 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 
+  promptModel: {
+    vendor: 'anthropic',
+    name: 'claude-3-5-sonnet-20240620',
+  },
+  setPromptModel: (model) => set(() => ({ promptModel: model })),
+
   systemPrompt: 'You are an experienced software engineer. You write code.',
   setSystemPrompt: (systemPrompt) => set(() => ({ systemPrompt })),
 
@@ -69,6 +75,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   storage: createJSONStorage(() => localStorage),
   partialize: (state) => ({
     directoryPanelOpened: state.directoryPanelOpened,
+    promptModel: state.promptModel,
     systemPrompt: state.systemPrompt,
   }),
 }))

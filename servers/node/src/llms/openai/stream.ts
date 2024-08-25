@@ -9,6 +9,7 @@ import {
 type GetCompletionParams = {
   callback: (chunk: { content?: string | null, finishReason: CompletionFinishReason }) => void
   maxToken?: number
+  model?: string
   prompt: string
   responseFormat?: { type: 'text' | 'json_object' }
   systemPrompt?: string
@@ -21,12 +22,13 @@ type GetCompletionParams = {
 type CompletionFinishReason = 'stop' | 'length' | 'tool_calls' | 'content_filter' | 'function_call' | null
 
 type ChatCompletionResponse = {
-  errors: { completion: string } | null
+  errors: { stream: string } | null
 }
 
 export default async function stream({
   callback,
   maxToken,
+  model = MODELS.gpt_4o,
   prompt,
   responseFormat,
   temperature = 0,
@@ -37,9 +39,9 @@ export default async function stream({
       role: 'system',
       content: systemPrompt,
     } : null
-    
+
     const completion = await openai.chat.completions.create({
-      model: MODELS.gpt_4o,
+      model,
       messages: [
         ...(systemMessage ? [systemMessage] : []), {
         role: 'user',
@@ -75,7 +77,7 @@ export default async function stream({
     }
 
     return {
-      errors: { completion: 'Failed to get chat completion' },
+      errors: { stream: error.message || 'Failed to stream' },
     }
   }
 }

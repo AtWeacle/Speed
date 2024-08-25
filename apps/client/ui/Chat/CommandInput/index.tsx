@@ -167,6 +167,7 @@ export default function CommandInput({
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
   const answering = useStore(state => state.answering)
+  const promptModel = useStore(state => state.promptModel)
   const setAnswering = useStore(state => state.setAnswering)
   const setErrors = useStore(state => state.setErrors)
   const systemPrompt = useStore(state => state.systemPrompt)
@@ -353,7 +354,7 @@ export default function CommandInput({
     sendJsonMessage<SocketMessagePrompt>({
       // audio: audioBase64,
       // messageIdToTranscribe,
-      // role: 'user',
+      model: promptModel,
       text: prompt?.trim(),
       systemPrompt,
       type: 'prompt',
