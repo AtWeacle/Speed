@@ -28,11 +28,11 @@ export default function Nav() {
         href="/"
         role="button"
       >
-        <img src="/speed.svg" alt="speed" />
+        <img src="/speed.svg" alt="speed" style={{ width: '24px', height: '24px' }} />
       </a>
 
       <a
-        style={{ marginLeft: 'auto', height: '24px' }}
+        style={{ marginLeft: 'auto', height: '20px' }}
         title="Star on Github"
         href="https://github.com/AtWeacle/speed"
         target="_blank"
