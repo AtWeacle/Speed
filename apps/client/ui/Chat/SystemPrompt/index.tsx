@@ -32,7 +32,7 @@ export default function SystemPrompt() {
 
         <Dialog.Portal>
           <Dialog.Overlay className="DialogOverlay" />
-          <Dialog.Content className="DialogContent">
+          <Dialog.Content className="DialogContent" aria-describedby={undefined}>
             <Dialog.Title className="DialogTitle">System Prompt</Dialog.Title>
             <textarea className="Textarea" rows={20} id="systemPrompt" defaultValue={systemPrompt} />
             <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }}>

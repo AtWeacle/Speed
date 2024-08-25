@@ -39,7 +39,11 @@ function Settings() {
 
         <Dialog.Portal>
           <Dialog.Overlay className="DialogOverlay" />
-          <Dialog.Content className="DialogContent DialogSettings" style={{ maxWidth: '400px' }}>
+          <Dialog.Content
+            className="DialogContent DialogSettings"
+            style={{ maxWidth: '400px' }}
+            aria-describedby={undefined}
+          >
             <Dialog.Title
               className="DialogTitle"
               style={{ marginBottom: '20px' }}
