@@ -8,6 +8,15 @@ export type Message = {
   text?: string
 }
 
+export type ModelVendor = 'anthropic' | 'openai'
+
+export type Models = {
+  [key in ModelVendor]: {
+    name: string
+    list: string[]
+  }
+}
+
 export type SocketMessageBase = {
   status?: MessageStatus
   text?: string
@@ -30,8 +39,14 @@ export type SocketMessareError = SocketMessageResponse & {
   status: 'error'
 }
 
+export type LllModel = {
+  name: string
+  vendor: string
+}
+
 export type SocketMessagePrompt = SocketMessageBase & {
   audio?: string
+  model: LllModel
   systemPrompt: string
   type: 'prompt'
 }
