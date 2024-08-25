@@ -15,7 +15,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  min-height: calc(100svh - var(--nav-height) - 100px);
   margin: 5px auto;
   width: calc(100% - 10px);
   overflow: hidden auto;

@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import useStore from '@weacle/speed-client/lib/useStore'
 import axios from 'axios'
+import {
+  UncontrolledTreeEnvironment,
+  Tree,
+  StaticTreeDataProvider,
+  type TreeItem,
+  type TreeItemIndex,
+} from 'react-complex-tree'
+import 'react-complex-tree/lib/style-modern.css'
 
 import type {
   DirectoryTree,
   FileSystemItem,
 } from '@weacle/speed-lib/types'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
+import useStore from '@weacle/speed-client/lib/useStore'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-height: calc(100vh - var(--nav-height) - 60px);
   width: 100%;
   background-color: var(--color-black-2);
   border-radius: 0 0 calc(var(--border-radius) * 1.2) 0;
@@ -25,8 +34,6 @@ const DirectoryPath = styled.div`
   height: 34px;
   padding: 5px;
   width: 100%;
-
-  /* label {} */
 
   input {
     width: 100%;
@@ -80,7 +87,6 @@ const Button = styled.button`
   border-radius: calc(var(--border-radius) * .5);
   cursor: pointer;
 `
-
 function Directory() {
   const setProjectDirectory = useStore(state => state.setProjectDirectory)
   const projectDirectory = useStore(state => state.projectDirectory)
@@ -92,8 +98,12 @@ function Directory() {
   const clearSelectedItems = useStore(state => state.clearSelectedItems)
   const selectAllItems = useStore(state => state.selectAllItems)
 
+  const [treeData, setTreeData] = useState({})
+  const [loading, setLoading] = useState(false)
+
   async function fetchDirectoryTree() {
     try {
+      setLoading(true)
       const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
         params: {
           path: projectDirectory,
@@ -101,8 +111,11 @@ function Directory() {
         }
       })
       setDirectoryTree(response.data)
+      setTreeData(convertToTreeData(response.data))
     } catch (error) {
       console.error('Failed to fetch directory tree:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -112,20 +125,22 @@ function Directory() {
     }
   }
 
-  function renderTree(item: FileSystemItem, depth = 0) {
-    const isSelected = selectedItems.some(selectedItem => selectedItem.name === item.name && selectedItem.type === item.type)
+  function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
+    const items: Record<TreeItemIndex, TreeItem<string>> = {}
 
-    return (
-      <TreeItem
-        key={item.name}
-        style={{ paddingLeft: `${depth * 20}px` }}
-        isSelected={isSelected}
-        onClick={() => addSelectedItem(item)}
-      >
-        {item.name} ({item.type})
-        {item.children && item.children.map(child => renderTree(child, depth + 1))}
-      </TreeItem>
-    )
+    function traverse(item: FileSystemItem, parentIndex: TreeItemIndex | null = null) {
+      const index = parentIndex === null ? 'root' : `${parentIndex}/${item.name}`
+      items[index] = {
+        index,
+        isFolder: item.type === 'directory',
+        data: item.name,
+        children: item.children?.map(child => `${index}/${child.name}`)
+      }
+      item.children?.forEach(child => traverse(child, index))
+    }
+
+    traverse(tree)
+    return items
   }
 
   return (
@@ -141,8 +156,21 @@ function Directory() {
           onKeyDown={handleKeyDown}
         />
       </DirectoryPath>
-      <TreeContainer>
-        {directoryTree && renderTree(directoryTree)}
+
+      <TreeContainer >
+        {Object.keys(treeData).length > 0 && (
+          <>{loading ?
+            <div>Loading...</div>
+          : <UncontrolledTreeEnvironment
+            dataProvider={new StaticTreeDataProvider(treeData, (item, data) => ({ ...item, data }))}
+            getItemTitle={item => item.data}
+            viewState={{}}
+          >
+            <div className="rct-dark">
+              <Tree treeId="tree-1" rootItem="root" treeLabel="Directory Tree" />
+            </div>
+          </UncontrolledTreeEnvironment>
+        }</>)}
       </TreeContainer>
       <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
