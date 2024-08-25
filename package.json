@@ -11,7 +11,6 @@
     "clean:turbo": "yarn turbo run clean && rm -rf node_modules && yarn cache clean --all",
     "dev-client": "yarn workspace @weacle/speed-client dev",
     "dev-server": "yarn workspace @weacle/speed-node-server dev",
-    "dev": "turbo run dev --parallel --filter=@weacle/speed-client --filter=@weacle/speed-node-server",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "reset": "yarn clean && yarn install"
