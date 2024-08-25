@@ -12,6 +12,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   directoryPanelOpened: false,
   setDirectoryPanelOpened: (opened) => set(() => ({ directoryPanelOpened: opened })),
 
+  directoryTree: null,
+  setDirectoryTree: (directoryTree) => set(() => ({ directoryTree })),
+
   errors: {},
   setErrors: (errors) => set(() => ({
     errors,
@@ -28,6 +31,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     delete errors[key]
     return { errors }
   }),
+
+  excludedFiles: [],
+  setExcludedFiles: (excludedFiles) => set(() => ({ excludedFiles })),
 
   messages: [],
   activeMessageId: null,
@@ -52,6 +58,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     }),
   })),
 
+  projectDirectory: '',
+  setProjectDirectory: (projectDirectory) => set(() => ({ projectDirectory })),
+
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 
@@ -61,13 +70,21 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   },
   setPromptModel: (model) => set(() => ({ promptModel: model })),
 
+  selectedItems: [],
+  addSelectedItem: (item) => set((state) => ({
+    selectedItems: [...state.selectedItems, item],
+  })),
+  clearSelectedItems: () => set(() => ({ selectedItems: [] })),
+  selectAllItems: () => set((state) => ({
+    selectedItems: state.directoryTree ? [state.directoryTree] : [],
+  })),
+
   systemPrompt: 'You are an experienced software engineer. You write code.',
   setSystemPrompt: (systemPrompt) => set(() => ({ systemPrompt })),
 
   reset: () => set(() => ({
     answering: false,
     errors: {},
-    files: [],
     messages: [],
   })),
 }), {
@@ -75,7 +92,11 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   storage: createJSONStorage(() => localStorage),
   partialize: (state) => ({
     directoryPanelOpened: state.directoryPanelOpened,
+    directoryTree: state.directoryTree,
+    excludedFiles: state.excludedFiles,
+    projectDirectory: state.projectDirectory,
     promptModel: state.promptModel,
+    selectedItems: state.selectedItems,
     systemPrompt: state.systemPrompt,
   }),
 }))
