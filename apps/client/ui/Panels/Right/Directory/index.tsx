@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import {
@@ -26,14 +26,13 @@ const Wrapper = styled.div`
   background-color: var(--color-black-2);
   border-radius: 0 0 calc(var(--border-radius) * 1.2) 0;
 `
-
 const DirectoryPath = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
   height: 34px;
   padding: 5px;
-  width: 100%;
+  width: calc(100% - 10px);
 
   input {
     width: 100%;
@@ -57,48 +56,46 @@ const DirectoryPath = styled.div`
     }
   }
 `
-
 const TreeContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
+  margin: 5px;
+  border-radius: calc(var(--border-radius) * .8);
+  background-color: var(--color-black-1);
 `
-
-const TreeItem = styled.div<{ isSelected: boolean }>`
-  cursor: pointer;
-  padding: 5px;
-  margin: 2px 0;
-  background-color: ${props => props.isSelected ? 'var(--color-deepblue)' : 'transparent'};
-  color: ${props => props.isSelected ? 'white' : 'inherit'};
-  border-radius: calc(var(--border-radius) * .5);
-`
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-`
-
-const Button = styled.button`
+const Title = styled.h6`
+  margin: 0;
   padding: 5px 10px;
-  background-color: var(--color-deepblue);
-  color: white;
-  border: none;
-  border-radius: calc(var(--border-radius) * .5);
-  cursor: pointer;
+  font-size: .8rem;
+  color: var(--color-black-8);
 `
+// const ButtonContainer = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   padding: 10px;
+// `
+// const Button = styled.button`
+//   padding: 5px 10px;
+//   background-color: var(--color-black-4);
+//   color: var(--color-black-8);
+//   font-size: .8rem;
+//   border: none;
+//   border-radius: calc(var(--border-radius) * .5);
+//   cursor: pointer;
+// `
 function Directory() {
   const setProjectDirectory = useStore(state => state.setProjectDirectory)
   const projectDirectory = useStore(state => state.projectDirectory)
-  const directoryTree = useStore(state => state.directoryTree)
+  // const directoryTree = useStore(state => state.directoryTree)
+  const directoryTreeConverted = useStore(state => state.directoryTreeConverted)
+  const setDirectoryTreeConverted = useStore(state => state.setDirectoryTreeConverted)
   const setDirectoryTree = useStore(state => state.setDirectoryTree)
   const excludedFiles = useStore(state => state.excludedFiles)
   const selectedItems = useStore(state => state.selectedItems)
-  const addSelectedItem = useStore(state => state.addSelectedItem)
+  const setSelectedItems = useStore(state => state.setSelectedItems)
   const clearSelectedItems = useStore(state => state.clearSelectedItems)
   const selectAllItems = useStore(state => state.selectAllItems)
 
-  const [treeData, setTreeData] = useState({})
   const [loading, setLoading] = useState(false)
 
   async function fetchDirectoryTree() {
@@ -111,7 +108,7 @@ function Directory() {
         }
       })
       setDirectoryTree(response.data)
-      setTreeData(convertToTreeData(response.data))
+      setDirectoryTreeConverted(convertToTreeData(response.data))
     } catch (error) {
       console.error('Failed to fetch directory tree:', error)
     } finally {
@@ -143,8 +140,13 @@ function Directory() {
     return items
   }
 
+  function onSelectItems(items: TreeItemIndex[]) {
+    setSelectedItems(items as string[])
+  }
+
   return (
     <Wrapper>
+      <Title>Files to includes in the prompt</Title>
       <DirectoryPath>
         <input
           className="Input"
@@ -157,25 +159,28 @@ function Directory() {
         />
       </DirectoryPath>
 
-      <TreeContainer >
-        {Object.keys(treeData).length > 0 && (
+      <TreeContainer className="rct-dark">
+        {directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 && (
           <>{loading ?
             <div>Loading...</div>
           : <UncontrolledTreeEnvironment
-            dataProvider={new StaticTreeDataProvider(treeData, (item, data) => ({ ...item, data }))}
+            dataProvider={new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({ ...item, data }))}
             getItemTitle={item => item.data}
-            viewState={{}}
+            onSelectItems={onSelectItems}
+            viewState={{
+              'tree-1': {
+                selectedItems,
+              },
+            }}
           >
-            <div className="rct-dark">
-              <Tree treeId="tree-1" rootItem="root" treeLabel="Directory Tree" />
-            </div>
+            <Tree treeId="tree-1" rootItem="root" treeLabel="Directory Tree" />
           </UncontrolledTreeEnvironment>
         }</>)}
       </TreeContainer>
-      <ButtonContainer>
+      {/* <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
         <Button onClick={selectAllItems}>Select All</Button>
-      </ButtonContainer>
+      </ButtonContainer> */}
     </Wrapper>
   )
 }

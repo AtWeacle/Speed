@@ -5,6 +5,9 @@ import type {
   LllModel,
   Message,
 } from '@weacle/speed-lib/types'
+import type {
+  DirectoryTreeConverted,
+} from '@weacle/speed-client/lib/types'
 
 
 export type useStoreState = {
@@ -16,6 +19,9 @@ export type useStoreState = {
 
   directoryTree: DirectoryTree | null
   setDirectoryTree: (directoryTree: DirectoryTree) => void
+
+  directoryTreeConverted: DirectoryTreeConverted | null
+  setDirectoryTreeConverted: (directoryTreeConverted: DirectoryTreeConverted) => void
 
   errors: ErrorsType
   setErrors: (errors: ErrorsType) => void
@@ -43,8 +49,9 @@ export type useStoreState = {
   promptModel: LllModel
   setPromptModel: (model: LllModel) => void
 
-  selectedItems: FileSystemItem[]
-  addSelectedItem: (item: FileSystemItem) => void
+  selectedItems: string[]
+  addSelectedItem: (item: string) => void
+  setSelectedItems: (items: string[]) => void
   clearSelectedItems: () => void
   selectAllItems: () => void
 

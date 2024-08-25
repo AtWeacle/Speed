@@ -14,6 +14,8 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
 
   directoryTree: null,
   setDirectoryTree: (directoryTree) => set(() => ({ directoryTree })),
+  directoryTreeConverted: null,
+  setDirectoryTreeConverted: (directoryTreeConverted) => set(() => ({ directoryTreeConverted })),
 
   errors: {},
   setErrors: (errors) => set(() => ({
@@ -74,6 +76,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   addSelectedItem: (item) => set((state) => ({
     selectedItems: [...state.selectedItems, item],
   })),
+  setSelectedItems: (items) => set(() => ({ selectedItems: items })),
   clearSelectedItems: () => set(() => ({ selectedItems: [] })),
   selectAllItems: () => set((state) => ({
     selectedItems: state.directoryTree ? [state.directoryTree] : [],
@@ -93,6 +96,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   partialize: (state) => ({
     directoryPanelOpened: state.directoryPanelOpened,
     directoryTree: state.directoryTree,
+    directoryTreeConverted: state.directoryTreeConverted,
     excludedFiles: state.excludedFiles,
     projectDirectory: state.projectDirectory,
     promptModel: state.promptModel,
