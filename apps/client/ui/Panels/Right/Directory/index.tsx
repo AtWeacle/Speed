@@ -90,6 +90,8 @@ const TreeContainer = styled.div`
   }
 `
 const ItemArrow = styled.span`
+  display: flex;
+  align-items: center;
 `
 // const ButtonContainer = styled.div`
 //   display: flex;
@@ -208,7 +210,7 @@ function Directory() {
           </UncontrolledTreeEnvironment>
         }</>)}
       </TreeContainer>
-      
+
       {/* <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
         <Button onClick={selectAllItems}>Select All</Button>
