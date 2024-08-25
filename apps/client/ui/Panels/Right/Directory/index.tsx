@@ -92,16 +92,6 @@ function Directory() {
   const clearSelectedItems = useStore(state => state.clearSelectedItems)
   const selectAllItems = useStore(state => state.selectAllItems)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (projectDirectory) {
-        fetchDirectoryTree()
-      }
-    }, 1000)
-
-    return () => clearTimeout(timer)
-  }, [projectDirectory])
-
   async function fetchDirectoryTree() {
     try {
       const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
@@ -113,6 +103,12 @@ function Directory() {
       setDirectoryTree(response.data)
     } catch (error) {
       console.error('Failed to fetch directory tree:', error)
+    }
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      fetchDirectoryTree()
     }
   }
 
@@ -142,6 +138,7 @@ function Directory() {
           placeholder="Enter project absolute path"
           defaultValue={projectDirectory}
           onChange={e => setProjectDirectory(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </DirectoryPath>
       <TreeContainer>
