@@ -28,12 +28,15 @@ const Wrapper = styled.div`
   word-wrap: break-word;
 
   [data-theme="dark"] & {
-    background: var(--color-black-4);
+    background: oklch(from var(--color-black) calc(l + 0.25) c h);
+    outline: 1px solid var(--color-black-4);
+    outline-offset: -1px;
   }
 
   &[data-role="system"] {
     align-self: flex-start;
     background: transparent;
+    outline: none;
   }
 
   &[data-role="user"] {
