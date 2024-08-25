@@ -1,5 +1,13 @@
 export type ErrorsType = Record<string, string>
 
+export type FileSystemItem = {
+  name: string
+  type: 'file' | 'directory'
+  children?: FileSystemItem[]
+}
+
+export type DirectoryTree = FileSystemItem
+
 export type Message = {
   audio?: string
   id: string

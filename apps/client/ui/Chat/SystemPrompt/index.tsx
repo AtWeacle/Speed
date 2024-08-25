@@ -27,7 +27,7 @@ export default function SystemPrompt() {
     <Wrapper>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <button className="Button">System prompt <Maximize2 size={14} strokeWidth={2.3} style={{ marginLeft: '8px'}} /></button>
+          <button className="Button" style={{ fontSize: '.85rem', fontWeight: '600' }}>System prompt <Maximize2 size={14} strokeWidth={2.3} style={{ marginLeft: '8px'}} /></button>
         </Dialog.Trigger>
 
         <Dialog.Portal>
