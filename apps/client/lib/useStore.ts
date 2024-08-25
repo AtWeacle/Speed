@@ -55,6 +55,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 
+  systemPrompt: 'You are an experienced software engineer. You write code.',
+  setSystemPrompt: (systemPrompt) => set(() => ({ systemPrompt })),
+
   reset: () => set(() => ({
     answering: false,
     errors: {},
@@ -64,7 +67,10 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
 }), {
   name: 'main-store',
   storage: createJSONStorage(() => localStorage),
-  partialize: (state) => ({ directoryPanelOpened: state.directoryPanelOpened }),
+  partialize: (state) => ({
+    directoryPanelOpened: state.directoryPanelOpened,
+    systemPrompt: state.systemPrompt,
+  }),
 }))
 
 export default zStore

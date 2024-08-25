@@ -1,9 +1,13 @@
 import styled from 'styled-components'
 
+import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
+
 const Wrapper = styled.div`
   display: flex;
+  align-items: center;
+  padding: 0 10px;
   height: 60px;
-  width: 100%;
+  width: calc(100% - 20px);
   background-color: var(--color-black-2);
   border-radius: 0 calc(var(--border-radius) * 1.2) 0 0;
 `
@@ -11,6 +15,7 @@ const Wrapper = styled.div`
 function Settings() {
   return (
     <Wrapper>
+      <SystemPrompt />
     </Wrapper>
   )
 }

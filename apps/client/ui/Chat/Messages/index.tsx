@@ -6,7 +6,6 @@ import {
 import styled from 'styled-components'
 
 import useStore from '@weacle/speed-client/lib/useStore'
-import { MEDIA } from '@weacle/speed-client/theme/constants'
 
 import Message from '@weacle/speed-client/ui/Chat/Messages/Message'
 import InternetConnectionDetector from '@weacle/speed-client/ui/InternetConnectionDetector'

@@ -32,7 +32,7 @@ export type SocketMessareError = SocketMessageResponse & {
 
 export type SocketMessagePrompt = SocketMessageBase & {
   audio?: string
-  // systemPrompt: string
+  systemPrompt: string
   type: 'prompt'
 }
 

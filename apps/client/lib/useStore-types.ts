@@ -27,6 +27,9 @@ export type useStoreState = {
 
   prompt: string
   setPrompt: (prompt: string) => void
+
+  systemPrompt: string
+  setSystemPrompt: (systemPrompt: string) => void
   
   reset: () => void
 }

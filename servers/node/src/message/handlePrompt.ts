@@ -9,7 +9,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
   try {
     const {
       text,
-      // systemPrompt,
+      systemPrompt,
     } = message
 
     anthropicStream({
@@ -32,10 +32,9 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
           ws.send(JSON.stringify(message))
         }
       },
-      // systemPrompt,
+      systemPrompt,
       prompt: text,
       // prompt: assemblePrompt(prompt),
-      // prompt: getPrompt('Generate the mongoose model of staff'),
     })
 
   } catch (error) {

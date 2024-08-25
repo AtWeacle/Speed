@@ -169,6 +169,7 @@ export default function CommandInput({
   const answering = useStore(state => state.answering)
   const setAnswering = useStore(state => state.setAnswering)
   const setErrors = useStore(state => state.setErrors)
+  const systemPrompt = useStore(state => state.systemPrompt)
 
   const [recording, setRecording] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -354,6 +355,7 @@ export default function CommandInput({
       // messageIdToTranscribe,
       // role: 'user',
       text: prompt?.trim(),
+      systemPrompt,
       type: 'prompt',
     })
   }
