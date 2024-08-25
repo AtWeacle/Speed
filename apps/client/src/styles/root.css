@@ -1,5 +1,5 @@
 :root {
-  font-family: "Noto Sans", sans-serif, Helvetica, Arial, sans-serif;;
+  font-family: "Noto Sans", sans-serif, Helvetica, Arial, sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -34,16 +34,6 @@
   --color-white: oklch(1.00 0.00 0);
   --color-yellow: oklch(0.86 0.18 88.96);
 
-  [data-theme="dark"] {
-    --color-aqua: oklch(0.85 0.14 184.20);
-    /* --color-black: oklch(0.90 0.00 0); */
-    --color-gray: oklch(0.58 0.00 0);
-    --color-green: oklch(0.74 0.19 151.99);
-    --color-greenyellow: oklch(0.88 0.22 127.19);
-    /* --color-white: oklch(0.10 0.00 0); */
-    --color-yellow: oklch(0.86 0.18 88.96);
-  }
-
   --color-black-0: oklch(from var(--color-black) calc(l + .04) c h);
   --color-black-1: oklch(from var(--color-black) calc(l + .08) c h);
   --color-black-2: oklch(from var(--color-black) calc(l + .15) c h);
@@ -58,6 +48,16 @@
 
   --border-radius: 12px;
   --nav-height: 40px;
+}
+
+body[data-theme="dark"] {
+  --color-aqua: oklch(0.85 0.14 184.20);
+  /* --color-black: oklch(0.90 0.00 0); */
+  --color-gray: oklch(0.58 0.00 0);
+  --color-green: oklch(0.74 0.19 151.99);
+  --color-greenyellow: oklch(0.88 0.22 127.19);
+  /* --color-white: oklch(0.10 0.00 0); */
+  --color-yellow: oklch(0.86 0.18 88.96);
 }
 
 a {
