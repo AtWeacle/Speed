@@ -6,13 +6,54 @@ import {
 } from 'lucide-react'
 
 import useStore from '@weacle/speed-client/lib/useStore'
-import './styles.css'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
   width: calc(100% - 10px);
+`
+
+const DialogContent = styled(Dialog.Content)`
+  .Textarea#systemPrompt {
+    width: calc(100% - 20px);
+    margin: 15px 0 0;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    font-size: .9rem;
+    line-height: 1.3;
+    color: var(--color-black-9);
+    border: 1px solid var(--color-black-5);
+    resize: vertical  ;
+  }
+
+  .Textarea#systemPrompt:focus {
+    outline: 2px solid var(--color-deepblue);
+  }
+
+  @keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes contentShow {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
 `
 export default function SystemPrompt() {
   const setSystemPrompt = useStore(state => state.setSystemPrompt)
@@ -32,7 +73,7 @@ export default function SystemPrompt() {
 
         <Dialog.Portal>
           <Dialog.Overlay className="DialogOverlay" />
-          <Dialog.Content className="DialogContent" aria-describedby={undefined}>
+          <DialogContent className="DialogContent" aria-describedby={undefined}>
             <Dialog.Title className="DialogTitle">System Prompt</Dialog.Title>
             <textarea className="Textarea" rows={20} id="systemPrompt" defaultValue={systemPrompt} />
             <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }}>
@@ -45,7 +86,7 @@ export default function SystemPrompt() {
                 <X size={24} />
               </button>
             </Dialog.Close>
-          </Dialog.Content>
+          </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
     </Wrapper>
