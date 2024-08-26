@@ -72,8 +72,8 @@ const DirectoryPath = styled.div`
 const TreeContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  margin: 0 5px;
   border-radius: calc(var(--border-radius) * .8) calc(var(--border-radius) * .8) 0 0;
+  margin: 0 5px;
   background-color: var(--color-black-1);
 
   --rct-bar-color: var(--color-deepblue);
@@ -238,23 +238,24 @@ function Directory() {
         }</>)}
       </TreeContainer>
 
-      {selectedItems.length > 0 ? (
         <SelectedItems>
           <Title>Selection</Title>
 
-          <SelectedItemsList>
-            {selectedItems.map((item, index) => (
-              <SelectedItem key={index}>
-                {isDirectory(item)
-                  ? <Folder color="var(--color-black-8)" size={12} />
-                  : <FileText color="var(--color-black-8)"  size={12} />
-                }
-                {item.replace('root/', '')}
-              </SelectedItem>
-            ))}
-          </SelectedItemsList>
+          {selectedItems.length > 0 ? (
+            <SelectedItemsList>
+              {selectedItems.map((item, index) => (
+                <SelectedItem key={index}>
+                  {isDirectory(item)
+                    ? <Folder color="var(--color-black-8)" size={12} />
+                    : <FileText color="var(--color-black-8)"  size={12} />
+                  }
+                  {item.replace('root/', '')}
+                </SelectedItem>
+              ))}
+            </SelectedItemsList>
+          ) : null}
         </SelectedItems>
-      ) : null}
+      
 
       {/* <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
