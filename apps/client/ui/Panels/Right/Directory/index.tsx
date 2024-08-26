@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import {
@@ -133,11 +133,9 @@ const SelectedItem = styled.li`
 function Directory() {
   const setProjectDirectory = useStore(state => state.setProjectDirectory)
   const projectDirectory = useStore(state => state.projectDirectory)
-  // const directoryTree = useStore(state => state.directoryTree)
   const directoryTreeConverted = useStore(state => state.directoryTreeConverted)
   const setDirectoryTreeConverted = useStore(state => state.setDirectoryTreeConverted)
   const setDirectoryTree = useStore(state => state.setDirectoryTree)
-  const excludedFiles = useStore(state => state.excludedFiles)
   const selectedItems = useStore(state => state.selectedItems)
   const setSelectedItems = useStore(state => state.setSelectedItems)
   // const clearSelectedItems = useStore(state => state.clearSelectedItems)
@@ -145,17 +143,41 @@ function Directory() {
 
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    function handleRefetchEvent() {
+      fetchDirectoryTree()
+    }
+
+    document.addEventListener('we.directoryTree.refetch', handleRefetchEvent)
+
+    return () => {
+      document.removeEventListener('we.directoryTree.refetch', handleRefetchEvent)
+    }
+  }, [])
+
   async function fetchDirectoryTree() {
+    const {
+      projectDirectory,
+      filesToInclude,
+      filesToExclude,
+      pathsToExclude,
+    } = useStore.getState()
+
     try {
       setLoading(true)
+
       const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
         params: {
-          path: projectDirectory,
-          excludes: excludedFiles.join(',')
+          directory: projectDirectory,
+          filesToExclude,
+          filesToInclude,
+          pathsToExclude,
         }
       })
+
       setDirectoryTree(response.data)
       setDirectoryTreeConverted(convertToTreeData(response.data))
+
     } catch (error) {
       console.error('Failed to fetch directory tree:', error)
     } finally {

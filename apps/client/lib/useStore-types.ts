@@ -28,8 +28,11 @@ export type useStoreState = {
   clearErrors: () => void
   removeError: (key: string) => void
 
-  excludedFiles: string[]
-  setExcludedFiles: (excludedFiles: string[]) => void
+  filesToExclude: string
+  setFilesToExclude: (filesToExclude: string) => void
+
+  filesToInclude: string
+  setFilesToInclude: (filesToInclude: string) => void
 
   messages: Message[]
   activeMessageId: string | null
@@ -40,6 +43,9 @@ export type useStoreState = {
   getActiveMessage: () => Message | undefined
   setActiveMessageId: (messageId: string) => void
   updateMessage: (messageId: string, update: Partial<Message>) => void
+
+  pathsToExclude: string[]
+  setPathsToExclude: (pathsToExclude: string[]) => void
 
   projectDirectory: string
   setProjectDirectory: (projectDirectory: string) => void

@@ -121,7 +121,7 @@ const Message: FC<{
   separateFromPrior,
 }) => {
   const systemMessageRef = useRef<HTMLDivElement>(null)
-  const pending = message.status === 'pending'
+  // const pending = message.status === 'pending'
 
   if (message.role === 'system') {
     return (

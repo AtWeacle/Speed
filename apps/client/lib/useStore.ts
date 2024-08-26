@@ -34,8 +34,11 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     return { errors }
   }),
 
-  excludedFiles: [],
-  setExcludedFiles: (excludedFiles) => set(() => ({ excludedFiles })),
+  filesToInclude: '.rs,.js,.ts,.tsx,.css,.json,.html',
+  setFilesToInclude: (filesToInclude) => set(() => ({ filesToInclude })),
+
+  filesToExclude: 'package.json,tsconfig.json,*.d.ts,*.config.js',
+  setFilesToExclude: (filesToExclude) => set(() => ({ filesToExclude })),
 
   messages: [],
   activeMessageId: null,
@@ -62,6 +65,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     }),
   })),
 
+  pathsToExclude: [],
+  setPathsToExclude: (pathsToExclude) => set(() => ({ pathsToExclude })),
+
   projectDirectory: '',
   setProjectDirectory: (projectDirectory) => set(() => ({ projectDirectory })),
 
@@ -81,7 +87,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   setSelectedItems: (items) => set(() => ({ selectedItems: items })),
   clearSelectedItems: () => set(() => ({ selectedItems: [] })),
   selectAllItems: () => set((state) => ({
-    selectedItems: state.directoryTree ? [state.directoryTree] : [],
+    selectedItems: state.directoryTreeConverted ? Object.keys(state.directoryTreeConverted) : [],
   })),
 
   systemPrompt: 'You are an experienced software engineer. You write code.',
@@ -100,6 +106,9 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     directoryTree: state.directoryTree,
     directoryTreeConverted: state.directoryTreeConverted,
     excludedFiles: state.excludedFiles,
+    filesToInclude: state.filesToInclude,
+    filesToExclude: state.filesToExclude,
+    pathsToExclude: state.pathsToExclude,
     projectDirectory: state.projectDirectory,
     promptModel: state.promptModel,
     selectedItems: state.selectedItems,

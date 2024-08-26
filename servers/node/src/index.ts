@@ -40,15 +40,19 @@ wsServer.on('connection', (ws) => {
 })
 
 app.get('/api/directory-tree', (req, res) => {
-  const directoryPath = req.query.path as string
-  const excludes = (req.query.excludes as string || '').split(',')
+  const directoryPath = req.query.directory as string
+  const filesToExclude = req.query.filesToExclude as string
+  const filesToInclude = req.query.filesToInclude as string
+  const pathsToExclude = req.query.pathsToExclude as string[]
+
+  const paths = { filesToExclude, filesToInclude, pathsToExclude }
 
   if (!directoryPath) {
     return res.status(400).json({ error: 'Directory path is required' })
   }
 
   try {
-    const tree: DirectoryTree = getDirectoryTree(directoryPath, excludes)
+    const tree: DirectoryTree = getDirectoryTree(directoryPath, directoryPath, paths)
     res.json(tree)
   } catch (error) {
     res.status(500).json({ error: 'Failed to get directory tree' })

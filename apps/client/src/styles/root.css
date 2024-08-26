@@ -106,9 +106,20 @@ input {
   all: unset;
 }
 
-.Textarea {
+input, textarea {
+  border: 1px solid transparent;
+  padding: 8px;
+  font-size: .85rem;
+  border-radius: calc(var(--border-radius) * .8);
+}
+
+input:focus, textarea:focus {
+  border: 1px solid var(--color-deepblue);
+  outline: 2px solid oklch(from var(--color-deepblue) l c h / 0.5);
+}
+
+textarea {
   font-family: "Noto Sans", sans-serif, Helvetica, Arial, sans-serif;
-  font-weight: 400;
 }
 
 [data-component="loader-spinner-wrapper"] {
