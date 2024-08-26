@@ -37,7 +37,7 @@
   --color-black-0: oklch(from var(--color-black) calc(l + .04) c h);
   --color-black-1: oklch(from var(--color-black) calc(l + .08) c h);
   --color-black-2: oklch(from var(--color-black) calc(l + .15) c h);
-  --color-black-3: oklch(from var(--color-black) calc(l + .2) c h);
+  --color-black-3: oklch(from var(--color-black) calc(l + .22) c h);
   --color-black-4: oklch(from var(--color-black) calc(l + .3) c h);
   --color-black-5: oklch(from var(--color-black) calc(l + .4) c h);
   --color-black-6: oklch(from var(--color-black) calc(l + .5) c h);

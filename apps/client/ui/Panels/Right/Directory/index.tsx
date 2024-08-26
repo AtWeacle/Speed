@@ -12,6 +12,8 @@ import 'react-complex-tree/lib/style-modern.css'
 import {
   ChevronDown,
   ChevronRight,
+  FileText,
+  Folder,
 } from 'lucide-react'
 
 import type {
@@ -24,6 +26,7 @@ import useStore from '@weacle/speed-client/lib/useStore'
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 5px;
   height: 100%;
   max-height: calc(100vh - var(--nav-height) - 60px);
   width: 100%;
@@ -40,8 +43,8 @@ const DirectoryPath = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 34px;
-  padding: 5px;
+  height: 30px;
+  padding: 0 5px;
   width: calc(100% - 10px);
 
   input {
@@ -69,8 +72,8 @@ const DirectoryPath = styled.div`
 const TreeContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  margin: 5px;
-  border-radius: calc(var(--border-radius) * .8);
+  margin: 0 5px;
+  border-radius: calc(var(--border-radius) * .8) calc(var(--border-radius) * .8) 0 0;
   background-color: var(--color-black-1);
 
   --rct-bar-color: var(--color-deepblue);
@@ -92,6 +95,26 @@ const TreeContainer = styled.div`
 const ItemArrow = styled.span`
   display: flex;
   align-items: center;
+`
+const SelectedItems = styled.div`
+  margin: 0 5px 5px;
+  background-color: var(--color-black-3);
+  border-radius: 0 0 calc(var(--border-radius) * .8) calc(var(--border-radius) * .8);
+`
+const SelectedItemsList = styled.ul`
+  list-style-type: none;
+  padding: 0 5px;
+  margin: 0 5px 5px;
+  max-height: 150px;
+  overflow-y: auto;
+`
+const SelectedItem = styled.li`
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--color-black-8);
+  margin-bottom: 5px;
+  gap: 5px;
 `
 // const ButtonContainer = styled.div`
 //   display: flex;
@@ -169,6 +192,10 @@ function Directory() {
     setSelectedItems(items as string[])
   }
 
+  function isDirectory(item: string): boolean {
+    return directoryTreeConverted?.[item]?.isFolder || false
+  }
+
   return (
     <Wrapper>
       <Title>Files to includes in the prompt</Title>
@@ -210,6 +237,24 @@ function Directory() {
           </UncontrolledTreeEnvironment>
         }</>)}
       </TreeContainer>
+
+      {selectedItems.length > 0 ? (
+        <SelectedItems>
+          <Title>Selection</Title>
+
+          <SelectedItemsList>
+            {selectedItems.map((item, index) => (
+              <SelectedItem key={index}>
+                {isDirectory(item)
+                  ? <Folder color="var(--color-black-8)" size={12} />
+                  : <FileText color="var(--color-black-8)"  size={12} />
+                }
+                {item.replace('root/', '')}
+              </SelectedItem>
+            ))}
+          </SelectedItemsList>
+        </SelectedItems>
+      ) : null}
 
       {/* <ButtonContainer>
         <Button onClick={clearSelectedItems}>Deselect All</Button>
