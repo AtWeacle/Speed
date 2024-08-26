@@ -9,6 +9,8 @@ import type {
 export default function getDirectoryTree(dirPath: string, excludes: string[]): FileSystemItem {
   const name = path.basename(dirPath)
   const stats = fs.statSync(dirPath)
+  const defaultExcludes = ['node_modules', '.git', '.DS_Store', '.vscode']
+  const allExcludes = [...defaultExcludes, ...excludes]
 
   if (!stats.isDirectory()) {
     return { name, type: 'file' }
@@ -18,7 +20,7 @@ export default function getDirectoryTree(dirPath: string, excludes: string[]): F
   const entries = fs.readdirSync(dirPath)
 
   for (const entry of entries) {
-    if (excludes.some(exclude => {
+    if (allExcludes.some(exclude => {
       if (exclude.startsWith('*')) {
         return entry.endsWith(exclude.slice(1))
       }
@@ -28,7 +30,7 @@ export default function getDirectoryTree(dirPath: string, excludes: string[]): F
     }
 
     const fullPath = path.join(dirPath, entry)
-    children.push(getDirectoryTree(fullPath, excludes))
+    children.push(getDirectoryTree(fullPath, allExcludes))
   }
 
   return {
