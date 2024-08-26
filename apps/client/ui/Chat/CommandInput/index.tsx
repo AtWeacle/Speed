@@ -109,10 +109,10 @@ const InputWrapper = styled.div`
       width: 32px;
     }
   }
-
+/* 
   svg {
     stroke: var(--color-black-9);
-  }
+  } */
 
   .command-input {
     min-height: 24px;
@@ -464,8 +464,17 @@ export default function CommandInput({
           onBlur={onBlur}
           disabled={answering}
         />
+
+        <Button
+          onClick={onClickSend}
+          appearance="text"
+          title="Send"
+          style={{ padding: '0', width: '38px' }}
+        >
+          <CircleArrowUp size={38} strokeWidth={1.4} color={prompt.length ? 'var(--color-black-9)' : 'var(--color-black-6)'} />
+        </Button>
         
-        {!recording
+        {/* {!recording
           ? prompt.length > 0 ? <Button
             onClick={onClickSend}
             appearance="text"
@@ -501,7 +510,7 @@ export default function CommandInput({
               <span className="circle-marker"></span>
             </Button>
           </>
-        }
+        } */}
 
         {MAX_PROMPT_LENGTH && showCounter ?
           <Counter
