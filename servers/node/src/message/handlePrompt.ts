@@ -1,5 +1,6 @@
 import { WebSocket } from 'ws'
 import path from 'path'
+import fs from 'fs'
 
 import anthropicStream from '@weacle/speed-node-server/src/llms/anthropic/stream'
 import openaiStream from '@weacle/speed-node-server/src/llms/openai/stream'
@@ -8,7 +9,9 @@ import type { SocketMessagePrompt, SocketMessareError, SocketMessageResponse } f
 export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt) {
   try {
     const {
+      directory,
       model,
+      selectedItems,
       text,
       systemPrompt,
     } = message
@@ -17,54 +20,52 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
       anthropicStream({
         callback: ({ content, finishReason }) => {
           if (content) {
-            const message: SocketMessageResponse = {
+            const response: SocketMessageResponse = {
               status: 'pending',
               text: content,
             }
 
-            ws.send(JSON.stringify(message))
+            ws.send(JSON.stringify(response))
           }
 
           if (finishReason) {
-            const message: SocketMessageResponse = {
+            const response: SocketMessageResponse = {
               status: 'done',
               text: '',
             }
 
-            ws.send(JSON.stringify(message))
+            ws.send(JSON.stringify(response))
           }
         },
         model: model.name,
-        prompt: text,
         systemPrompt,
-        // prompt: assemblePrompt(prompt),
+        prompt: assemblePrompt(text, directory, selectedItems),
       })
 
     } else if (model.vendor === 'openai') {
       openaiStream({
         callback: ({ content, finishReason }) => {
           if (content) {
-            const message: SocketMessageResponse = {
+            const response: SocketMessageResponse = {
               status: 'pending',
               text: content,
             }
 
-            ws.send(JSON.stringify(message))
+            ws.send(JSON.stringify(response))
           }
 
           if (finishReason) {
-            const message: SocketMessageResponse = {
+            const response: SocketMessageResponse = {
               status: 'done',
               text: '',
             }
 
-            ws.send(JSON.stringify(message))
+            ws.send(JSON.stringify(response))
           }
         },
         systemPrompt,
-        prompt: text,
         model: model.name,
-        // prompt: assemblePrompt(prompt),
+        prompt: assemblePrompt(text, directory, selectedItems),
       })
     }
 
@@ -77,3 +78,103 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
     ws.send(JSON.stringify(errorMessage))
   }
 }
+
+function assemblePrompt(userPrompt: string, directory: string, selectedItems: string[]) {
+  const filesContents = assembleFiles(directory, selectedItems)
+  return getPrompt(userPrompt, filesContents)
+}
+
+function getPrompt(userPrompt: string, filesContents: string) {
+  return `
+From the given user prompt, generate the relevant code based on the existing code.
+
+User prompt: ${userPrompt}
+
+A part of the existing code is provided below.
+List of some existing files and their contents:
+${filesContents}
+`
+}
+
+function assembleFiles(directory: string, selectedItems: string[]): string {
+  const paths = selectedItems.map(item => path.join(directory, item.replace('root', '')))
+
+  const filesContent = paths.map(path => {
+    const stat = fs.statSync(path)
+    if (stat.isDirectory()) {
+      return readFilesInPath(directory, path)
+    } else {
+      return readFileContent(directory, path)
+    }
+  }).join('\n\n')
+
+  return filesContent
+}
+
+function readFilesInPath(directory: string, dirPath: string) {
+  let structuredContent = ''
+
+  function readDirectory(dirPath: string) {
+    const files = fs.readdirSync(dirPath)
+
+    // if (pathToExclude.includes(dirPath)
+    //   || otherPathToExclude.includes(dirPath)
+    // ) {
+    //   return
+    // }
+    
+    files.forEach(file => {
+      if (path.extname(file) === '.json'
+        || file === 'node_modules'
+        || file === '.next'
+        || file === '.env'
+      ) {
+        return
+      }
+
+      const filePath = path.join(dirPath, file)
+      const stat = fs.statSync(filePath)
+      
+      if (stat.isDirectory()) {
+        if (file !== 'node_modules') {
+          readDirectory(filePath)
+        }
+      } else {
+        const fileContent = fs.readFileSync(filePath, 'utf8')
+        const relativePath = path.relative(directory, filePath)
+        // structuredContent += `### File used on ${device} side ###\n`
+        structuredContent += `### File: ${relativePath} ###\n\n${fileContent}\n\n`
+      }
+    })
+  }
+
+  readDirectory(dirPath)
+  return structuredContent
+}
+
+function readFileContent(directory: string, filePath: string) {
+  let structuredContent = ''
+
+  try {
+    const stat = fs.statSync(filePath)
+
+    if (stat.isDirectory()) {
+      throw new Error('The provided path is a directory, not a file.')
+    } else {
+      const fileContent = fs.readFileSync(filePath, 'utf8')
+      const relativePath = path.relative(directory, filePath)
+      // structuredContent += `### File used on ${device} side ###\n`
+      structuredContent += `### File: ${relativePath} ###\n\n${fileContent}\n\n`
+    }
+  } catch (error) {
+    console.error(`Error reading file at ${filePath}:`, error.message)
+  }
+
+  return structuredContent
+}
+
+// function removeComments(content: string): string {
+//   const lines = content.split('\n')
+//   const uncommentedLines = lines.filter(line => !line.trim().startsWith('//'))
+//   return uncommentedLines.join('\n')
+// }

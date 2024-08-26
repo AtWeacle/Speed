@@ -54,7 +54,9 @@ export type LllModel = {
 
 export type SocketMessagePrompt = SocketMessageBase & {
   audio?: string
+  directory: string
   model: LllModel
+  selectedItems: string[]
   systemPrompt: string
   type: 'prompt'
 }

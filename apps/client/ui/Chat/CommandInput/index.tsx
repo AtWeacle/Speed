@@ -164,7 +164,6 @@ export default function CommandInput({
 }) {
   const setActiveMessageId = useStore(state => state.setActiveMessageId)
   const addMessage = useStore(state => state.addMessage) as (message: { id: string, audio?: string, text?: string, role: string }) => void;
-  const clearMessages = useStore(state => state.clearMessages)
   const prompt = useStore(state => state.prompt)
   const setPrompt = useStore(state => state.setPrompt)
   const answering = useStore(state => state.answering)
@@ -330,7 +329,8 @@ export default function CommandInput({
     prompt?: string
   }) {
     if (answering) return
-    clearMessages()
+
+    const { clearMessages, projectDirectory, selectedItems } = useStore.getState()
 
     const audioUrl = audio ? URL.createObjectURL(audio) : undefined
 
@@ -356,9 +356,11 @@ export default function CommandInput({
     sendJsonMessage<SocketMessagePrompt>({
       // audio: audioBase64,
       // messageIdToTranscribe,
+      directory: projectDirectory,
       model: promptModel,
-      text: prompt?.trim(),
+      selectedItems,
       systemPrompt,
+      text: prompt?.trim(),
       type: 'prompt',
     })
   }
