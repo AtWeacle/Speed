@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   position: relative;
   width: calc(100% - 10px);
 `
-
 const DialogContent = styled(Dialog.Content)`
   .Textarea#systemPrompt {
     width: calc(100% - 20px);
@@ -73,7 +72,8 @@ export default function SystemPrompt() {
 
         <Dialog.Portal>
           <Dialog.Overlay className="DialogOverlay" />
-          <DialogContent className="DialogContent" aria-describedby={undefined}>
+          <DialogContent className="DialogContent">
+            <Dialog.Description style={{ display: 'none' }}>System prompt</Dialog.Description>
             <Dialog.Title className="DialogTitle">System Prompt</Dialog.Title>
             <textarea className="Textarea" rows={20} id="systemPrompt" defaultValue={systemPrompt} />
             <div style={{ display: 'flex', marginTop: 25, justifyContent: 'flex-end' }}>
