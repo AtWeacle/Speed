@@ -90,7 +90,7 @@ From the given user prompt, generate the relevant code based on the existing cod
 
 User prompt: ${userPrompt}
 
-A part of the existing code is provided below.
+Part of the existing code is provided below.
 List of some existing files and their contents:
 ${filesContents}
 `

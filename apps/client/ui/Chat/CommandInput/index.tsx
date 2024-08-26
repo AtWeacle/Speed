@@ -183,8 +183,9 @@ export default function CommandInput({
   const [focused, setFocused] = useState(false)
   const valid = prompt.length <= MAX_PROMPT_LENGTH
 
-  const { sendJsonMessage, lastMessage, getWebSocket } = useWebSocket(WS_URL, {
+  const { sendJsonMessage } = useWebSocket(WS_URL, {
     share: true,
+    shouldReconnect: () => true,
     onMessage: (event) => {
       const { data: rawData } = event
 
@@ -332,6 +333,7 @@ export default function CommandInput({
 
     const { clearMessages, projectDirectory, selectedItems } = useStore.getState()
 
+    clearMessages()
     const audioUrl = audio ? URL.createObjectURL(audio) : undefined
 
     const userMessageId = nanoid()
@@ -350,7 +352,6 @@ export default function CommandInput({
 
     // const audioBase64 = audio ? await convertBlobToBase64(audio) : null
     // const messageIdToTranscribe = audio ? userMessageId : undefined
-
     setAnswering(true)
 
     sendJsonMessage<SocketMessagePrompt>({
