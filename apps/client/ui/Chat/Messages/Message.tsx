@@ -11,7 +11,7 @@ import type {
 } from '@weacle/speed-lib/types'
 
 import CopyButton from '@weacle/speed-client/ui/Chat/Messages/CopyButton'
-import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
+// import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
 import customStyle from '@weacle/speed-client/ui/Chat/Messages/syntaxHighlighterStyles/hljs/custom'
 
 const Wrapper = styled.div`
@@ -130,14 +130,6 @@ const Message: FC<{
         data-role={message.role}
         ref={systemMessageRef}
       >
-        {pending ?
-          <LoadingIndicator
-            color="var(--color-black)"
-            size={24}
-            noWrapper
-            strokeWidth={8}
-          />
-        : null}
       
         {message.text ?
           <div className="message-text">
@@ -183,6 +175,14 @@ const Message: FC<{
             </Markdown>
           </div>
         : null}
+
+        {/* {pending ?
+          <LoadingIndicator
+            size={24}
+            // noWrapper
+            strokeWidth={5}
+          />
+        : null} */}
       </Wrapper>
     )
   }

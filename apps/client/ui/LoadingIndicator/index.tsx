@@ -20,7 +20,7 @@ const LoadingIndicator: FC<LoaderProps> = ({ noWrapper = false, ...props }) => {
 }
 
 function Loader({
-  color = 'var(--color-deepblack)',
+  color = 'var(--color-fore)',
   loaderStyle = {},
   size = '54px',
   strokeWidth = 3,
@@ -34,7 +34,6 @@ function Loader({
         height={size}
         width={size}
         viewBox="0 0 50 50"
-        className="loader-spinner"
       >
         <circle
           strokeWidth={strokeWidth}
