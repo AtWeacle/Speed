@@ -4,12 +4,13 @@ import fs from 'fs'
 
 import anthropicStream from '@weacle/speed-node-server/src/llms/anthropic/stream'
 import openaiStream from '@weacle/speed-node-server/src/llms/openai/stream'
-import type { SocketMessagePrompt, SocketMessareError, SocketMessageResponse } from '@weacle/speed-lib/types'
+import type { SocketMessagePrompt, SocketMessareError, SocketMessagePromptResponse } from '@weacle/speed-lib/types'
 
 export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt) {
   try {
     const {
       directory,
+      messageId,
       model,
       selectedItems,
       text,
@@ -20,21 +21,15 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
       anthropicStream({
         callback: ({ content, finishReason }) => {
           if (content) {
-            const response: SocketMessageResponse = {
+            sendResponse({
+              messageId,
               status: 'pending',
               text: content,
-            }
-
-            ws.send(JSON.stringify(response))
+            })
           }
 
           if (finishReason) {
-            const response: SocketMessageResponse = {
-              status: 'done',
-              text: '',
-            }
-
-            ws.send(JSON.stringify(response))
+            endResponse()
           }
         },
         model: model.name,
@@ -46,27 +41,35 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
       openaiStream({
         callback: ({ content, finishReason }) => {
           if (content) {
-            const response: SocketMessageResponse = {
+            sendResponse({
+              messageId,
               status: 'pending',
               text: content,
-            }
-
-            ws.send(JSON.stringify(response))
+            })
           }
 
           if (finishReason) {
-            const response: SocketMessageResponse = {
-              status: 'done',
-              text: '',
-            }
-
-            ws.send(JSON.stringify(response))
+            endResponse()
           }
         },
         systemPrompt,
         model: model.name,
         prompt: assemblePrompt(text, directory, selectedItems),
       })
+    }
+
+    function sendResponse(response: SocketMessagePromptResponse) {
+      ws.send(JSON.stringify(response))
+    }
+
+    function endResponse() {
+      const response: SocketMessagePromptResponse = {
+        messageId,
+        status: 'done',
+        text: '',
+      }
+
+      ws.send(JSON.stringify(response))
     }
 
   } catch (error) {

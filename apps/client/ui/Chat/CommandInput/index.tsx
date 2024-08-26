@@ -5,9 +5,10 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import {
-  Mic,
   CircleArrowUp,
-  Trash2,
+  CircleStop,
+  // Mic,
+  // Trash2,
 } from 'lucide-react'
 import useWebSocket from 'react-use-websocket'
 
@@ -23,7 +24,7 @@ import type {
 
 import Button from '@weacle/speed-client/ui/Button'
 import Textarea from '@weacle/speed-client/ui/Textarea'
-import CircleWithAnimatedBorder from '@weacle/speed-client/ui/Recording/CircleWithAnimatedBorder'
+// import CircleWithAnimatedBorder from '@weacle/speed-client/ui/Recording/CircleWithAnimatedBorder'
 
 const AUDIO_DURATION = 60
 const MAX_PROMPT_LENGTH = 20000
@@ -196,7 +197,14 @@ export default function CommandInput({
 
       try {
         const data = JSON.parse(rawData)
-        const { activeMessageId, updateMessage } = useStore.getState()
+        const { activeMessageId, getMessage, updateMessage } = useStore.getState()
+
+        const message = data.messageId ? getMessage(data.messageId) : null
+
+        if (!message || message?.status === 'done') {
+          setAnswering(false)
+          return
+        }
 
         if (data.text) {
           const { text } = data
@@ -260,14 +268,6 @@ export default function CommandInput({
     setPrompt(prompt ?? '')
   }
 
-  function onClickSend(event: React.SyntheticEvent<HTMLButtonElement | HTMLAnchorElement>) {
-    sendCommand(prompt)
-    setPrompt('')
-
-    const inputElement = document.querySelector('.command-input') as HTMLTextAreaElement
-    inputElement.style.height = 'auto'
-  }
-
   function onKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     const inputElement = event.target as HTMLInputElement
 
@@ -308,8 +308,8 @@ export default function CommandInput({
   }
 
   function streamResponse(text: string, status: MessageStatus = 'pending') {
-    const { activeMessageId, messages, updateMessage } = useStore.getState()
-    const activeMessage = messages.find(message => message.id === activeMessageId)
+    const { getActiveMessage, updateMessage } = useStore.getState()
+    const activeMessage = getActiveMessage()
     if (!activeMessage) return
 
     const newText = (activeMessage.text || '') + text
@@ -358,6 +358,7 @@ export default function CommandInput({
       // audio: audioBase64,
       // messageIdToTranscribe,
       directory: projectDirectory,
+      messageId: systemMessageId,
       model: promptModel,
       selectedItems,
       systemPrompt,
@@ -366,7 +367,23 @@ export default function CommandInput({
     })
   }
 
+  function handleSend(event: React.SyntheticEvent<HTMLButtonElement | HTMLAnchorElement>) {
+    sendCommand(prompt)
+    setPrompt('')
+
+    const inputElement = document.querySelector('.command-input') as HTMLTextAreaElement
+    inputElement.style.height = 'auto'
+  }
+
   function handleCancel() {
+    setAnswering(false)
+    const { getActiveMessage, updateMessage } = useStore.getState()
+    const activeMessage = getActiveMessage()
+    if (!activeMessage) return
+    updateMessage(activeMessage.id, { status: 'done' })
+  }
+
+  function handleCancelRecording() {
     setAnswering(false)
     endRecording(true)
     setErrors({})
@@ -465,18 +482,26 @@ export default function CommandInput({
           disabled={answering}
         />
 
-        <Button
-          onClick={onClickSend}
+        {!answering ? <Button
+          onClick={handleSend}
           appearance="text"
           title="Send"
           style={{ padding: '0', width: '38px' }}
         >
           <CircleArrowUp size={38} strokeWidth={1.4} color={prompt.length ? 'var(--color-black-9)' : 'var(--color-black-6)'} />
         </Button>
+        : <Button
+          onClick={handleCancel}
+          appearance="text"
+          title="Stop"
+          style={{ padding: '0', width: '38px' }}
+        >
+          <CircleStop size={38} strokeWidth={1.4} color={'var(--color-red)'} />
+        </Button>}
         
         {/* {!recording
           ? prompt.length > 0 ? <Button
-            onClick={onClickSend}
+            onClick={handleSend}
             appearance="text"
             title="Send"
             style={{ paddingRight: '7px', paddingLeft: '5px', width: '50px' }}
@@ -492,7 +517,7 @@ export default function CommandInput({
           </Button>
           : <>
             <Button
-              onClick={handleCancel}
+              onClick={handleCancelRecording}
               appearance="text"
               title="Cancel"
               style={{ paddingRight: '5px', paddingLeft: '5px', position: 'relative' }}

@@ -16,6 +16,10 @@ export type Message = {
   text?: string
 }
 
+export type MessageRole = 'system' | 'user'
+export type MessageStatus = 'pending' | 'done' | 'error'
+export type MessageType = 'error' | 'prompt' | 'response'
+
 export type ModelVendor = 'anthropic' | 'openai'
 
 export type Models = {
@@ -34,10 +38,6 @@ export type SocketMessageBase = {
 export type SocketMessage =
   SocketMessagePrompt
 
-export type MessageRole = 'system' | 'user'
-export type MessageStatus = 'pending' | 'done' | 'error'
-export type MessageType = 'error' | 'prompt' | 'response'
-
 export type SocketMessageResponse = {
   text: string
   status: MessageStatus
@@ -45,6 +45,10 @@ export type SocketMessageResponse = {
 
 export type SocketMessareError = SocketMessageResponse & {
   status: 'error'
+}
+
+export type SocketMessagePromptResponse = SocketMessageResponse & {
+  messageId: string
 }
 
 export type LllModel = {
@@ -55,6 +59,7 @@ export type LllModel = {
 export type SocketMessagePrompt = SocketMessageBase & {
   audio?: string
   directory: string
+  messageId: string
   model: LllModel
   selectedItems: string[]
   systemPrompt: string

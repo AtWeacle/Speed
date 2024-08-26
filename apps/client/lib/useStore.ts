@@ -48,6 +48,8 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   clearMessages: () => set(() => ({
     messages: [],
   })),
+  getMessage: (messageId) => get().messages.find((message) => message.id === messageId),
+  getActiveMessage: () => get().messages.find((message) => message.id === get().activeMessageId),
   setActiveMessageId: (messageId) => set((state) => ({
     activeMessageId: messageId,
   })),

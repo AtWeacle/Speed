@@ -1,7 +1,6 @@
 import type {
   DirectoryTree,
   ErrorsType,
-  FileSystemItem,
   LllModel,
   Message,
 } from '@weacle/speed-lib/types'
@@ -37,6 +36,8 @@ export type useStoreState = {
   addMessage: (message: Omit<Message, 'id'> & { id?: string }) => void
   addSystemMessage: (text: string) => void
   clearMessages: () => void
+  getMessage: (messageId: string) => Message | undefined
+  getActiveMessage: () => Message | undefined
   setActiveMessageId: (messageId: string) => void
   updateMessage: (messageId: string, update: Partial<Message>) => void
 
