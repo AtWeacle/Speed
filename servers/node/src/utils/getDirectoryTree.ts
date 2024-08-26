@@ -8,7 +8,7 @@ import type {
 export default function getDirectoryTree(
   rootPath: string,
   dirPath: string,
-  paths: {
+  settings: {
     filesToExclude: string
     filesToInclude: string
     pathsToExclude: string[]
@@ -17,8 +17,8 @@ export default function getDirectoryTree(
   const name = path.basename(dirPath)
   const stats = fs.statSync(dirPath)
   const defaultExcludes = ['node_modules', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
-  const allExcludes = [...defaultExcludes, ...paths.filesToExclude.split(',')]
-  const filesToInclude = paths.filesToInclude.split(',')
+  const allExcludes = [...defaultExcludes, ...settings.filesToExclude.split(',')]
+  const filesToInclude = settings.filesToInclude.split(',')
 
   if (!stats.isDirectory()) {
     return { name, type: 'file' }
@@ -30,11 +30,13 @@ export default function getDirectoryTree(
   for (const entry of entries) {
     const fullPath = path.join(dirPath, entry)
 
-    const excludeThisPath = paths
-      .pathsToExclude.filter(p => !!p)
-      .some(excludePath => {
-        return fullPath.startsWith(path.join(rootPath, excludePath))
-      })
+    const excludeThisPath = !settings.pathsToExclude
+      ? false
+      : settings
+        .pathsToExclude.filter(p => !!p)
+        .some(excludePath => {
+          return fullPath.startsWith(path.join(rootPath, excludePath))
+        })
 
     if (excludeThisPath) {
       continue
@@ -60,7 +62,7 @@ export default function getDirectoryTree(
       continue
     }
 
-    const child = getDirectoryTree(rootPath, fullPath, paths)
+    const child = getDirectoryTree(rootPath, fullPath, settings)
     if (child.type === 'directory' && child.children.length === 0) {
       continue
     }

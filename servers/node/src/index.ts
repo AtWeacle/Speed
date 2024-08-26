@@ -45,17 +45,17 @@ app.get('/api/directory-tree', (req, res) => {
   const filesToInclude = req.query.filesToInclude as string
   const pathsToExclude = req.query.pathsToExclude as string[]
 
-  const paths = { filesToExclude, filesToInclude, pathsToExclude }
+  const settings = { filesToExclude, filesToInclude, pathsToExclude }
 
   if (!directoryPath) {
     return res.status(400).json({ error: 'Directory path is required' })
   }
 
   try {
-    const tree: DirectoryTree = getDirectoryTree(directoryPath, directoryPath, paths)
+    const tree: DirectoryTree = getDirectoryTree(directoryPath, directoryPath, settings)
     res.json(tree)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get directory tree' })
+    res.status(500).json({ error: error.message })
   }
 })
 
