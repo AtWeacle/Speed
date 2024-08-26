@@ -1,3 +1,4 @@
+![Weacle Speed Example](https://weacle.nyc3.cdn.digitaloceanspaces.com/static/github/weacle-speed-example-1.webp)
 
 # Weacle Speed
 
