@@ -331,7 +331,14 @@ export default function CommandInput({
   }) {
     if (answering) return
 
-    const { clearMessages, projectDirectory, selectedItems } = useStore.getState()
+    const {
+      clearMessages,
+      filesToExclude,
+      filesToInclude,
+      pathsToExclude,
+      projectDirectory,
+      selectedItems,
+    } = useStore.getState()
 
     clearMessages()
     const audioUrl = audio ? URL.createObjectURL(audio) : undefined
@@ -361,6 +368,11 @@ export default function CommandInput({
       messageId: systemMessageId,
       model: promptModel,
       selectedItems,
+      settings: {
+        filesToExclude,
+        filesToInclude,
+        pathsToExclude,
+      },
       systemPrompt,
       text: prompt?.trim(),
       type: 'prompt',

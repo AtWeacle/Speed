@@ -56,12 +56,19 @@ export type LllModel = {
   vendor: string
 }
 
+export type PathSettings = {
+  filesToExclude: string
+  filesToInclude: string
+  pathsToExclude: string[]
+}
+
 export type SocketMessagePrompt = SocketMessageBase & {
   audio?: string
   directory: string
   messageId: string
   model: LllModel
   selectedItems: string[]
+  settings: PathSettings
   systemPrompt: string
   type: 'prompt'
 }

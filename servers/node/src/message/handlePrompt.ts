@@ -4,7 +4,14 @@ import fs from 'fs'
 
 import anthropicStream from '@weacle/speed-node-server/src/llms/anthropic/stream'
 import openaiStream from '@weacle/speed-node-server/src/llms/openai/stream'
-import type { SocketMessagePrompt, SocketMessareError, SocketMessagePromptResponse } from '@weacle/speed-lib/types'
+
+import type {
+  PathSettings,
+  SocketMessagePrompt,
+  SocketMessareError,
+  SocketMessagePromptResponse,
+} from '@weacle/speed-lib/types'
+import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
 
 export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt) {
   try {
@@ -14,6 +21,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
       model,
       selectedItems,
       text,
+      settings,
       systemPrompt,
     } = message
 
@@ -34,7 +42,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
         },
         model: model.name,
         systemPrompt,
-        prompt: assemblePrompt(text, directory, selectedItems),
+        prompt: assemblePrompt(text, directory, selectedItems, settings),
       })
 
     } else if (model.vendor === 'openai') {
@@ -54,7 +62,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
         },
         systemPrompt,
         model: model.name,
-        prompt: assemblePrompt(text, directory, selectedItems),
+        prompt: assemblePrompt(text, directory, selectedItems, settings),
       })
     }
 
@@ -82,8 +90,8 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
   }
 }
 
-function assemblePrompt(userPrompt: string, directory: string, selectedItems: string[]) {
-  const filesContents = assembleFiles(directory, selectedItems)
+function assemblePrompt(userPrompt: string, directory: string, selectedItems: string[], settings: PathSettings) {
+  const filesContents = assembleFiles(directory, selectedItems, settings)
   return getPrompt(userPrompt, filesContents)
 }
 
@@ -99,53 +107,64 @@ ${filesContents}
 `
 }
 
-function assembleFiles(directory: string, selectedItems: string[]): string {
+function assembleFiles(directory: string, selectedItems: string[], settings: PathSettings): string {
   const paths = selectedItems.map(item => path.join(directory, item.replace('root', '')))
 
   const filesContent = paths.map(path => {
     const stat = fs.statSync(path)
     if (stat.isDirectory()) {
-      return readFilesInPath(directory, path)
+      return readFilesInPath(directory, path, settings)
     } else {
-      return readFileContent(directory, path)
+      return readFileContent(directory, path, settings)
     }
   }).join('\n\n')
 
   return filesContent
 }
 
-function readFilesInPath(directory: string, dirPath: string) {
+function readFilesInPath(directory: string, dirPath: string, settings: PathSettings) {
   let structuredContent = ''
 
   function readDirectory(dirPath: string) {
     const files = fs.readdirSync(dirPath)
-
-    // if (pathToExclude.includes(dirPath)
-    //   || otherPathToExclude.includes(dirPath)
-    // ) {
-    //   return
-    // }
+    const allExcludes = [...DEFAULT_FILES_TO_EXCLUDE, ...settings.filesToExclude.split(',')]
+    const filesToInclude = settings.filesToInclude.split(',')
     
     files.forEach(file => {
-      if (path.extname(file) === '.json'
-        || file === 'node_modules'
-        || file === '.next'
-        || file === '.env'
-      ) {
-        return
-      }
-
       const filePath = path.join(dirPath, file)
       const stat = fs.statSync(filePath)
       
-      if (stat.isDirectory()) {
-        if (file !== 'node_modules') {
-          readDirectory(filePath)
+      const excludeThisPath = settings.pathsToExclude
+        .filter(p => !!p)
+        .some(excludePath => filePath.startsWith(path.join(directory, excludePath)))
+
+      if (excludeThisPath) {
+        return
+      }
+
+      if (allExcludes.some(exclude => {
+        if (exclude.startsWith('*')) {
+          return file.endsWith(exclude.slice(1))
         }
+        return file === exclude
+      })) {
+        return
+      }
+
+      if (stat.isDirectory()) {
+        readDirectory(filePath)
       } else {
+        if (!filesToInclude.some(include => {
+          if (include.startsWith('*')) {
+            return file.endsWith(include.slice(1))
+          }
+          return file.endsWith(include)
+        })) {
+          return
+        }
+
         const fileContent = fs.readFileSync(filePath, 'utf8')
         const relativePath = path.relative(directory, filePath)
-        // structuredContent += `### File used on ${device} side ###\n`
         structuredContent += `### File: ${relativePath} ###\n\n${fileContent}\n\n`
       }
     })
@@ -155,7 +174,7 @@ function readFilesInPath(directory: string, dirPath: string) {
   return structuredContent
 }
 
-function readFileContent(directory: string, filePath: string) {
+function readFileContent(directory: string, filePath: string, settings: PathSettings) {
   let structuredContent = ''
 
   try {
@@ -164,9 +183,20 @@ function readFileContent(directory: string, filePath: string) {
     if (stat.isDirectory()) {
       throw new Error('The provided path is a directory, not a file.')
     } else {
+      const fileName = path.basename(filePath)
+      const filesToInclude = settings.filesToInclude.split(',')
+
+      if (!filesToInclude.some(include => {
+        if (include.startsWith('*')) {
+          return fileName.endsWith(include.slice(1))
+        }
+        return fileName.endsWith(include)
+      })) {
+        return ''
+      }
+
       const fileContent = fs.readFileSync(filePath, 'utf8')
       const relativePath = path.relative(directory, filePath)
-      // structuredContent += `### File used on ${device} side ###\n`
       structuredContent += `### File: ${relativePath} ###\n\n${fileContent}\n\n`
     }
   } catch (error) {
@@ -175,9 +205,3 @@ function readFileContent(directory: string, filePath: string) {
 
   return structuredContent
 }
-
-// function removeComments(content: string): string {
-//   const lines = content.split('\n')
-//   const uncommentedLines = lines.filter(line => !line.trim().startsWith('//'))
-//   return uncommentedLines.join('\n')
-// }

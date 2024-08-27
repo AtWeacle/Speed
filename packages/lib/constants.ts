@@ -17,3 +17,5 @@ export const MODELS: Models = {
     ]
   },
 }
+
+export const DEFAULT_FILES_TO_EXCLUDE = ['node_modules', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']

@@ -3,21 +3,18 @@ import path from 'path'
 
 import type {
   FileSystemItem,
+  PathSettings,
 } from '@weacle/speed-lib/types'
+import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
 
 export default function getDirectoryTree(
   rootPath: string,
   dirPath: string,
-  settings: {
-    filesToExclude: string
-    filesToInclude: string
-    pathsToExclude: string[]
-  },
+  settings: PathSettings,
 ): FileSystemItem {
   const name = path.basename(dirPath)
   const stats = fs.statSync(dirPath)
-  const defaultExcludes = ['node_modules', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
-  const allExcludes = [...defaultExcludes, ...settings.filesToExclude.split(',')]
+  const allExcludes = [...DEFAULT_FILES_TO_EXCLUDE, ...settings.filesToExclude.split(',')]
   const filesToInclude = settings.filesToInclude.split(',')
 
   if (!stats.isDirectory()) {
