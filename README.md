@@ -17,6 +17,11 @@ SERVER_PORT=4300
 VITE_CLIENT_PORT=4301
 VITE_SERVER_PORT=4300
 ```
+In `speed/server/node`, create an `.env` file with the following variables:
+```
+OPENAI_API_KEY
+ANTHROPIC_API_KEY
+```
 3. Start the client by running the command `yarn dev-client`
 4. Start the server with `yarn dev-server`
 5. Open the client page in your browser and set the system prompt. Learn more in the System Prompt section.
@@ -57,7 +62,6 @@ The project uses:
 Models used are `claude-3-5-sonnet-20240620`(default), `gpt-4o-2024-08-06` and `gpt-4o-mini`.
 The temperature is 0.
 Max token is 4096.
-Prompt caching with Claude 3.5 is not added yet.
 
 ## Author
 • Carl Brenner [@carlbrn](https://github.com/carlbrn)
