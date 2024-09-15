@@ -12,7 +12,6 @@ const Button = styled.button`
   background: none;
   display: flex;
   align-items: center;
-  margin: 0 0 0 auto;
 
   &:hover {
     svg {
@@ -31,8 +30,10 @@ const Button = styled.button`
 
 function CopyButton({
   content,
+  style,
 }: {
   content: string
+  style?: React.CSSProperties
 }) {
   const [copied, setCopied] = useState(false)
 
@@ -52,6 +53,7 @@ function CopyButton({
         setCopied(true)
       }}
       data-copied={copied}
+      style={style || {}}
     >
       {copied ? (
         <CopyCheck size={16} color="var(--color-green)" />

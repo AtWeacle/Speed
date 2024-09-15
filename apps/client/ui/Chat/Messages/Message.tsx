@@ -11,7 +11,6 @@ import type {
 } from '@weacle/speed-lib/types'
 
 import CopyButton from '@weacle/speed-client/ui/Chat/Messages/CopyButton'
-// import LoadingIndicator from '@weacle/speed-client/ui/LoadingIndicator'
 import customStyle from '@weacle/speed-client/ui/Chat/Messages/syntaxHighlighterStyles/hljs/custom'
 
 const Wrapper = styled.div`
@@ -113,6 +112,14 @@ const Wrapper = styled.div`
     }
   }
 `
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 5px;
+  margin: 10px;
+  background: var(--color-black-3);
+  padding: 10px 10px;
+  border-radius: var(--border-radius);
+`
 const Message: FC<{
   message: Message
   separateFromPrior?: boolean
@@ -121,7 +128,6 @@ const Message: FC<{
   separateFromPrior,
 }) => {
   const systemMessageRef = useRef<HTMLDivElement>(null)
-  // const pending = message.status === 'pending'
 
   if (message.role === 'system') {
     return (
@@ -130,59 +136,56 @@ const Message: FC<{
         data-role={message.role}
         ref={systemMessageRef}
       >
-      
         {message.text ?
-          <div className="message-text">
-            <Markdown
-              components={{
-                a(props: any) {
-                  const { node, ...rest } = props
-                  return (
-                    <div className="c-link">
-                      <a {...rest} target="_blank" />
-                    </div>
-                  )
-                },
-                code(props) {
-                  const {children, className, node, ...rest} = props
-                  const match = /language-(\w+)/.exec(className || '')
-                  
-                  return match ? (
-                    <div className="code-block">
-                      <div className="code-top">
-                        <span className="code-lang">{match[1]}</span>
-                        <CopyButton content={String(children).replace(/\n$/, '')} />
+          <>
+            <div className="message-text">
+              <Markdown
+                components={{
+                  a(props: any) {
+                    const { node, ...rest } = props
+                    return (
+                      <div className="c-link">
+                        <a {...rest} target="_blank" />
                       </div>
+                    )
+                  },
+                  code(props) {
+                    const {children, className, node, ...rest} = props
+                    const match = /language-(\w+)/.exec(className || '')
+                    
+                    return match ? (
+                      <div className="code-block">
+                        <div className="code-top">
+                          <span className="code-lang">{match[1]}</span>
+                          <CopyButton content={String(children).replace(/\n$/, '')} style={{ marginLeft: 'auto' }} />
+                        </div>
 
-                      <SyntaxHighlighter
-                        {...rest}
-                        ref={null}
-                        PreTag="div"
-                        children={String(children).replace(/\n$/, '')}
-                        language={match[1]}
-                        style={customStyle}
-                      />
-                    </div>
-                  ) : (
-                    <code {...rest} className={`${className ? className : ''} c-code`}>
-                      {children}
-                    </code>
-                  )
-                }
-              }}
-            >
-              {message.text}
-            </Markdown>
-          </div>
+                        <SyntaxHighlighter
+                          {...rest}
+                          ref={null}
+                          PreTag="div"
+                          children={String(children).replace(/\n$/, '')}
+                          language={match[1]}
+                          style={customStyle}
+                        />
+                      </div>
+                    ) : (
+                      <code {...rest} className={`${className ? className : ''} c-code`}>
+                        {children}
+                      </code>
+                    )
+                  }
+                }}
+              >
+                {message.text}
+              </Markdown>
+            </div>
+            
+            <ActionButtons>
+              {message.text ? <CopyButton content={message.text} /> : null}
+            </ActionButtons>
+          </>
         : null}
-
-        {/* {pending ?
-          <LoadingIndicator
-            size={24}
-            // noWrapper
-            strokeWidth={5}
-          />
-        : null} */}
       </Wrapper>
     )
   }

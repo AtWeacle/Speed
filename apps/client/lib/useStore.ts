@@ -105,7 +105,6 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     directoryPanelOpened: state.directoryPanelOpened,
     directoryTree: state.directoryTree,
     directoryTreeConverted: state.directoryTreeConverted,
-    excludedFiles: state.excludedFiles,
     filesToInclude: state.filesToInclude,
     filesToExclude: state.filesToExclude,
     pathsToExclude: state.pathsToExclude,
