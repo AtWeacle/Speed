@@ -32,6 +32,10 @@ export default function getDirectoryTree(
       : settings
         .pathsToExclude.filter(p => !!p)
         .some(excludePath => {
+          if (excludePath.startsWith('*')) {
+            const pathToCheck = excludePath.slice(1)
+            return fullPath.includes(pathToCheck)
+          }
           return fullPath.startsWith(path.join(rootPath, excludePath))
         })
 
