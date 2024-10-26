@@ -3,6 +3,9 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 import { useStoreState } from '@weacle/speed-client/lib/useStore-types'
 import { nanoid } from '@weacle/speed-lib/utils/nanoid'
+import {
+  defaultModel,
+} from '@weacle/speed-lib/constants'
 
 
 const zStore = create<useStoreState>()(persist((set, get) => ({
@@ -74,10 +77,7 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 
-  promptModel: {
-    vendor: 'anthropic',
-    name: 'claude-3-5-sonnet-20240620',
-  },
+  promptModel: { ...defaultModel },
   setPromptModel: (model) => set(() => ({ promptModel: model })),
 
   selectedItems: [],

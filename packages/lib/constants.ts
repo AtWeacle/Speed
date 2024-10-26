@@ -1,6 +1,13 @@
 import type {
+  LllModel,
   Models,
 } from '@weacle/speed-lib/types'
+
+export const defaultModel: LllModel = {
+  id: 'claude-3-5-sonnet-20241022',
+  name: 'Claude 3.5 Sonnet',
+  vendor: 'anthropic',
+}
 
 export const MODELS: Models = {
   /**
