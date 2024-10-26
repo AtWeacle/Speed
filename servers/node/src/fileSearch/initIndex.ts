@@ -46,11 +46,6 @@ export default async function initIndex(directory: string) {
   let count = 0
 
   for (const { content, path } of files) {
-    console.log('\t • Processing file:', path)
-
-    const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
-    if (indexedFile) continue
-
     if (!content) {
       const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
       IndexedFile.deleteOne({ _id: indexedFile._id })
@@ -58,6 +53,10 @@ export default async function initIndex(directory: string) {
       continue
     }
 
+    const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
+    if (indexedFile) continue
+
+    console.log('\t • Processing file:', path)
 
     const fileData = await getFileData(content)
     if (!fileData) continue
