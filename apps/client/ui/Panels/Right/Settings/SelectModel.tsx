@@ -22,12 +22,12 @@ function SelectModel() {
 
         if (model) {
           const [vendor, { list }] = model
-          setPromptModel({ vendor, modelId, name: list[modelId as keyof typeof list].label })
+          setPromptModel({ vendor, id: modelId, name: list[modelId as keyof typeof list].label })
         }
       }}
     >
       <Select.Trigger className="SelectTrigger" aria-label="Models">
-        <Select.Value placeholder="Select a model…" />
+        <Select.Value placeholder="Select a model…">{promptModel.name}</Select.Value>
         <Select.Icon className="SelectIcon">
           <ChevronDown size={20} />
         </Select.Icon>

@@ -1,6 +1,7 @@
 import {
-  FC,
+  type FC,
   useRef,
+  useState,
 } from 'react'
 import styled from 'styled-components'
 import Markdown from 'react-markdown'
@@ -12,6 +13,7 @@ import type {
 
 import CopyButton from '@weacle/speed-client/ui/Chat/Messages/CopyButton'
 import customStyle from '@weacle/speed-client/ui/Chat/Messages/syntaxHighlighterStyles/hljs/custom'
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -136,6 +138,7 @@ const Message: FC<{
         data-role={message.role}
         ref={systemMessageRef}
       >
+        {/* {message.status !== 'pending' ? */}
         {message.text ?
           <>
             <div className="message-text">
@@ -186,6 +189,10 @@ const Message: FC<{
             </ActionButtons>
           </>
         : null}
+
+        {/* {message.status === 'pending' ?
+          <div>{message.text}</div>
+        : null} */}
       </Wrapper>
     )
   }

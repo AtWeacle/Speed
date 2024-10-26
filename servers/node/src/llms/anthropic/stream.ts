@@ -22,7 +22,7 @@ type ChatCompletionResponse = {
 export default async function stream({
   callback,
   // maxToken,
-  model = 'claude-3-5-sonnet-20240620',
+  model = 'claude-3-5-sonnet-20241022',
   prompt,
   // responseFormat,
   temperature = 0,

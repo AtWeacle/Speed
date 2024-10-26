@@ -70,7 +70,7 @@ export type SocketMessagePromptResponse = SocketMessageResponse & {
 }
 
 export type LllModel = {
-  modelId: string
+  id: string
   name: string
   vendor: string
 }

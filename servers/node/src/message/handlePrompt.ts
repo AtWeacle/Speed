@@ -40,7 +40,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
             endResponse()
           }
         },
-        model: model.name,
+        model: model.id,
         systemPrompt,
         prompt: assemblePrompt(text, directory, selectedItems, settings),
       })
@@ -61,7 +61,7 @@ export default function handlePrompt(ws: WebSocket, message: SocketMessagePrompt
           }
         },
         systemPrompt,
-        model: model.name,
+        model: model.id,
         prompt: assemblePrompt(text, directory, selectedItems, settings),
       })
     }
