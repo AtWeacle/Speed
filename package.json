@@ -23,6 +23,8 @@
   },
   "packageManager": "yarn@4.4.0",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "groq-sdk": "^0.7.0",
     "turbo": "^2.0.14"
   },
   "devDependencies": {

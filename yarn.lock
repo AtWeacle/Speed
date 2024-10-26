@@ -15,9 +15,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anthropic-ai/sdk@npm:^0.27.0":
-  version: 0.27.0
-  resolution: "@anthropic-ai/sdk@npm:0.27.0"
+"@anthropic-ai/sdk@npm:^0.30.1":
+  version: 0.30.1
+  resolution: "@anthropic-ai/sdk@npm:0.30.1"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -26,7 +26,7 @@ __metadata:
     form-data-encoder: "npm:1.7.2"
     formdata-node: "npm:^4.3.2"
     node-fetch: "npm:^2.6.7"
-  checksum: 10c0/5c35be75fedeea8503250f1177a6f2b82e981b3bd3debce117cbe8a03375fff1b21bae21549144f9cb837584892490cac2df809e8635b2911e6e70179f4cc1db
+  checksum: 10c0/34649b2a23b824fa0764061c0218dfb40baa416c15c9997829ec9a25d0cdfc6e47b5d31737084f29a5706c8a9cbcebbe08b93014f42992a11d29723546c2298a
   languageName: node
   linkType: hard
 
@@ -714,6 +714,13 @@ __metadata:
   version: 0.2.7
   resolution: "@floating-ui/utils@npm:0.2.7"
   checksum: 10c0/0559ea5df2dc82219bad26e3509e9d2b70f6987e552dc8ddf7d7f5923cfeb7c44bf884567125b1f9cdb122a4c7e6e7ddbc666740bc30b0e4091ccbca63c6fb1c
+  languageName: node
+  linkType: hard
+
+"@google/generative-ai@npm:^0.21.0":
+  version: 0.21.0
+  resolution: "@google/generative-ai@npm:0.21.0"
+  checksum: 10c0/cff5946c5964f2380e5097d82bd563d79be27a1a5ac604aaaad3f9ba3382992e4f0a371bd255baabfba4e5bdf296d8ce1410cbd65424afa98e64b2590fe49f3b
   languageName: node
   linkType: hard
 
@@ -1933,7 +1940,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@weacle/speed-node-server@workspace:servers/node"
   dependencies:
-    "@anthropic-ai/sdk": "npm:^0.27.0"
+    "@anthropic-ai/sdk": "npm:^0.30.1"
     "@types/express": "npm:^4.17.13"
     "@types/node": "npm:^16.11.7"
     "@types/ws": "npm:^8.5.12"
@@ -1942,7 +1949,7 @@ __metadata:
     esbuild-register: "npm:^3.6.0"
     express: "npm:^4.17.1"
     nodemon: "npm:^2.0.15"
-    openai: "npm:^4.56.0"
+    openai: "npm:^4.68.3"
     react-markdown: "npm:^9.0.1"
     ts-node: "npm:^10.4.0"
     typescript: "npm:^5.5.4"
@@ -1955,6 +1962,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@weacle/speed@workspace:."
   dependencies:
+    "@google/generative-ai": "npm:^0.21.0"
+    groq-sdk: "npm:^0.7.0"
     prettier: "npm:^3.3.3"
     turbo: "npm:^2.0.14"
   languageName: unknown
@@ -3512,6 +3521,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"groq-sdk@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "groq-sdk@npm:0.7.0"
+  dependencies:
+    "@types/node": "npm:^18.11.18"
+    "@types/node-fetch": "npm:^2.6.4"
+    abort-controller: "npm:^3.0.0"
+    agentkeepalive: "npm:^4.2.1"
+    form-data-encoder: "npm:1.7.2"
+    formdata-node: "npm:^4.3.2"
+    node-fetch: "npm:^2.6.7"
+  checksum: 10c0/53fad6f5492b4682cdcc75d994e7bc6c29be910f727da35639a729519003f433813ac47a0ca6a9acb27dd7d938a0a6b6677c22bd68067f2aba7a5cdbb5bb20c2
+  languageName: node
+  linkType: hard
+
 "has-flag@npm:^3.0.0":
   version: 3.0.0
   resolution: "has-flag@npm:3.0.0"
@@ -4774,9 +4798,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openai@npm:^4.56.0":
-  version: 4.56.0
-  resolution: "openai@npm:4.56.0"
+"openai@npm:^4.68.3":
+  version: 4.68.3
+  resolution: "openai@npm:4.68.3"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -4792,7 +4816,7 @@ __metadata:
       optional: true
   bin:
     openai: bin/cli
-  checksum: 10c0/d1a5ddda89ab95ad319c8d5af5a0e998916971cc453d22ace58475ffe34a624b37ff2e5fc614d489252c0de2f475ef11197b581836f6ac78c95c12089e6fa316
+  checksum: 10c0/714d2b638a9ec960e2e0f39efb9b52cd3a6b6ff2655e8badb4f8a25f84937b4223ba8e02779d2b847d88a88d1b3df3876312e9ca725c8cb72d3418886627b5e4
   languageName: node
   linkType: hard
 
