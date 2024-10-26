@@ -4,6 +4,7 @@ import React, {
   useRef,
 } from 'react'
 import styled from 'styled-components'
+import throttle from 'lodash/throttle'
 import {
   CircleArrowUp,
   CircleStop,
@@ -28,6 +29,21 @@ import Textarea from '@weacle/speed-client/ui/Textarea'
 
 const AUDIO_DURATION = 60
 const MAX_PROMPT_LENGTH = 20000
+
+const throttleMessageUpdate = throttle(({
+  text,
+  status,
+}:{
+  text: string
+  status: MessageStatus
+}) => {
+  const { getActiveMessage, updateMessage } = useStore.getState()
+  const activeMessage = getActiveMessage()
+  if (!activeMessage) return
+
+  const update = { text, status }
+  updateMessage(activeMessage.id, update)
+}, 300)
 
 const Wrapper = styled.div`
   margin: 0 auto 0;
@@ -180,6 +196,7 @@ export default function CommandInput({
   const sendRecording = useRef<boolean>(false)
 
   const inputWrapperRef = useRef<HTMLDivElement>(null)
+  const streamedMessageContentRef = useRef<string>('')
 
   const [focused, setFocused] = useState(false)
   const valid = prompt.length <= MAX_PROMPT_LENGTH
@@ -308,13 +325,8 @@ export default function CommandInput({
   }
 
   function streamResponse(text: string, status: MessageStatus = 'pending') {
-    const { getActiveMessage, updateMessage } = useStore.getState()
-    const activeMessage = getActiveMessage()
-    if (!activeMessage) return
-
-    const newText = (activeMessage.text || '') + text
-    const update = { text: newText, status }
-    updateMessage(activeMessage.id, update)
+    streamedMessageContentRef.current += text
+    throttleMessageUpdate({ text: streamedMessageContentRef.current, status })
   }
 
   async function sendCommand(prompt: string) {
@@ -346,6 +358,7 @@ export default function CommandInput({
     const userMessageId = nanoid()
     addMessage({ id: userMessageId, audio: audioUrl, text: prompt?.trim(), role: 'user' })
     setPrompt('')
+    streamedMessageContentRef.current = ''
 
     const systemMessageId = nanoid()
     const systemMessage = { id: systemMessageId, status: 'pending', role: 'system' }
