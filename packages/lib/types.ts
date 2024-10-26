@@ -20,12 +20,30 @@ export type MessageRole = 'system' | 'user'
 export type MessageStatus = 'pending' | 'done' | 'error'
 export type MessageType = 'error' | 'prompt' | 'response'
 
-export type ModelVendor = 'anthropic' | 'openai'
+export type ModelVendor = 'anthropic' | 'google' | 'groq' | 'openai'
 
 export type Models = {
   [key in ModelVendor]: {
     name: string
-    list: string[]
+    list: {
+      [modelId: string]: {
+        /**
+         * Context window size in characters
+         */
+        // contextWindow: number
+        cost: {
+          /**
+           * Input Token price (Per Million Tokens)
+           */
+          input: number
+          /**
+           * Output Token price (Per Million Tokens)
+           */
+          output: number
+        }
+        label: string
+      }
+    }
   }
 }
 
@@ -52,6 +70,7 @@ export type SocketMessagePromptResponse = SocketMessageResponse & {
 }
 
 export type LllModel = {
+  modelId: string
   name: string
   vendor: string
 }

@@ -12,13 +12,18 @@ import { MODELS } from '@weacle/speed-lib/constants'
 function SelectModel() {
   const promptModel = useStore(state => state.promptModel)
   const setPromptModel = useStore(state => state.setPromptModel)
-  
+
   return (
     <Select.Root
       defaultValue={promptModel.name}
-      onValueChange={value => {
-        const vendor = Object.keys(MODELS).find((vendor) => MODELS[vendor as keyof typeof MODELS].list.includes(value))
-        if (vendor) setPromptModel({ vendor, name: value })
+      onValueChange={modelId => {
+        const model = Object.entries(MODELS)
+          .find(([vendor, { list }]) => !!list[modelId])
+
+        if (model) {
+          const [vendor, { list }] = model
+          setPromptModel({ vendor, modelId, name: list[modelId as keyof typeof list].label })
+        }
       }}
     >
       <Select.Trigger className="SelectTrigger" aria-label="Models">
@@ -44,9 +49,9 @@ function SelectModel() {
                   {model.name}
                 </Select.Label>
 
-                {model.list.map(modelName => (
-                  <Select.Item key={`${vendor}_${modelName}`} value={modelName}>
-                    <Select.ItemText>{modelName}</Select.ItemText>
+                {Object.keys(model.list).map((modelId: string) => (
+                  <Select.Item key={`${vendor}_${modelId}`} value={modelId}>
+                    <Select.ItemText>{model.list[modelId as keyof typeof model.list].label}</Select.ItemText>
                     <Select.ItemIndicator className="SelectItemIndicator">
                       <Check size={18} color="var(--color-green)" strokeWidth={2.5} />
                     </Select.ItemIndicator>
