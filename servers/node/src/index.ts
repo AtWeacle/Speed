@@ -5,6 +5,8 @@ import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
+import initIndex from '@weacle/speed-node-server/src/fileSearch/initIndex'
+import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 
 import type {
   DirectoryTree,
@@ -59,6 +61,10 @@ app.get('/api/directory-tree', (req, res) => {
   }
 })
 
+app.post('/api/initIndex', (req, res) => {
+  initIndex('')
+})
+
 httpServer.listen(PORT, async () => {
   console.log(`HTTP server is running on http://localhost:${PORT}`)
   console.log(`WebSocket server is running on ws://localhost:${PORT}`)
@@ -72,4 +78,7 @@ httpServer.listen(PORT, async () => {
     console.error('❌ OPENAI_API_KEY is not set')
     process.exit(1)
   }
+
+  await mongoConnect()
+  initIndex(process.env.PROJECT_DIR)
 })

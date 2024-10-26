@@ -8,6 +8,23 @@ export type FileSystemItem = {
 
 export type DirectoryTree = FileSystemItem
 
+export type CodeElement = {
+  description: string
+  keywords: string[]
+  name: string
+}
+
+export type FileData = Pick<IndexedFile, 'components' | 'description' | 'functions' | 'keywords'>
+
+export type IndexedFile = {
+  components: CodeElement[]
+  description: string
+  functions: CodeElement[]
+  keywords: string[]
+  path: string
+  vectorId: string
+}
+
 export type Message = {
   audio?: string
   id: string

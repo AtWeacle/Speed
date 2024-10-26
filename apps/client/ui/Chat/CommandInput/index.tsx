@@ -33,7 +33,7 @@ const MAX_PROMPT_LENGTH = 20000
 const throttleMessageUpdate = throttle(({
   text,
   status,
-}:{
+}: {
   text: string
   status: MessageStatus
 }) => {
