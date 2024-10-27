@@ -21,7 +21,7 @@ import type {
   FileSystemItem,
 } from '@weacle/speed-lib/types'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
-import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 
 const Wrapper = styled.div`
   display: flex;
@@ -131,15 +131,15 @@ const SelectedItem = styled.li`
 //   cursor: pointer;
 // `
 function Directory() {
-  const setProjectDirectory = useStore(state => state.setProjectDirectory)
-  const projectDirectory = useStore(state => state.projectDirectory)
-  const directoryTreeConverted = useStore(state => state.directoryTreeConverted)
-  const setDirectoryTreeConverted = useStore(state => state.setDirectoryTreeConverted)
-  const setDirectoryTree = useStore(state => state.setDirectoryTree)
-  const selectedItems = useStore(state => state.selectedItems)
-  const setSelectedItems = useStore(state => state.setSelectedItems)
-  // const clearSelectedItems = useStore(state => state.clearSelectedItems)
-  // const selectAllItems = useStore(state => state.selectAllItems)
+  const setPath = useProjectStore(state => state.setPath)
+  const path = useProjectStore(state => state.path)
+  const directoryTreeConverted = useProjectStore(state => state.directoryTreeConverted)
+  const setDirectoryTreeConverted = useProjectStore(state => state.setDirectoryTreeConverted)
+  const setDirectoryTree = useProjectStore(state => state.setDirectoryTree)
+  const selectedItems = useProjectStore(state => state.selectedItems)
+  const setSelectedItems = useProjectStore(state => state.setSelectedItems)
+  // const clearSelectedItems = useProjectStore(state => state.clearSelectedItems)
+  // const selectAllItems = useProjectStore(state => state.selectAllItems)
 
   const [loading, setLoading] = useState(false)
 
@@ -157,18 +157,18 @@ function Directory() {
 
   async function fetchDirectoryTree() {
     const {
-      projectDirectory,
+      path,
       filesToInclude,
       filesToExclude,
       pathsToExclude,
-    } = useStore.getState()
+    } = useProjectStore.getState()
 
     try {
       setLoading(true)
 
       const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
         params: {
-          directory: projectDirectory,
+          directory: path,
           filesToExclude,
           filesToInclude,
           pathsToExclude,
@@ -225,10 +225,10 @@ function Directory() {
         <input
           className="Input"
           type="text"
-          id="projectDirectory"
+          id="path"
           placeholder="Enter project absolute path"
-          defaultValue={projectDirectory}
-          onChange={e => setProjectDirectory(e.target.value)}
+          defaultValue={path}
+          onChange={e => setPath(e.target.value)}
           onKeyDown={handleKeyDown}
         />
       </DirectoryPath>

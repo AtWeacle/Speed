@@ -6,7 +6,7 @@ import {
   X,
 } from 'lucide-react'
 
-import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
 import SelectModel from '@weacle/speed-client/ui/Panels/Right/Settings/SelectModel'
 import {
@@ -30,12 +30,12 @@ const StyledTextarea = styled.textarea`
   min-height: 100px;
 `
 function Settings() {
-  const filesToInclude = useStore(state => state.filesToInclude)
-  const setFilesToInclude = useStore(state => state.setFilesToInclude)
-  const filesToExclude = useStore(state => state.filesToExclude)
-  const setFilesToExclude = useStore(state => state.setFilesToExclude)
-  const pathsToExclude = useStore(state => state.pathsToExclude)
-  const setPathsToExclude = useStore(state => state.setPathsToExclude)
+  const filesToInclude = useProjectStore(state => state.filesToInclude)
+  const setFilesToInclude = useProjectStore(state => state.setFilesToInclude)
+  const filesToExclude = useProjectStore(state => state.filesToExclude)
+  const setFilesToExclude = useProjectStore(state => state.setFilesToExclude)
+  const pathsToExclude = useProjectStore(state => state.pathsToExclude)
+  const setPathsToExclude = useProjectStore(state => state.setPathsToExclude)
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 

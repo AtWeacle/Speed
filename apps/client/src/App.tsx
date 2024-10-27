@@ -20,7 +20,8 @@ const Layout = styled.div`
 `
 
 function App() {
-  const projects = useStore(state => state.getProjects())
+  const projectsLength = useStore(state => state.getProjects().length)
+  const activeProjectId = useStore(state => state.activeProjectId)
 
   return (
     <>
@@ -28,9 +29,9 @@ function App() {
 
       <Nav />
 
-      {projects?.length ? <Layout>
-          {/* <Chat /> */}
-          {/* <RightPanel /> */}
+      {projectsLength && activeProjectId ? <Layout>
+          <Chat />
+          <RightPanel />
         </Layout>
       : <Layout>
         <CreateProject />

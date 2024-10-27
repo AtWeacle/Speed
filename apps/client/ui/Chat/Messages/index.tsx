@@ -5,7 +5,7 @@ import {
 } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 
 import Message from '@weacle/speed-client/ui/Chat/Messages/Message'
 import InternetConnectionDetector from '@weacle/speed-client/ui/InternetConnectionDetector'
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   overflow: hidden auto;
 `
 const Messages: FC = () => {
-  const messages = useStore((state) => state.messages)
+  const messages = useProjectStore((state) => state.messages)
   const messageCount = useRef(0)
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Messages: FC = () => {
 
       {messages?.filter((m) => m.text || (!m.text && m.status !== 'done')).map((message, index) => {
         const previousMessage = messages.filter((m) => m.text || (!m.text && m.status !== 'done'))[index - 1]
-        const separateFromPrior: boolean = !!(previousMessage && previousMessage.type !== message.type)
+        const separateFromPrior: boolean = !!(previousMessage && previousMessage.role !== message.role)
 
         return (
           <Message

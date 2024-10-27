@@ -1,8 +1,11 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
 
 import type { useStoreState, ProjectStore } from '@weacle/speed-client/lib/useStore-types'
 import { nanoid } from '@weacle/speed-lib/utils/nanoid'
+import type {
+  Project,
+} from '@weacle/speed-lib/types'
 import {
   defaultModel,
 } from '@weacle/speed-lib/constants'
@@ -10,7 +13,7 @@ import {
 const createProject = (
   props: { remove: () => void },
   { set, get }: { set: (fn: (state: ProjectStore) => void) => void, get: () => ProjectStore | undefined },
-  { id, name, path }: { id: string, name: string, path: string },
+  { data, id }: { id: string, data?: Partial<Project> },
 ): ProjectStore => ({
   answering: false,
   setAnswering: (answering) => set(() => ({ answering })),
@@ -61,7 +64,7 @@ const createProject = (
   })),
   getMessage: (messageId) => get()?.messages.find((message) => message.id === messageId),
   getActiveMessage: () => get()?.messages.find((message) => message.id === get()?.activeMessageId),
-  setActiveMessageId: (messageId) => set((state) => ({
+  setActiveMessageId: (messageId) => set(() => ({
     activeMessageId: messageId,
   })),
   updateMessage: (messageId, update) => set((state) => ({
@@ -73,10 +76,10 @@ const createProject = (
     }),
   })),
 
-  name,
-  setName: (name) => set((state) => { state.name = name }),
-  path,
-  setPath: (path) => set((state) => { state.path = path }),
+  name: '',
+  setName: (name) => set(() => ({ name })),
+  path: '',
+  setPath: (path) => set(() => ({ path })),
 
   pathsToExclude: [],
   setPathsToExclude: (pathsToExclude) => set(() => ({ pathsToExclude })),
@@ -102,17 +105,24 @@ const createProject = (
 
   update: (data) => set((state) => { state = { ...state, ...data } }),
   ...props,
+  ...data,
 })
 
-const zStore = create<useStoreState>()(persist((set, get) => ({
+const useStore = create<useStoreState>()(persist((set, get) => ({
   projects: new Map(),
   addProject: (name, path) => {
     const id = nanoid()
 
-    const childSet = (fn: Function) => { set((state) => {
-      fn(state.projects.get(id))
-      return state
-    }) }
+    const childSet = (fn: Function) => {
+      set((state) => {
+        const update = fn(state.projects.get(id))
+        const updatedProject = { ...state.projects.get(id), ...update }
+        return {
+          ...state,
+          projects: new Map(state.projects).set(id, updatedProject),
+        }
+      })
+    }
 
     const childGet = () => get().projects.get(id)
 
@@ -121,14 +131,40 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
       return state
     }) }
 
-    const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, name, path })
+    const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, data: { name, path } })
 
-    const isFirstProject = get().projects.size === 0
-
-    set((state) => { return {
+    set((state) => {
+      return {
       ...state,
       projects: state.projects.set(id, newProject),
-      ...(isFirstProject ? { activeProjectId: id } : {}),
+      activeProjectId: id,
+    } })
+  },
+  hydrateProject: (id, data) => {
+    const childSet = (fn: Function) => {
+      set((state) => {
+        const update = fn(state.projects.get(id))
+        const updatedProject = { ...state.projects.get(id), ...update }
+        return {
+          ...state,
+          projects: new Map(state.projects).set(id, updatedProject),
+        }
+      })
+    }
+
+    const childGet = () => get().projects.get(id)
+
+    const remove = () => { set((state) => {
+      state.projects.delete(id)
+      return state
+    }) }
+
+    const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, data })
+
+    set((state) => {
+      return {
+      ...state,
+      projects: state.projects.set(id, newProject),
     } })
   },
   getProjects: () => Array.from(get().projects.values()),
@@ -170,6 +206,21 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     },
     removeItem: (name) => localStorage.removeItem(name),
   },
+  onRehydrateStorage: (state) => {
+    function hydrateProjects(state: useStoreState) {
+      for (const [id, project] of state.projects) {
+        state.hydrateProject(id, project)
+      }
+    }
+
+    return (state, error) => {
+      if (error) {
+        console.log('an error happened during hydration', error)
+      } else if (state) {
+        hydrateProjects(state)
+      }
+    }
+  },
 }))
 
-export default zStore
+export default useStore

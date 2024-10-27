@@ -6,12 +6,12 @@ import {
   ChevronUp,
 } from 'lucide-react'
 
-import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import { MODELS } from '@weacle/speed-lib/constants'
 
 function SelectModel() {
-  const promptModel = useStore(state => state.promptModel)
-  const setPromptModel = useStore(state => state.setPromptModel)
+  const promptModel = useProjectStore(state => state.promptModel)
+  const setPromptModel = useProjectStore(state => state.setPromptModel)
 
   return (
     <Select.Root

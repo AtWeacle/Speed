@@ -5,7 +5,7 @@ import {
   X,
 } from 'lucide-react'
 
-import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,8 +55,8 @@ const DialogContent = styled(Dialog.Content)`
   }
 `
 export default function SystemPrompt() {
-  const setSystemPrompt = useStore(state => state.setSystemPrompt)
-  const systemPrompt = useStore(state => state.systemPrompt)
+  const setSystemPrompt = useProjectStore(state => state.setSystemPrompt)
+  const systemPrompt = useProjectStore(state => state.systemPrompt)
 
   const saveSystemPrompt = () => {
     const systemPrompt = document.getElementById('systemPrompt') as HTMLTextAreaElement

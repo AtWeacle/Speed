@@ -13,7 +13,8 @@ import {
 } from 'lucide-react'
 import useWebSocket from 'react-use-websocket'
 
-import useStore from '@weacle/speed-client/lib/useStore'
+// import useStore from '@weacle/speed-client/lib/useStore'
+import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import { nanoid } from '@weacle/speed-client/lib/utils/nanoid'
 
 import { MEDIA } from '@weacle/speed-client/theme/constants'
@@ -37,7 +38,7 @@ const throttleMessageUpdate = throttle(({
   text: string
   status: MessageStatus
 }) => {
-  const { getActiveMessage, updateMessage } = useStore.getState()
+  const { getActiveMessage, updateMessage } = useProjectStore.getState()
   const activeMessage = getActiveMessage()
   if (!activeMessage) return
 
@@ -179,15 +180,15 @@ export default function CommandInput({
 }: {
   showCounter?: boolean
 }) {
-  const setActiveMessageId = useStore(state => state.setActiveMessageId)
-  const addMessage = useStore(state => state.addMessage) as (message: { id: string, audio?: string, text?: string, role: string }) => void;
-  const prompt = useStore(state => state.prompt)
-  const setPrompt = useStore(state => state.setPrompt)
-  const answering = useStore(state => state.answering)
-  const promptModel = useStore(state => state.promptModel)
-  const setAnswering = useStore(state => state.setAnswering)
-  const setErrors = useStore(state => state.setErrors)
-  const systemPrompt = useStore(state => state.systemPrompt)
+  const setActiveMessageId = useProjectStore(state => state.setActiveMessageId)
+  const addMessage = useProjectStore(state => state.addMessage)
+  const prompt = useProjectStore(state => state.prompt)
+  const setPrompt = useProjectStore(state => state.setPrompt)
+  const answering = useProjectStore(state => state.answering)
+  const promptModel = useProjectStore(state => state.promptModel)
+  const setAnswering = useProjectStore(state => state.setAnswering)
+  const setErrors = useProjectStore(state => state.setErrors)
+  const systemPrompt = useProjectStore(state => state.systemPrompt)
 
   const [recording, setRecording] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -214,7 +215,7 @@ export default function CommandInput({
 
       try {
         const data = JSON.parse(rawData)
-        const { activeMessageId, getMessage, updateMessage } = useStore.getState()
+        const { activeMessageId, getMessage, updateMessage } = useProjectStore.getState()
 
         const message = data.messageId ? getMessage(data.messageId) : null
 
@@ -348,9 +349,9 @@ export default function CommandInput({
       filesToExclude,
       filesToInclude,
       pathsToExclude,
-      projectDirectory,
+      path,
       selectedItems,
-    } = useStore.getState()
+    } = useProjectStore.getState()
 
     clearMessages()
     const audioUrl = audio ? URL.createObjectURL(audio) : undefined
@@ -377,7 +378,7 @@ export default function CommandInput({
     sendJsonMessage<SocketMessagePrompt>({
       // audio: audioBase64,
       // messageIdToTranscribe,
-      directory: projectDirectory,
+      directory: path,
       messageId: systemMessageId,
       model: promptModel,
       selectedItems,
@@ -402,7 +403,7 @@ export default function CommandInput({
 
   function handleCancel() {
     setAnswering(false)
-    const { getActiveMessage, updateMessage } = useStore.getState()
+    const { getActiveMessage, updateMessage } = useProjectStore.getState()
     const activeMessage = getActiveMessage()
     if (!activeMessage) return
     updateMessage(activeMessage.id, { status: 'done' })

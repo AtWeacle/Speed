@@ -83,7 +83,7 @@ export type Project = {
   activeMessageId: string | null
   name: string
   pathsToExclude: string[]
-  projectDirectory: string
+  path: string
   prompt: string
   promptModel: LllModel
   selectedItems: string[]
