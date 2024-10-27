@@ -14,7 +14,6 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
   padding: 0 15px;
   font-size: .9rem;
   line-height: 1;
