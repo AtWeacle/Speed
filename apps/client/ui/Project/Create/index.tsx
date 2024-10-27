@@ -9,6 +9,7 @@ import {
   Input,
 } from '@weacle/speed-client/ui/Form'
 import Button from '@weacle/speed-client/ui/Button'
+import ErrorComp from '@weacle/speed-client/ui/Form/ErrorComp'
 
 const projectSchema = z.object({
   name: z.string().min(3, 'Name must have at least 3 characters'),
@@ -26,8 +27,7 @@ const Title = styled.h2`
   font-size: 1.2rem;
   color: var(--color-black-8);
 `
-
-export default function Create() {
+export default function Create({ onClose }: { onClose?: () => void }) {
   const addProject = useStore(state => state.addProject)
   const [name, setName] = useState<string>('')
   const [path, setPath] = useState<string>('')
@@ -51,6 +51,7 @@ export default function Create() {
 
     setErrors({})
     addProject(name, path)
+    if (onClose) onClose()
   }
 
   return (
@@ -66,7 +67,7 @@ export default function Create() {
           value={name}
           onChange={(e) => handleChange(setName, e.target.value)}
         />
-        {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
+        {errors.name && <ErrorComp>{errors.name}</ErrorComp>}
       </InputWrapper>
       <InputWrapper>
         <label>Project path</label>
@@ -76,7 +77,7 @@ export default function Create() {
           onChange={(e) => handleChange(setPath, e.target.value)}
           placeholder="Absolute path to the project"
         />
-        {errors.path && <span style={{ color: 'red' }}>{errors.path}</span>}
+        {errors.path && <ErrorComp>{errors.path}</ErrorComp>}
       </InputWrapper>
 
       <Button onClick={handleSubmit} aria-label="Create project">
