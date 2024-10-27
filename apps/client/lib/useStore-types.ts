@@ -73,8 +73,7 @@ export type ProjectStore = {
 
 export type useStoreState = {
   projects: Map<string, ProjectStore>
-  addProject: (name: string, path: string) => void
-  hydrateProject: (id: string, data: Partial<Project>) => void
+  setProject: (id: string, data: Partial<Project>) => void
   getProjects: () => ProjectStore[]
   getProject: (projectId: string) => ProjectStore | undefined
   activeProjectId: string | null

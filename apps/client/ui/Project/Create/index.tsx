@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { z } from 'zod'
 
 import useStore from '@weacle/speed-client/lib/useStore'
+import { nanoid } from '@weacle/speed-lib/utils/nanoid'
 
 import {
   InputWrapper,
@@ -28,7 +29,7 @@ const Title = styled.h2`
   color: var(--color-black-8);
 `
 export default function Create({ onClose }: { onClose?: () => void }) {
-  const addProject = useStore(state => state.addProject)
+  const setProject = useStore(state => state.setProject)
   const [name, setName] = useState<string>('')
   const [path, setPath] = useState<string>('')
   const [errors, setErrors] = useState<{ name?: string, path?: string }>({})
@@ -50,7 +51,7 @@ export default function Create({ onClose }: { onClose?: () => void }) {
     }
 
     setErrors({})
-    addProject(name, path)
+    setProject(nanoid(), { name, path})
     if (onClose) onClose()
   }
 

@@ -110,37 +110,7 @@ const createProject = (
 
 const useStore = create<useStoreState>()(persist((set, get) => ({
   projects: new Map(),
-  addProject: (name, path) => {
-    const id = nanoid()
-
-    const childSet = (fn: Function) => {
-      set((state) => {
-        const update = fn(state.projects.get(id))
-        const updatedProject = { ...state.projects.get(id), ...update }
-        return {
-          ...state,
-          projects: new Map(state.projects).set(id, updatedProject),
-        }
-      })
-    }
-
-    const childGet = () => get().projects.get(id)
-
-    const remove = () => { set((state) => {
-      state.projects.delete(id)
-      return state
-    }) }
-
-    const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, data: { name, path } })
-
-    set((state) => {
-      return {
-      ...state,
-      projects: state.projects.set(id, newProject),
-      activeProjectId: id,
-    } })
-  },
-  hydrateProject: (id, data) => {
+  setProject: (id, data) => {
     const childSet = (fn: Function) => {
       set((state) => {
         const update = fn(state.projects.get(id))
@@ -209,7 +179,7 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
   onRehydrateStorage: (state) => {
     function hydrateProjects(state: useStoreState) {
       for (const [id, project] of state.projects) {
-        state.hydrateProject(id, project)
+        state.setProject(id, project)
       }
     }
 
