@@ -1970,6 +1970,7 @@ __metadata:
     typescript: "npm:^5.5.4"
     typescript-eslint: "npm:^8.1.0"
     vite: "npm:^5.4.1"
+    zod: "npm:^3.23.8"
     zustand: "npm:^4.5.5"
   languageName: unknown
   linkType: soft
