@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 
+import useStore from '@weacle/speed-client/lib/useStore'
+
 import Chat from '@weacle/speed-client/ui/Chat'
+import CreateProject from '@weacle/speed-client/ui/Project/Create'
 import Nav from '@weacle/speed-client/ui/Nav'
 import RightPanel from '@weacle/speed-client/ui/Panels/Right'
 import ConnectionManager from '@weacle/speed-client/ui/ConnectionManager'
@@ -17,16 +20,21 @@ const Layout = styled.div`
 `
 
 function App() {
+  const projects = useStore(state => state.getProjects())
+
   return (
     <>
       <ConnectionManager />
 
       <Nav />
 
-      <Layout>
-        <Chat />
-        <RightPanel />
-      </Layout>
+      {projects?.length ? <Layout>
+          {/* <Chat /> */}
+          {/* <RightPanel /> */}
+        </Layout>
+      : <Layout>
+        <CreateProject />
+      </Layout>}
     </>
   )
 }

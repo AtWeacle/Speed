@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 
+import useStore from '@weacle/speed-client/lib/useStore'
+import Button from '@weacle/speed-client/ui/Button'
+
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -20,7 +23,25 @@ const Wrapper = styled.div`
     }
   }
 `
+const ProjectButtons = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 15px;
+
+  button {
+    padding: 0 8px;
+    height: 26px;
+    border-radius: calc(var(--border-radius) * .6);
+    color: var(--color-black-8);
+
+    &[data-active="true"] {
+      background-color: var(--color-black-3);
+    }
+  }
+`
 export default function Nav() {
+  const projects = useStore(state => state.getProjects())
+  const activeProjectId = useStore(state => state.activeProjectId)
 
   return (
     <Wrapper>
@@ -30,6 +51,19 @@ export default function Nav() {
       >
         <img src="/speed.svg" alt="speed" style={{ width: '24px', height: '24px' }} />
       </a>
+
+      <ProjectButtons>
+        {projects.map(project => (
+          <Button
+            key={project.id}
+            appearance="text"
+            onClick={() => useStore.getState().setActiveProjectId(project.id)}
+            data-active={String(activeProjectId === project.id)}
+          >
+            {project.name}
+          </Button>
+        ))}
+      </ProjectButtons>
 
       <a
         style={{ marginLeft: 'auto', height: '20px' }}

@@ -9,6 +9,11 @@ import {
 import useStore from '@weacle/speed-client/lib/useStore'
 import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
 import SelectModel from '@weacle/speed-client/ui/Panels/Right/Settings/SelectModel'
+import {
+  InputWrapper,
+  Input,
+} from '@weacle/speed-client/ui/Form'
+import Button from '@weacle/speed-client/ui/Button'
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,19 +23,6 @@ const Wrapper = styled.div`
   width: calc(100% - 20px);
   background-color: var(--color-black-2);
   border-radius: 0 calc(var(--border-radius) * 1.2) 0 0;
-`
-const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-
-  label {
-    font-size: .85rem;
-    color: var(--color-black-8);
-  }
-`
-const StyledInput = styled.input`
-  background-color: var(--color-black-2);
 `
 const StyledTextarea = styled.textarea`
   background-color: var(--color-black-2);
@@ -103,7 +95,7 @@ function Settings() {
 
             <InputWrapper>
               <label>Files to include</label>
-              <StyledInput
+              <Input
                 type="text"
                 value={filesToInclude}
                 onChange={(e) => handleChange(setFilesToInclude, e.target.value)}
@@ -113,7 +105,7 @@ function Settings() {
 
             <InputWrapper>
               <label>Files to exclude</label>
-              <StyledInput
+              <Input
                 type="text"
                 value={filesToExclude}
                 onChange={(e) => handleChange(setFilesToExclude, e.target.value)}
@@ -131,9 +123,9 @@ function Settings() {
             </InputWrapper>
             
             <Dialog.Close asChild>
-              <button className="IconButton" aria-label="Close">
+              <Button className="IconButton" aria-label="Close">
                 <X size={24} />
-              </button>
+              </Button>
             </Dialog.Close>
           </Dialog.Content>
         </Dialog.Portal>
