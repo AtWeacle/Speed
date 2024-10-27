@@ -59,6 +59,8 @@ export default function Nav() {
             appearance="text"
             onClick={() => useStore.getState().setActiveProjectId(project.id)}
             data-active={String(activeProjectId === project.id)}
+            role="button"
+            aria-label={`Switch to ${project.name}`}
           >
             {project.name}
           </Button>
