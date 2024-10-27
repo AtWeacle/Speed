@@ -74,7 +74,7 @@ function Settings() {
               padding: '5px',
             }}
           >
-            <SettingsIcon size={20} strokeWidth={2} />
+            <SettingsIcon size={20} strokeWidth={2} color="var(--color-black-7)" />
           </button>
         </Dialog.Trigger>
 

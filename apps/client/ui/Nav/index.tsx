@@ -41,6 +41,7 @@ const ProjectButtons = styled.div`
     height: 26px;
     border-radius: calc(var(--border-radius) * .6);
     color: var(--color-black-8);
+    transition: background-color .2s;
 
     &[data-active="true"] {
       background-color: var(--color-black-3);

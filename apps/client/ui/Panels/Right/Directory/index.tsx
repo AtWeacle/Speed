@@ -230,7 +230,7 @@ function Directory() {
           type="text"
           id="path"
           placeholder="Enter project absolute path"
-          defaultValue={path}
+          value={path}
           onChange={e => setPath(e.target.value)}
           onKeyDown={handleKeyDown}
         />
