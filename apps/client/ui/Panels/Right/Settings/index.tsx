@@ -6,6 +6,7 @@ import {
   X,
 } from 'lucide-react'
 
+import useStore from '@weacle/speed-client/lib/useStore'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
 import SelectModel from '@weacle/speed-client/ui/Panels/Right/Settings/SelectModel'
@@ -37,6 +38,7 @@ function Settings() {
   const setFilesToExclude = useProjectStore(state => state.setFilesToExclude)
   const pathsToExclude = useProjectStore(state => state.pathsToExclude)
   const setPathsToExclude = useProjectStore(state => state.setPathsToExclude)
+  const removeProject = useStore(state => state.removeProject)
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -60,6 +62,13 @@ function Settings() {
     }
     timeoutRef.current = setTimeout(dispatchRefetchEvent, 2000)
   }, [dispatchRefetchEvent])
+
+  const handleRemoveProject = useCallback(() => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      const { activeProjectId } = useStore.getState()
+      if (activeProjectId) removeProject(activeProjectId)
+    }
+  }, [removeProject])
 
   return (
     <Wrapper>
@@ -121,6 +130,21 @@ function Settings() {
                 onChange={(e) => handlePathsChange(setPathsToExclude, e.target.value.split('\n'))}
                 placeholder="/apps/client/public&#10;/apps/server/api"
               />
+            </InputWrapper>
+
+            <InputWrapper>
+              <Button
+                className="Button"
+                style={{
+                  backgroundColor: 'var(--color-red)',
+                  color: 'var(--color-black)',
+                  padding: '7px 10px',
+                  height: 'auto',
+                }}
+                onClick={handleRemoveProject}
+              >
+                Delete project
+              </Button>
             </InputWrapper>
             
             <Dialog.Close asChild>

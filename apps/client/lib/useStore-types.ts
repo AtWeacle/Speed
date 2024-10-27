@@ -76,8 +76,9 @@ export type useStoreState = {
   setProject: (id: string, data: Partial<Project>) => void
   getProjects: () => ProjectStore[]
   getProject: (projectId: string) => ProjectStore | undefined
+  removeProject: (projectId: string) => void
   activeProjectId: string | null
-  setActiveProjectId: (projectId: string) => void
+  setActiveProjectId: (projectId: string | null) => void
   getActiveProject: () => ProjectStore | undefined
   
   reset: () => void

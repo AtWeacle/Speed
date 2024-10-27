@@ -139,6 +139,18 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
   },
   getProjects: () => Array.from(get().projects.values()),
   getProject: (id) => get().projects.get(id),
+  removeProject: (id) => set((state) => {
+    state.projects.delete(id)
+
+    if (state.activeProjectId === id) {
+      state.activeProjectId = null
+    }
+
+    return {
+      ...state,
+      projects: new Map(state.projects),
+    }
+  }),
   activeProjectId: null,
   setActiveProjectId: (activeProjectId) => set(() => ({ activeProjectId })),
   getActiveProject: () => {
