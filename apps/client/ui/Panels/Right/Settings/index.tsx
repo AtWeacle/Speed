@@ -17,6 +17,7 @@ import Button from '@weacle/speed-client/ui/Button'
 
 const Wrapper = styled.div`
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   padding: 0 10px;
   height: 60px;

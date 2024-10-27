@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 5px;
   height: 100%;
-  max-height: calc(100vh - var(--nav-height) - 60px);
+  max-height: calc(100vh - var(--nav-height) - 66px);
   width: 100%;
   background-color: var(--color-black-2);
   border-radius: 0 0 calc(var(--border-radius) * 1.2) 0;
@@ -97,6 +97,9 @@ const ItemArrow = styled.span`
   align-items: center;
 `
 const SelectedItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   margin: 0 5px 5px;
   background-color: var(--color-black-3);
   border-radius: 0 0 calc(var(--border-radius) * .8) calc(var(--border-radius) * .8);
@@ -260,23 +263,23 @@ function Directory() {
         }</>)}
       </TreeContainer>
 
-        <SelectedItems>
-          <Title>Selection</Title>
+      <SelectedItems>
+        <Title>Selection</Title>
 
-          {selectedItems.length > 0 ? (
-            <SelectedItemsList>
-              {selectedItems.map((item, index) => (
-                <SelectedItem key={index}>
-                  {isDirectory(item)
-                    ? <Folder color="var(--color-black-8)" size={12} />
-                    : <FileText color="var(--color-black-8)"  size={12} />
-                  }
-                  {item.replace('root/', '')}
-                </SelectedItem>
-              ))}
-            </SelectedItemsList>
-          ) : null}
-        </SelectedItems>
+        {selectedItems.length > 0 ? (
+          <SelectedItemsList>
+            {selectedItems.map((item, index) => (
+              <SelectedItem key={index}>
+                {isDirectory(item)
+                  ? <Folder color="var(--color-black-8)" size={12} />
+                  : <FileText color="var(--color-black-8)"  size={12} />
+                }
+                {item.replace('root/', '')}
+              </SelectedItem>
+            ))}
+          </SelectedItemsList>
+        ) : null}
+      </SelectedItems>
       
 
       {/* <ButtonContainer>
