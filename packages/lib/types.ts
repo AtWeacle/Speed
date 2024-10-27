@@ -1,3 +1,8 @@
+import {
+  type TreeItem,
+  type TreeItemIndex,
+} from 'react-complex-tree'
+
 export type ErrorsType = Record<string, string>
 
 export type FileSystemItem = {
@@ -6,13 +11,15 @@ export type FileSystemItem = {
   children?: FileSystemItem[]
 }
 
-export type DirectoryTree = FileSystemItem
 
 export type CodeElement = {
   description: string
   keywords: string[]
   name: string
 }
+
+export type DirectoryTree = FileSystemItem
+export type DirectoryTreeConverted = Record<TreeItemIndex, TreeItem<string>>
 
 export type FileData = Pick<IndexedFile, 'components' | 'description' | 'functions' | 'keywords'>
 
@@ -62,6 +69,26 @@ export type Models = {
       }
     }
   }
+}
+
+export type Project = {
+  answering: boolean
+  directoryPanelOpened: boolean
+  directoryTree: DirectoryTree | null
+  directoryTreeConverted: DirectoryTreeConverted | null
+  errors: ErrorsType
+  filesToExclude: string
+  filesToInclude: string
+  id: string
+  messages: Message[]
+  activeMessageId: string | null
+  name: string
+  pathsToExclude: string[]
+  projectDirectory: string
+  prompt: string
+  promptModel: LllModel
+  selectedItems: string[]
+  systemPrompt: string
 }
 
 export type SocketMessageBase = {

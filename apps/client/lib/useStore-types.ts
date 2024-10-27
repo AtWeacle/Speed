@@ -1,15 +1,13 @@
 import type {
   DirectoryTree,
+  DirectoryTreeConverted,
   ErrorsType,
   LllModel,
   Message,
+  Project,
 } from '@weacle/speed-lib/types'
-import type {
-  DirectoryTreeConverted,
-} from '@weacle/speed-client/lib/types'
 
-
-export type useStoreState = {
+export type ProjectStore = {
   answering: boolean
   setAnswering: (answering: boolean) => void
 
@@ -34,6 +32,8 @@ export type useStoreState = {
   filesToInclude: string
   setFilesToInclude: (filesToInclude: string) => void
 
+  id: string
+
   messages: Message[]
   activeMessageId: string | null
   addMessage: (message: Omit<Message, 'id'> & { id?: string }) => void
@@ -47,8 +47,10 @@ export type useStoreState = {
   pathsToExclude: string[]
   setPathsToExclude: (pathsToExclude: string[]) => void
 
-  projectDirectory: string
-  setProjectDirectory: (projectDirectory: string) => void
+  name: string
+  setName: (name: string) => void
+  path: string
+  setPath: (path: string) => void
 
   prompt: string
   setPrompt: (prompt: string) => void
@@ -64,6 +66,19 @@ export type useStoreState = {
 
   systemPrompt: string
   setSystemPrompt: (systemPrompt: string) => void
+
+  remove: () => void
+  update: (update: Partial<Project>) => void
+}
+
+export type useStoreState = {
+  projects: Map<string, ProjectStore>
+  addProject: (name: string, path: string) => void
+  getProjects: () => ProjectStore[]
+  getProject: (projectId: string) => ProjectStore | undefined
+  activeProjectId: string | null
+  setActiveProjectId: (projectId: string) => void
+  getActiveProject: () => ProjectStore | undefined
   
   reset: () => void
 }

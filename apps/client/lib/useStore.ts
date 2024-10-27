@@ -1,14 +1,17 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
-import { useStoreState } from '@weacle/speed-client/lib/useStore-types'
+import type { useStoreState, ProjectStore } from '@weacle/speed-client/lib/useStore-types'
 import { nanoid } from '@weacle/speed-lib/utils/nanoid'
 import {
   defaultModel,
 } from '@weacle/speed-lib/constants'
 
-
-const zStore = create<useStoreState>()(persist((set, get) => ({
+const createProject = (
+  props: { remove: () => void },
+  { set, get }: { set: (fn: (state: ProjectStore) => void) => void, get: () => ProjectStore | undefined },
+  { id, name, path }: { id: string, name: string, path: string },
+): ProjectStore => ({
   answering: false,
   setAnswering: (answering) => set(() => ({ answering })),
 
@@ -43,6 +46,8 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   filesToExclude: 'package.json,tsconfig.json,*.d.ts,*.config.js',
   setFilesToExclude: (filesToExclude) => set(() => ({ filesToExclude })),
 
+  id,
+
   messages: [],
   activeMessageId: null,
   addMessage: (message) => set((state) => ({
@@ -54,8 +59,8 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   clearMessages: () => set(() => ({
     messages: [],
   })),
-  getMessage: (messageId) => get().messages.find((message) => message.id === messageId),
-  getActiveMessage: () => get().messages.find((message) => message.id === get().activeMessageId),
+  getMessage: (messageId) => get()?.messages.find((message) => message.id === messageId),
+  getActiveMessage: () => get()?.messages.find((message) => message.id === get()?.activeMessageId),
   setActiveMessageId: (messageId) => set((state) => ({
     activeMessageId: messageId,
   })),
@@ -68,11 +73,13 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
     }),
   })),
 
+  name,
+  setName: (name) => set((state) => { state.name = name }),
+  path,
+  setPath: (path) => set((state) => { state.path = path }),
+
   pathsToExclude: [],
   setPathsToExclude: (pathsToExclude) => set(() => ({ pathsToExclude })),
-
-  projectDirectory: '',
-  setProjectDirectory: (projectDirectory) => set(() => ({ projectDirectory })),
 
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
@@ -93,26 +100,70 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
   systemPrompt: 'You are an experienced software engineer. You write code.',
   setSystemPrompt: (systemPrompt) => set(() => ({ systemPrompt })),
 
+  update: (data) => set((state) => { state = { ...state, ...data } }),
+  ...props,
+})
+
+const zStore = create<useStoreState>()(persist((set, get) => ({
+  projects: new Map(),
+  addProject: (name, path) => {
+    const id = nanoid()
+
+    const childSet = (fn: Function) => { set((state) => {
+      fn(state.projects.get(id))
+      return state
+    }) }
+
+    const childGet = () => get().projects.get(id)
+
+    const remove = () => { set((state) => {
+      state.projects.delete(id)
+      return state
+    }) }
+
+    const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, name, path })
+
+    set((state) => { return { ...state, projects: state.projects.set(id, newProject) } })
+  },
+  getProjects: () => Array.from(get().projects.values()),
+  getProject: (id) => get().projects.get(id),
+  activeProjectId: null,
+  setActiveProjectId: (activeProjectId) => set(() => ({ activeProjectId })),
+  getActiveProject: () => {
+    const { activeProjectId, projects } = get()
+    if (!activeProjectId) return undefined
+    return projects.get(activeProjectId)
+  },
   reset: () => set(() => ({
-    answering: false,
-    errors: {},
-    messages: [],
+    projects: new Map(),
   })),
 }), {
   name: 'main-store',
-  storage: createJSONStorage(() => localStorage),
-  partialize: (state) => ({
-    directoryPanelOpened: state.directoryPanelOpened,
-    directoryTree: state.directoryTree,
-    directoryTreeConverted: state.directoryTreeConverted,
-    filesToInclude: state.filesToInclude,
-    filesToExclude: state.filesToExclude,
-    pathsToExclude: state.pathsToExclude,
-    projectDirectory: state.projectDirectory,
-    promptModel: state.promptModel,
-    selectedItems: state.selectedItems,
-    systemPrompt: state.systemPrompt,
-  }),
+  storage: {
+    getItem: (name) => {
+      const str = localStorage.getItem(name)
+      if (!str) return null
+      const existingValue = JSON.parse(str)
+      return {
+        ...existingValue,
+        state: {
+          ...existingValue.state,
+          projects: new Map(existingValue.state.projects),
+        }
+      }
+    },
+    setItem: (name, value) => {
+      const str = JSON.stringify({
+        ...value,
+        state: {
+          ...value.state,
+          projects: Array.from(value.state.projects.entries()),
+        },
+      })
+      localStorage.setItem(name, str)
+    },
+    removeItem: (name) => localStorage.removeItem(name),
+  },
 }))
 
 export default zStore
