@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
 import {
@@ -31,6 +31,12 @@ const StyledTextarea = styled.textarea`
   resize: vertical;
   min-height: 100px;
 `
+const Separator = styled.hr`
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid var(--color-black-2);
+`
 function Settings() {
   const filesToInclude = useProjectStore(state => state.filesToInclude)
   const setFilesToInclude = useProjectStore(state => state.setFilesToInclude)
@@ -38,6 +44,10 @@ function Settings() {
   const setFilesToExclude = useProjectStore(state => state.setFilesToExclude)
   const pathsToExclude = useProjectStore(state => state.pathsToExclude)
   const setPathsToExclude = useProjectStore(state => state.setPathsToExclude)
+  const name = useProjectStore(state => state.name)
+  const setName = useProjectStore(state => state.setName)
+  const path = useProjectStore(state => state.path)
+  const setPath = useProjectStore(state => state.setPath)
   const removeProject = useStore(state => state.removeProject)
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -47,7 +57,7 @@ function Settings() {
     document.dispatchEvent(event)
   }, [])
 
-  const handleChange = useCallback((setter: (value: string) => void, value: string) => {
+  const handleDirChange = useCallback((setter: (value: string) => void, value: string) => {
     setter(value)
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -91,12 +101,39 @@ function Settings() {
           <Dialog.Overlay className="DialogOverlay" />
           <Dialog.Content
             className="DialogContent DialogSettings"
-            style={{ maxWidth: '400px', gap: '15px', display: 'flex', flexDirection: 'column' }}
+            style={{
+              maxWidth: '400px',
+              gap: '15px',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'auto',
+            }}
             aria-describedby={undefined}
           >
             <Dialog.Title className="DialogTitle">
               Settings
             </Dialog.Title>
+
+            <InputWrapper>
+              <label>Project name</label>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </InputWrapper>
+
+            <InputWrapper>
+              <label>Project path</label>
+              <Input
+                type="text"
+                value={path}
+                onChange={(e) => handleDirChange(setPath, e.target.value)}
+                placeholder="Absolute path to the project"
+              />
+            </InputWrapper>
+
+            <Separator />
 
             <InputWrapper>
               <label>Model</label>
@@ -108,7 +145,7 @@ function Settings() {
               <Input
                 type="text"
                 value={filesToInclude}
-                onChange={(e) => handleChange(setFilesToInclude, e.target.value)}
+                onChange={(e) => handleDirChange(setFilesToInclude, e.target.value)}
                 placeholder=".rs,.js,.ts,.tsx"
               />
             </InputWrapper>
@@ -118,7 +155,7 @@ function Settings() {
               <Input
                 type="text"
                 value={filesToExclude}
-                onChange={(e) => handleChange(setFilesToExclude, e.target.value)}
+                onChange={(e) => handleDirChange(setFilesToExclude, e.target.value)}
                 placeholder="package.json,*.d.ts"
               />
             </InputWrapper>
