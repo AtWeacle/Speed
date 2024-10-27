@@ -11,7 +11,6 @@ export type FileSystemItem = {
   children?: FileSystemItem[]
 }
 
-
 export type CodeElement = {
   description: string
   keywords: string[]

@@ -123,7 +123,13 @@ const zStore = create<useStoreState>()(persist((set, get) => ({
 
     const newProject = createProject({ remove }, { set: childSet, get: childGet }, { id, name, path })
 
-    set((state) => { return { ...state, projects: state.projects.set(id, newProject) } })
+    const isFirstProject = get().projects.size === 0
+
+    set((state) => { return {
+      ...state,
+      projects: state.projects.set(id, newProject),
+      ...(isFirstProject ? { activeProjectId: id } : {}),
+    } })
   },
   getProjects: () => Array.from(get().projects.values()),
   getProject: (id) => get().projects.get(id),
