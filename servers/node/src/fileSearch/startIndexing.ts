@@ -130,10 +130,18 @@ function readFilesInPath(directory: string, settings: PathSettings) {
     files.forEach(file => {
       const filePath = path.join(dirPath, file)
       const stat = fs.statSync(filePath)
-      
-      const excludeThisPath = settings.pathsToExclude
-        .filter(p => !!p)
-        .some(excludePath => filePath.startsWith(path.join(dirPath, excludePath)))
+
+      const excludeThisPath = !settings.pathsToExclude
+        ? false
+        : settings
+          .pathsToExclude.filter(p => !!p)
+          .some(excludePath => {
+            if (excludePath.startsWith('*')) {
+              const pathToCheck = excludePath.slice(1)
+              return filePath.includes(pathToCheck)
+            }
+            return filePath.startsWith(path.join(dirPath, excludePath))
+          })
 
       if (excludeThisPath) {
         return
