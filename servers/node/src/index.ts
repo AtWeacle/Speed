@@ -84,6 +84,11 @@ app.get('/api/file-index/search', async (req, res) => {
   const paths = await searchFiles(search)
   res.json({ paths })
 })
+
+app.post('/api/file-index/init', (req, res) => {
+  const directory = req.body.directory as string
+  if (directory) initIndex(directory)
+  res.json({ message: 'Indexing started' })
 })
 
 httpServer.listen(PORT, async () => {
