@@ -9,6 +9,8 @@ export const defaultModel: LllModel = {
   vendor: 'anthropic',
 }
 
+export const FileIndexStatus = ['indexing', 'updating', 'idle'] as const
+
 export const MODELS: Models = {
   /**
    * https://www.anthropic.com/pricing#anthropic-api

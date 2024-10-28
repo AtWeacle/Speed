@@ -54,7 +54,7 @@ const IndexedFileSchema = new Schema<IIndexedFile>({
     type: String,
     required: true,
   },
-})
+}, { timestamps: true })
 
 IndexedFileSchema.index({
   path: 1,

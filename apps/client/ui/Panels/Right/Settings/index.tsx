@@ -196,7 +196,7 @@ function Settings() {
                 }}
                 onClick={handleStartFileIndex}
               >
-                Start file index
+                Start file indexing
               </Button>
             </InputWrapper>
 

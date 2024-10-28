@@ -3,7 +3,6 @@ import pinecone from '@weacle/speed-node-server/src/fileSearch/pinecone/client'
 import {
   slugify,
 } from '@weacle/speed-node-server/src/utils/helpers'
-// import { IndexedFile } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/model'
 
 if (!process.env.PINECONE_INDEX_NAME) {
   throw new Error('PINECONE_INDEX_NAME is required')
@@ -23,7 +22,6 @@ export default async function searchFiles(project: string, searchText: string): 
     vector: embedding,
   })
 
-  // const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
   const filePaths = vectors.matches.map((vector) => vector.metadata.path) as string[]
   return filePaths
 }
