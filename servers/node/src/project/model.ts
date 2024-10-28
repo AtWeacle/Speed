@@ -7,19 +7,6 @@ import {
   FILE_INDEX_STATUS,
 } from '@weacle/speed-lib/constants'
 
-const stateBackupSchema = new mongoose.Schema({
-  state: {
-    type: String,
-    required: true
-  }
-}, { timestamps: true })
-
-stateBackupSchema.index({  createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 })
-
-export type IStateBackupSchema = Document & {
-  state: string
-}
-
 export type IProject = Document & {
   fileIndex: {
     count: number
@@ -28,7 +15,6 @@ export type IProject = Document & {
   name: string
   path: string
   slug: string
-  stateBackups?: IStateBackupSchema[]
 }
 
 const ProjectSchema = new Schema<IProject>({
@@ -56,9 +42,6 @@ const ProjectSchema = new Schema<IProject>({
   slug: {
     type: String,
     required: true,
-  },
-  stateBackups: {
-    type: [stateBackupSchema],
   },
 }, { timestamps: true })
 
