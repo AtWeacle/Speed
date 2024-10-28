@@ -26,6 +26,11 @@ export type DirectoryTreeConverted = Record<TreeItemIndex, TreeItem<string>>
 
 export type FileData = Pick<IndexedFile, 'components' | 'description' | 'functions' | 'keywords'>
 
+export type FileIndex = {
+  count: number
+  status: FileIndexStatusType
+}
+
 export type FileIndexStatusType = typeof FileIndexStatus[number]
 
 export type IndexedFile = {

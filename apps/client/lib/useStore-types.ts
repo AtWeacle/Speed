@@ -2,6 +2,7 @@ import type {
   DirectoryTree,
   DirectoryTreeConverted,
   ErrorsType,
+  FileIndex,
   LllModel,
   Message,
   Project,
@@ -25,6 +26,10 @@ export type ProjectStore = {
   addError: (key: string, value: any) => void
   clearErrors: () => void
   removeError: (key: string) => void
+
+  fileIndex: FileIndex
+  setFileIndex: (fileIndex: FileIndex) => void
+  updateFileIndex: (fileIndex: Partial<FileIndex>) => void
 
   filesToExclude: string
   setFilesToExclude: (filesToExclude: string) => void

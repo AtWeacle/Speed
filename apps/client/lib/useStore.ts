@@ -43,6 +43,18 @@ const createProject = (
     return { errors }
   }),
 
+  fileIndex: {
+    count: 0,
+    status: 'idle',
+  },
+  setFileIndex: (fileIndex) => set(() => ({ fileIndex })),
+  updateFileIndex: (fileIndex) => set((state) => ({
+    fileIndex: {
+      ...state.fileIndex,
+      ...fileIndex,
+    },
+  })),
+
   filesToInclude: '.rs,.js,.ts,.tsx,.css,.json,.html',
   setFilesToInclude: (filesToInclude) => set(() => ({ filesToInclude })),
 
