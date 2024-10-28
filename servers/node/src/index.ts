@@ -7,6 +7,7 @@ import os from 'os'
 import { exec } from 'child_process'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
+import { Project } from '@weacle/speed-node-server/src/project/model'
 
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
@@ -16,6 +17,7 @@ import searchFiles from '@weacle/speed-node-server/src/fileSearch/searchFiles'
 import type {
   DirectoryTree,
 } from '@weacle/speed-lib/types'
+import { slugify } from '@weacle/speed-node-server/src/utils/helpers'
 
 dotenv.config({ path: '../../.env' })
 
@@ -110,6 +112,32 @@ app.post('/api/file-index/start', (req, res) => {
 
   if (project && directory) startIndexing(project, directory, settings)
   res.json({ message: 'Indexing started' })
+})
+
+app.post('/api/project', async (req, res) => {
+  const { name, path } = req.query
+
+  if (!name || !path) {
+    return res.status(400).json({ error: 'Name, path and slug are required' })
+  }
+
+  try {
+    const project = new Project({
+      fileIndex: {
+        count: 0,
+        status: 'idle'
+      },
+      name,
+      path,
+      slug: slugify(name as string),
+    })
+
+    await project.save()
+    res.json(project)
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 })
 
 httpServer.listen(PORT, async () => {

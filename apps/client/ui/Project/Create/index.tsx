@@ -51,9 +51,21 @@ export default function Create({ onClose }: { onClose?: () => void }) {
     }
 
     setErrors({})
-    setProject(nanoid(), { name, path})
-    if (onClose) onClose()
+    const projectId = nanoid()
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/project?name=${name}&path=${path}`, {
+      method: 'POST'
+    })
+      .then(response => response.json())
+      .then(project => {
+        setProject(projectId, { name, path })
+        if (onClose) onClose()
+      })
+      .catch(error => {
+        setErrors({ name: error.message })
+      })
   }
+  
 
   return (
     <Wrapper>
