@@ -188,10 +188,6 @@ function FileSearch() {
     }
   }
 
-  function handleSuggestionClick(path: string) {
-    // Do nothing
-  }
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       fetchSuggestions()
@@ -208,6 +204,8 @@ function FileSearch() {
   }
 
   function handleAddToSelection(path: string) {
+    const { selectedItems, setSelectedItems } = useProjectStore.getState()
+    setSelectedItems([...selectedItems, 'root/' + path])
   }
 
   async function handleOpenFile(path: string) {
@@ -247,7 +245,6 @@ function FileSearch() {
             {suggestions.map((path, index) => (
               <SuggestionItem
                 key={index}
-                onClick={() => handleSuggestionClick(path)}
               >
                 <span title={path}>{path}</span>
 
