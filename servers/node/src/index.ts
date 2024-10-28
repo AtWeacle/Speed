@@ -64,8 +64,21 @@ app.get('/api/directory-tree', (req, res) => {
   }
 })
 
-app.post('/api/initIndex', (req, res) => {
-  initIndex('')
+app.post('/api/file/open', (req, res) => {
+  const filePath = req.query.path as string
+  if (!filePath) {
+    return res.status(400).json({ error: 'File path is required' })
+  }
+
+  try {
+    const command = process.platform === 'win32' ? 'start' : 'open'
+    require('child_process').exec(`${command} "${filePath}"`)
+    res.json({ success: true })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 app.get('/api/file-index/search', async (req, res) => {
   const search = req.query.search as string
   const paths = await searchFiles(search)
