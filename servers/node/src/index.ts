@@ -6,6 +6,8 @@ import { WebSocketServer } from 'ws'
 import os from 'os'
 import { exec } from 'child_process'
 import bodyparser from 'body-parser'
+import fs from 'fs'
+import path from 'path'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 import { App } from '@weacle/speed-node-server/src/app/model'
@@ -105,6 +107,10 @@ app.post('/api/file/open', (req, res) => {
   }
 
   try {
+    if (!fs.existsSync(filePath) || fs.lstatSync(filePath).isDirectory()) {
+      return res.status(400).json({ error: 'File does not exist or is a directory' })
+    }
+
     if (os.platform() === 'darwin') {
       /**
        * Trigger the default app for opening the file on macOS
