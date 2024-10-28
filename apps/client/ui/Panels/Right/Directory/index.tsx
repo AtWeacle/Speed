@@ -271,37 +271,37 @@ function Directory() {
         <Title>Selection</Title>
 
         {selectedItems.length > 0 ? (
-        <SelectedItemsList>
-          {selectedItems.map((item, index) => {
-            const itemPath = item.replace('root/', '')
-            return (
-              <SelectedItem key={index}>
-                <ItemContent title={itemPath}>
-                  {isDirectory(item)
-                    ? <Folder color="var(--color-black-8)" size={12} />
-                    : <FileText color="var(--color-black-8)"  size={12} />
-                  }
-                  <span>{itemPath}</span>
-                </ItemContent>
-                <ItemActions>
-                  <ItemButton onClick={() => {
-                    axios.post(`${SERVER_URL}/api/file/open`, null, {
-                      params: { path: `${useProjectStore.getState().path}/${itemPath}` }
-                    })
-                  }}>
-                    <SquareArrowOutUpRight color="var(--color-black-8)" size={11} strokeWidth={2.5} />
-                  </ItemButton>
-                  <ItemButton onClick={() => {
-                    const newSelectedItems = selectedItems.filter(i => i !== item)
-                    setSelectedItems(newSelectedItems)
-                  }}>
-                    <X color="var(--color-black-8)" size={11} strokeWidth={2.5} />
-                  </ItemButton>
-                </ItemActions>
-              </SelectedItem>
-            )
-          })}
-        </SelectedItemsList>
+          <SelectedItemsList>
+            {selectedItems.map((item, index) => {
+              const itemPath = item.replace('root/', '')
+              return (
+                <SelectedItem key={index}>
+                  <ItemContent title={itemPath}>
+                    {isDirectory(item)
+                      ? <Folder color="var(--color-black-8)" size={12} />
+                      : <FileText color="var(--color-black-8)"  size={12} />
+                    }
+                    <span>{itemPath}</span>
+                  </ItemContent>
+                  <ItemActions>
+                    <ItemButton onClick={() => {
+                      axios.post(`${SERVER_URL}/api/file/open`, null, {
+                        params: { path: `${useProjectStore.getState().path}/${itemPath}` }
+                      })
+                    }}>
+                      <SquareArrowOutUpRight color="var(--color-black-8)" size={11} strokeWidth={2.5} />
+                    </ItemButton>
+                    <ItemButton onClick={() => {
+                      const newSelectedItems = selectedItems.filter(i => i !== item)
+                      setSelectedItems(newSelectedItems)
+                    }}>
+                      <X color="var(--color-black-8)" size={11} strokeWidth={2.5} />
+                    </ItemButton>
+                  </ItemActions>
+                </SelectedItem>
+              )
+            })}
+          </SelectedItemsList>
         ) : null}
       </SelectedItems>
       

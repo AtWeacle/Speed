@@ -14,6 +14,7 @@ import {
 } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/schemas'
 
 import type {
+  CodeElement,
   FileData,
   PathSettings,
 } from '@weacle/speed-lib/types'
@@ -36,7 +37,7 @@ type FileList = {
   content: string
   path: string
 }
-
+ 
 /**
  * @param directory Absolute path to the directory to index
  */
@@ -56,56 +57,73 @@ export default async function startIndexing(project: string, directory: string, 
 
   let count = 0
   const total = files.length
+  console.log('Total files:', total)
 
-  await Project.updateOne({ slug: projectSlug }, { $set: { fileIndex: { status: 'indexing', total } } })
+  await Project.updateOne({ slug: projectSlug }, { $set: {
+    'fileIndex.status': 'indexing',
+    'fileIndex.count': 0,
+    'fileIndex.total': total,
+  } })
 
   for (const { content, path } of files) {
-    if (!content) {
+    count++
+
+    try {
+      if (!content) {
+        const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
+        IndexedFile.deleteOne({ _id: indexedFile._id })
+        index.deleteOne(indexedFile.vectorId)
+        continue
+      }
+
       const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
-      IndexedFile.deleteOne({ _id: indexedFile._id })
-      index.deleteOne(indexedFile.vectorId)
+      if (indexedFile) continue
+
+      console.log('\t • Processing file:', path)
+
+      const fileData = await getFileData(content, path)
+      if (!fileData
+        || !fileData.description
+        || !fileData.keywords?.length
+      ) continue
+        
+      if (count % 10 === 0) {
+        console.log('Processed', count, 'files')
+        Project.updateOne({ slug: projectSlug }, { $set: {
+          'fileIndex.processed': count,
+        } })
+      }
+
+      const embedding = await getEmbedding(JSON.stringify(fileData))
+      const vectorId = uuidv4()
+      const ensuredFileData = ensureLengthLimit(fileData)
+
+      IndexedFile.create({
+        ...ensuredFileData,
+        path,
+        project: projectSlug,
+        vectorId,
+      })
+
+      const records = [{ 
+        id: vectorId, 
+        values: embedding, 
+        metadata: { path }, 
+      }]
+
+      const recordChunks = chunks(records)
+
+      await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
+      
+    } catch (error) {
+      console.error('Error processing file:', path, error)
       continue
     }
-
-    const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
-    if (indexedFile) continue
-
-    console.log('\t • Processing file:', path)
-
-    const fileData = await getFileData(content)
-    if (!fileData) continue
-      
-    if (count++ % 10 === 0) {
-      console.log('Processed', count, 'files')
-      Project.updateOne({ slug: projectSlug }, { $set: { fileIndex: { processed: count } } })
-    }
-
-    const embedding = await getEmbedding(JSON.stringify(fileData))
-    const vectorId = uuidv4()
-
-    IndexedFile.create({
-      ...fileData,
-      path,
-      project: projectSlug,
-      vectorId,
-    })
-
-    const records = [{ 
-      id: vectorId, 
-      values: embedding, 
-      metadata: { path }, 
-    }]
-
-    const recordChunks = chunks(records)
-
-    await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
   }
 
   await Project.updateOne({ slug: projectSlug }, { $set: { 
-    fileIndex: {
-      count,
-      status: 'idle',
-    },
+    'fileIndex.count': count,
+    'fileIndex.status': 'idle',
   } })
 }
 
@@ -169,7 +187,6 @@ function readFilesInPath(directory: string, settings: PathSettings) {
         }
 
         const fileContent = fs.readFileSync(filePath, 'utf8')
-        // const relativePath = path.relative(directory, filePath)
         fileList.push({ content: fileContent, path: filePath })
       }
     })
@@ -179,21 +196,44 @@ function readFilesInPath(directory: string, settings: PathSettings) {
   return fileList
 }
 
-const getFileDataPrompt = (content: string) => `
+function ensureLengthLimit(indexedFile: FileData): FileData {
+  function sliceArray(arr: any[], maxLength: number): any[] {
+    return arr.slice(0, maxLength)
+  }
+
+  function processCodeElement(element: CodeElement): CodeElement {
+    return {
+      ...element,
+      keywords: sliceArray(element.keywords, 20)
+    }
+  }
+
+  return {
+    ...indexedFile,
+    keywords: sliceArray(indexedFile.keywords, 20),
+    components: sliceArray(indexedFile.components, 30).map(processCodeElement),
+    functions: sliceArray(indexedFile.functions, 100).map(processCodeElement)
+  }
+}
+
+const getFileDataPrompt = (content: string, filePath: string) => `
 What is the file about? Use the file content determine what's the file is about.
 Return a JSON that contains the details about the files.
-If there are some functions created in the file, write the list of functions present in the file.
-If there are some react components created in the file, write the list of components present in the file.
+If there are some functions created in the file, write the list of important functions present in the file. Skip minor functions.
+If there are some react components created in the file, write the list of important components present in the file. Skip minor components.
+
+Json files in folder named "translations" are used to store translations for the application.
+
+File path:
+"${filePath}"
 
 File content:
 "${content}"
-
-Return the title for the chat in a JSON object with the key "title".
 `
 
-async function getFileData(content: string): Promise<FileData | null> {
+async function getFileData(content: string, filePath: string): Promise<FileData | null> {
   try {
-    const prompt = getFileDataPrompt(content)
+    const prompt = getFileDataPrompt(content, filePath)
 
     const completion = await openai.beta.chat.completions.parse({
       model: MODELS.gpt_4o_mini,

@@ -10,6 +10,7 @@ import useStore from '@weacle/speed-client/lib/useStore'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
 import SelectModel from '@weacle/speed-client/ui/Panels/Right/Settings/SelectModel'
+import { SERVER_URL } from '@weacle/speed-client/lib/constants'
 import {
   InputWrapper,
   Input,
@@ -89,7 +90,7 @@ function Settings() {
       pathsToExclude: pathsToExclude.join(',')
     })
 
-    fetch(`/api/file-index/start?${params.toString()}`, {
+    fetch(`${SERVER_URL}/api/file-index/start?${params.toString()}`, {
       method: 'POST'
     })
   }

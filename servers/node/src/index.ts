@@ -7,7 +7,6 @@ import os from 'os'
 import { exec } from 'child_process'
 import bodyparser from 'body-parser'
 import fs from 'fs'
-import path from 'path'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 import { App } from '@weacle/speed-node-server/src/app/model'
@@ -141,7 +140,7 @@ app.post('/api/file-index/start', (req, res) => {
   const project = req.query.project as string
   const filesToExclude = req.query.filesToExclude as string
   const filesToInclude = req.query.filesToInclude as string
-  const pathsToExclude = req.query.pathsToExclude as string[]
+  const pathsToExclude = (req.query.pathsToExclude as string)?.split(',') as string[]
 
   const settings = { filesToExclude, filesToInclude, pathsToExclude }
 
