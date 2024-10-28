@@ -115,6 +115,13 @@ function Settings() {
             </Dialog.Title>
 
             <InputWrapper>
+              <label>Model</label>
+              <SelectModel />
+            </InputWrapper>
+
+            <Separator />
+
+            <InputWrapper>
               <label>Project name</label>
               <Input
                 type="text"
@@ -131,13 +138,6 @@ function Settings() {
                 onChange={(e) => handleDirChange(setPath, e.target.value)}
                 placeholder="Absolute path to the project"
               />
-            </InputWrapper>
-
-            <Separator />
-
-            <InputWrapper>
-              <label>Model</label>
-              <SelectModel />
             </InputWrapper>
 
             <InputWrapper>
@@ -168,6 +168,23 @@ function Settings() {
                 placeholder="/apps/client/public&#10;/apps/server/api"
               />
             </InputWrapper>
+
+            <InputWrapper>
+              <Button
+                className="Button"
+                style={{
+                  backgroundColor: 'var(--color-black-3)',
+                  color: 'var(--color-black-8)',
+                  padding: '7px 10px',
+                  height: 'auto',
+                }}
+                // onClick={handleInitIndex}
+              >
+                Init file index
+              </Button>
+            </InputWrapper>
+
+            <Separator />
 
             <InputWrapper>
               <Button
