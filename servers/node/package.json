@@ -4,11 +4,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon ---config nodemon.json"
+    "dev": "tsx watch --clear-screen=false --include src --include .env src/index.ts"
   },
   "engines": {
-    "npm": "9.x",
-    "node": "18.x",
+    "npm": "10.x",
+    "node": "20.x",
     "yarn": "4.x"
   },
   "dependencies": {
@@ -16,8 +16,6 @@
     "@pinecone-database/pinecone": "^4.0.0",
     "chromadb": "^1.9.2",
     "dotenv": "^16.4.5",
-    "esbuild": "^0.23.1",
-    "esbuild-register": "^3.6.0",
     "express": "^4.17.1",
     "mongoose": "^8.7.3",
     "openai": "^4.68.3",
@@ -32,8 +30,8 @@
     "@types/node": "^16.11.7",
     "@types/uuid": "^10",
     "@types/ws": "^8.5.12",
-    "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.5.4"
   }
 }

@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
-import { z } from 'zod'
 
 import type {
   CodeElement,

@@ -17,8 +17,8 @@
     "reset": "yarn clean && yarn install"
   },
   "engines": {
-    "npm": "9.x",
-    "node": "18.x",
+    "npm": "10.x",
+    "node": "20.x",
     "yarn": "4.x"
   },
   "packageManager": "yarn@4.4.0",
