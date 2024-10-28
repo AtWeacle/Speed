@@ -52,7 +52,7 @@ export default async function searchFiles(project: string, searchText: string): 
       .lean<IIndexedFile[]>().exec()
 
     const completion = await openai.beta.chat.completions.parse({
-      model: MODELS.gpt_4o,
+      model: MODELS.gpt_4o_mini,
       messages: [
         { role: 'user', content: getRelevantFilesPrompt(searchText, indexedFiles) },
       ],
