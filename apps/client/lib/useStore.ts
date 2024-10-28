@@ -90,6 +90,9 @@ const createProject = (
   promptModel: { ...defaultModel },
   setPromptModel: (model) => set(() => ({ promptModel: model })),
 
+  search: '',
+  setSearch: (search) => set(() => ({ search })),
+
   selectedItems: [],
   addSelectedItem: (item) => set((state) => ({
     selectedItems: [...state.selectedItems, item],

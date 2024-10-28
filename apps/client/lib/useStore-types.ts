@@ -58,6 +58,9 @@ export type ProjectStore = {
   promptModel: LllModel
   setPromptModel: (model: LllModel) => void
 
+  search: string
+  setSearch: (search: string) => void
+
   selectedItems: string[]
   addSelectedItem: (item: string) => void
   setSelectedItems: (items: string[]) => void

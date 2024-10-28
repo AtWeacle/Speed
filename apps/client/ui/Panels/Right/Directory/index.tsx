@@ -22,6 +22,7 @@ import type {
 } from '@weacle/speed-lib/types'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
+import FileSearch from '@weacle/speed-client/ui/Panels/Right/Directory/FileSearch'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,36 +39,6 @@ const Title = styled.h6`
   padding: 5px 10px;
   font-size: .8rem;
   color: var(--color-black-8);
-`
-const DirectoryPath = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 30px;
-  padding: 0 5px;
-  width: calc(100% - 10px);
-
-  input {
-    width: 100%;
-    padding: 5px;
-    border: none;
-    background-color: var(--color-black-2);
-    color: var(--color-black-8);
-    border-radius: calc(var(--border-radius) * .5);
-    border: 1px solid var(--color-black-4);
-    transition: outline .2s, border-color .2s;
-    outline: 1px solid transparent;
-    font-size: .8rem;
-
-    &:focus {
-      outline-color: var(--color-deepblue);
-      border-color: var(--color-deepblue);
-    }
-
-    &::placeholder {
-      color: var(--color-black-6);
-    }
-  }
 `
 const TreeContainer = styled.div`
   flex: 1;
@@ -134,18 +105,16 @@ const SelectedItem = styled.li`
 //   cursor: pointer;
 // `
 function Directory() {
-  const setPath = useProjectStore(state => state.setPath)
-  const path = useProjectStore(state => state.path)
   const directoryTreeConverted = useProjectStore(state => state.directoryTreeConverted)
   const setDirectoryTreeConverted = useProjectStore(state => state.setDirectoryTreeConverted)
   const setDirectoryTree = useProjectStore(state => state.setDirectoryTree)
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
-  // const clearSelectedItems = useProjectStore(state => state.clearSelectedItems)
-  // const selectAllItems = useProjectStore(state => state.selectAllItems)
 
   const [loading, setLoading] = useState(false)
-  const [showTree, setShowTree] = useState(false)
+  const [showTree, setShowTree] = useState(true)
+  console.log('directoryTreeConverted', directoryTreeConverted)
+  console.log('showTree', showTree)
 
   useEffect(() => {
     function handleRefetchEvent() {
@@ -197,13 +166,6 @@ function Directory() {
     }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') {
-      setSelectedItems([])
-      fetchDirectoryTree()
-    }
-  }
-
   function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
     const items: Record<TreeItemIndex, TreeItem<string>> = {}
 
@@ -232,18 +194,7 @@ function Directory() {
 
   return (
     <Wrapper>
-      <Title>Files to includes in the prompt</Title>
-      <DirectoryPath>
-        <input
-          className="Input"
-          type="text"
-          id="path"
-          placeholder="Enter project absolute path"
-          value={path}
-          onChange={e => setPath(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-      </DirectoryPath>
+      <FileSearch />
 
       <TreeContainer className="rct-dark">
         {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 && (
