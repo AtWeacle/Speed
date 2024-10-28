@@ -3,6 +3,8 @@ import dotenv from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
+import os from 'os'
+import { exec } from 'child_process'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 
@@ -18,6 +20,7 @@ import type {
 dotenv.config({ path: '../../.env' })
 
 const app = express()
+const CODING_APP = 'Visual Studio Code'
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -71,8 +74,18 @@ app.post('/api/file/open', (req, res) => {
   }
 
   try {
-    const command = process.platform === 'win32' ? 'start' : 'open'
-    require('child_process').exec(`${command} "${filePath}"`)
+    if (os.platform() === 'darwin') {
+      /**
+       * Trigger the default app for opening the file on macOS
+       * without changing the file which will trigger a watcher to restart the server.
+       * The "open" command will change the file and trigger the watcher.
+       */
+      exec(`osascript -e 'tell application "${CODING_APP}" to open POSIX file "${filePath}"'`)
+
+    } else if (os.platform() === 'win32' || os.platform() === 'linux') {
+      exec(`open "${filePath}"`)
+    }
+
     res.json({ success: true })
   } catch (error) {
     res.status(500).json({ error: error.message })
