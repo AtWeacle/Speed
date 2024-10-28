@@ -80,6 +80,20 @@ function Settings() {
     }
   }, [removeProject])
 
+  function handleStartFileIndex() {
+    const params = new URLSearchParams({
+      directory: path,
+      project: name,
+      filesToExclude,
+      filesToInclude,
+      pathsToExclude: pathsToExclude.join(',')
+    })
+
+    fetch(`/api/file-index/start?${params.toString()}`, {
+      method: 'POST'
+    })
+  }
+
   return (
     <Wrapper>
       <SystemPrompt />
@@ -169,6 +183,8 @@ function Settings() {
               />
             </InputWrapper>
 
+            <Separator />
+
             <InputWrapper>
               <Button
                 className="Button"
@@ -178,9 +194,9 @@ function Settings() {
                   padding: '7px 10px',
                   height: 'auto',
                 }}
-                // onClick={handleInitIndex}
+                onClick={handleStartFileIndex}
               >
-                Init file index
+                Start file index
               </Button>
             </InputWrapper>
 

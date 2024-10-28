@@ -37,17 +37,19 @@ type FileList = {
 /**
  * @param directory Absolute path to the directory to index
  */
-export default async function initIndex(project: string, directory: string) {
+export default async function startIndexing(project: string, directory: string, settings?: PathSettings) {
   const index = pinecone.index(process.env.PINECONE_INDEX_NAME)
     console.log('\n\n ====\n initIndex')
 
   const projectSlug = slugify(project)
 
-  const files = readFilesInPath(directory, {
+  const defaultSettings: PathSettings = {
     filesToExclude: '',
     filesToInclude: '*.ts,*.tsx',
     pathsToExclude: ['node_modules', 'dist', 'build', 'coverage', 'public', 'server', 'src', 'test', 'tests'],
-  })
+  }
+
+  const files = readFilesInPath(directory, settings || defaultSettings)
 
   let count = 0
 
@@ -77,7 +79,7 @@ export default async function initIndex(project: string, directory: string) {
     IndexedFile.create({
       ...fileData,
       path,
-      project,
+      project: projectSlug,
       vectorId,
     })
 

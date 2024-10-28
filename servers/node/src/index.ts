@@ -8,7 +8,7 @@ import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
-import initIndex from '@weacle/speed-node-server/src/fileSearch/initIndex'
+import startIndexing from '@weacle/speed-node-server/src/fileSearch/startIndexing'
 import searchFiles from '@weacle/speed-node-server/src/fileSearch/searchFiles'
 
 import type {
@@ -86,10 +86,16 @@ app.get('/api/file-index/search', async (req, res) => {
   res.json({ paths })
 })
 
-app.post('/api/file-index/init', (req, res) => {
+app.post('/api/file-index/start', (req, res) => {
   const directory = req.query.directory as string
   const project = req.query.project as string
-  if (project && directory) initIndex(project, directory)
+  const filesToExclude = req.query.filesToExclude as string
+  const filesToInclude = req.query.filesToInclude as string
+  const pathsToExclude = req.query.pathsToExclude as string[]
+
+  const settings = { filesToExclude, filesToInclude, pathsToExclude }
+
+  if (project && directory) startIndexing(project, directory, settings)
   res.json({ message: 'Indexing started' })
 })
 
