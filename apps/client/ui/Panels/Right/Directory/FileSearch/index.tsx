@@ -201,7 +201,7 @@ function FileSearch() {
   }
 
   function handleClose() {
-    setSearch('')
+    // setSearch('')
     setSuggestions([])
   }
 
