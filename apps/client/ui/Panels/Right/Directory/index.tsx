@@ -14,6 +14,8 @@ import {
   ChevronRight,
   FileText,
   Folder,
+  SquareArrowOutUpRight,
+  X,
 } from 'lucide-react'
 
 import type {
@@ -82,13 +84,57 @@ const SelectedItemsList = styled.ul`
   max-height: 150px;
   overflow-y: auto;
 `
+
 const SelectedItem = styled.li`
   display: flex;
   align-items: center;
   font-size: 0.8rem;
   color: var(--color-black-8);
-  margin-bottom: 5px;
+  gap: 2px;
+  justify-content: space-between;
+  max-width: calc(100% - 10px);
+  transition: background-color .2s, color .2s;
+
+  &:hover {
+    background-color: var(--color-black-2);
+  }
+`
+const ItemContent = styled.div`
+  display: flex;
+  align-items: center;
   gap: 5px;
+
+  span {
+    display: block;
+    width: 290px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+`
+const ItemActions = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+`
+const ItemButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0px 0px;
+  height: 22px;
+  cursor: pointer;
+  color: var(--color-black-7);
+  border-radius: calc(var(--border-radius) * .6);
+  transition: background-color .2s, color .2s;
+  font-size: .75rem;
+
+  &:hover {
+    color: var(--color-black-9);
+  }
 `
 // const ButtonContainer = styled.div`
 //   display: flex;
@@ -225,17 +271,37 @@ function Directory() {
         <Title>Selection</Title>
 
         {selectedItems.length > 0 ? (
-          <SelectedItemsList>
-            {selectedItems.map((item, index) => (
+        <SelectedItemsList>
+          {selectedItems.map((item, index) => {
+            const itemPath = item.replace('root/', '')
+            return (
               <SelectedItem key={index}>
-                {isDirectory(item)
-                  ? <Folder color="var(--color-black-8)" size={12} />
-                  : <FileText color="var(--color-black-8)"  size={12} />
-                }
-                {item.replace('root/', '')}
+                <ItemContent title={itemPath}>
+                  {isDirectory(item)
+                    ? <Folder color="var(--color-black-8)" size={12} />
+                    : <FileText color="var(--color-black-8)"  size={12} />
+                  }
+                  <span>{itemPath}</span>
+                </ItemContent>
+                <ItemActions>
+                  <ItemButton onClick={() => {
+                    axios.post(`${SERVER_URL}/api/file/open`, null, {
+                      params: { path: `${useProjectStore.getState().path}/${itemPath}` }
+                    })
+                  }}>
+                    <SquareArrowOutUpRight color="var(--color-black-8)" size={11} strokeWidth={2.5} />
+                  </ItemButton>
+                  <ItemButton onClick={() => {
+                    const newSelectedItems = selectedItems.filter(i => i !== item)
+                    setSelectedItems(newSelectedItems)
+                  }}>
+                    <X color="var(--color-black-8)" size={11} strokeWidth={2.5} />
+                  </ItemButton>
+                </ItemActions>
               </SelectedItem>
-            ))}
-          </SelectedItemsList>
+            )
+          })}
+        </SelectedItemsList>
         ) : null}
       </SelectedItems>
       
