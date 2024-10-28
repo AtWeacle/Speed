@@ -5,6 +5,7 @@ import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
 import os from 'os'
 import { exec } from 'child_process'
+import bodyparser from 'body-parser'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 import { Project } from '@weacle/speed-node-server/src/project/model'
@@ -29,6 +30,9 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
 })
+
+app.use(bodyparser.json({ limit: '100mb' }))
+app.use(bodyparser.urlencoded({ extended: true }))
 
 const httpServer = createServer(app)
 
