@@ -80,6 +80,8 @@ export type ProjectStore = {
 }
 
 export type useStoreState = {
+  lastBackupAt: string | null
+  setLastBackupAt: (lastBackupAt: string | null) => void
   projects: Map<string, ProjectStore>
   setProject: (id: string, data: Partial<Project>) => void
   getProjects: () => ProjectStore[]

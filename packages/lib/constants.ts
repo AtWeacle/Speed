@@ -3,13 +3,13 @@ import type {
   Models,
 } from '@weacle/speed-lib/types'
 
-export const defaultModel: LllModel = {
+export const DEFAULT_MODEL: LllModel = {
   id: 'claude-3-5-sonnet-20241022',
   name: 'Claude 3.5 Sonnet',
   vendor: 'anthropic',
 }
 
-export const FileIndexStatus = ['indexing', 'updating', 'idle'] as const
+export const FILE_INDEX_STATUS = ['indexing', 'updating', 'idle'] as const
 
 export const MODELS: Models = {
   /**
@@ -101,3 +101,5 @@ export const MODEL_IDS = Object.values(MODELS).reduce((acc, vendor) => {
 }, [] as string[])
 
 export const DEFAULT_FILES_TO_EXCLUDE = ['node_modules', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
+
+export const STORE_NAME = 'main-store'

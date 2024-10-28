@@ -4,7 +4,7 @@ import type {
   FileIndexStatusType,
 } from '@weacle/speed-lib/types'
 import {
-  FileIndexStatus,
+  FILE_INDEX_STATUS,
 } from '@weacle/speed-lib/constants'
 
 const stateBackupSchema = new mongoose.Schema({
@@ -40,7 +40,7 @@ const ProjectSchema = new Schema<IProject>({
     },
     status: {
       type: String,
-      enum: FileIndexStatus,
+      enum: FILE_INDEX_STATUS,
       default: 'idle',
       required: true,
     },

@@ -7,7 +7,8 @@ import type {
   Project,
 } from '@weacle/speed-lib/types'
 import {
-  defaultModel,
+  DEFAULT_MODEL,
+  STORE_NAME,
 } from '@weacle/speed-lib/constants'
 
 const createProject = (
@@ -99,7 +100,7 @@ const createProject = (
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 
-  promptModel: { ...defaultModel },
+  promptModel: { ...DEFAULT_MODEL },
   setPromptModel: (model) => set(() => ({ promptModel: model })),
 
   search: '',
@@ -124,6 +125,8 @@ const createProject = (
 })
 
 const useStore = create<useStoreState>()(persist((set, get) => ({
+  lastBackupAt: null,
+  setLastBackupAt: (lastBackupAt) => set(() => ({ lastBackupAt })),
   projects: new Map(),
   setProject: (id, data) => {
     const childSet = (fn: Function) => {
@@ -177,7 +180,7 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
     projects: new Map(),
   })),
 }), {
-  name: 'main-store',
+  name: STORE_NAME,
   storage: {
     getItem: (name) => {
       const str = localStorage.getItem(name)

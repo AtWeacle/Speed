@@ -4,7 +4,7 @@ import {
 } from 'react-complex-tree'
 
 import {
-  FileIndexStatus,
+  FILE_INDEX_STATUS,
 } from '@weacle/speed-lib/constants'
 
 export type ErrorsType = Record<string, string>
@@ -31,7 +31,7 @@ export type FileIndex = {
   status: FileIndexStatusType
 }
 
-export type FileIndexStatusType = typeof FileIndexStatus[number]
+export type FileIndexStatusType = typeof FILE_INDEX_STATUS[number]
 
 export type IndexedFile = {
   components: CodeElement[]
