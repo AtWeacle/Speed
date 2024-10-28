@@ -28,18 +28,20 @@ export type IProject = Document & {
   name: string
   path: string
   slug: string
-  stateBackups: IStateBackupSchema[]
+  stateBackups?: IStateBackupSchema[]
 }
 
 const ProjectSchema = new Schema<IProject>({
   fileIndex: {
     count: {
       type: Number,
+      default: 0,
       required: true,
     },
     status: {
       type: String,
       enum: FileIndexStatus,
+      default: 'idle',
       required: true,
     },
   },
@@ -57,7 +59,6 @@ const ProjectSchema = new Schema<IProject>({
   },
   stateBackups: {
     type: [stateBackupSchema],
-    required: true,
   },
 }, { timestamps: true })
 
