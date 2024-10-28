@@ -113,8 +113,6 @@ function Directory() {
 
   const [loading, setLoading] = useState(false)
   const [showTree, setShowTree] = useState(true)
-  console.log('directoryTreeConverted', directoryTreeConverted)
-  console.log('showTree', showTree)
 
   useEffect(() => {
     function handleRefetchEvent() {

@@ -9,10 +9,8 @@ if (!process.env.PINECONE_INDEX_NAME) {
 /**
  * @param directory Absolute path to the directory to index
  */
-export default async function searchFiles(searchText: string) {
+export default async function searchFiles(searchText: string): Promise<string[]> {
   const index = pinecone.index(process.env.PINECONE_INDEX_NAME)
-    console.log('\n\n ====\n searchFiles')
-
   const embedding = await getEmbedding(searchText)
 
   const vectors = await index.namespace('').query({
@@ -21,6 +19,7 @@ export default async function searchFiles(searchText: string) {
     vector: embedding,
   })
 
-  console.log('vectors', JSON.stringify(vectors, null, 2))
   // const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
+  const filePaths = vectors.matches.map((vector) => vector.metadata.path) as string[]
+  return filePaths
 }
