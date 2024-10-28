@@ -145,6 +145,7 @@ function Directory() {
   // const selectAllItems = useProjectStore(state => state.selectAllItems)
 
   const [loading, setLoading] = useState(false)
+  const [showTree, setShowTree] = useState(false)
 
   useEffect(() => {
     function handleRefetchEvent() {
@@ -157,6 +158,14 @@ function Directory() {
       document.removeEventListener('we.directoryTree.refetch', handleRefetchEvent)
     }
   }, [])
+
+  useEffect(() => {
+    setShowTree(false)
+
+    setTimeout(() => {
+      setShowTree(true)
+    }, 200)
+  }, [directoryTreeConverted])
 
   async function fetchDirectoryTree() {
     const {
@@ -237,7 +246,7 @@ function Directory() {
       </DirectoryPath>
 
       <TreeContainer className="rct-dark">
-        {directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 && (
+        {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 && (
           <>{loading ?
             <div>Loading...</div>
           : <UncontrolledTreeEnvironment
