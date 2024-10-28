@@ -8,6 +8,7 @@ import { exec } from 'child_process'
 import bodyparser from 'body-parser'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
+import { App } from '@weacle/speed-node-server/src/app/model'
 import { Project } from '@weacle/speed-node-server/src/project/model'
 
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
@@ -51,6 +52,30 @@ wsServer.on('connection', (ws) => {
   ws.on('disconnect', () => {
     console.log('User disconnected')
   })
+})
+
+app.post('/api/app/backup', async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ error: 'Request body is required' })
+  }
+
+  const { state } = req.body
+
+  if (!state) {
+    return res.status(400).json({ error: 'State is required' })
+  }
+
+  try {
+    await App.updateOne({}, {
+      $addToSet: {
+        stateBackups: { state }
+      },
+    }, { upsert: true })
+    res.json({ success: true })
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 })
 
 app.get('/api/directory-tree', (req, res) => {

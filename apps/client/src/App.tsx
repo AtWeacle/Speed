@@ -6,7 +6,8 @@ import Chat from '@weacle/speed-client/ui/Chat'
 import CreateProject from '@weacle/speed-client/ui/Project/Create'
 import Nav from '@weacle/speed-client/ui/Nav'
 import RightPanel from '@weacle/speed-client/ui/Panels/Right'
-import ConnectionManager from '@weacle/speed-client/ui/ConnectionManager'
+import ConnectionManager from '@weacle/speed-client/ui/Managers/ConnectionManager'
+import BackupManager from '@weacle/speed-client/ui/Managers/BackupManager'
 
 const Layout = styled.div`
   --dir-panel-width: 400px;
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
       <ConnectionManager />
+      <BackupManager />
 
       <Nav />
 
