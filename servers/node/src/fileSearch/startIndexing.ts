@@ -37,13 +37,52 @@ type FileList = {
   content: string
   path: string
 }
- 
-/**
- * @param directory Absolute path to the directory to index
- */
+
+type QueueItem = {
+  content: string
+  path: string
+}
+
+class Queue {
+  private items: QueueItem[] = []
+  private processing = 0
+  private maxConcurrent: number
+  private onComplete: () => void
+  private processItem: (item: QueueItem) => Promise<void>
+
+  constructor(maxConcurrent: number, processItem: (item: QueueItem) => Promise<void>, onComplete: () => void) {
+    this.maxConcurrent = maxConcurrent
+    this.processItem = processItem
+    this.onComplete = onComplete
+  }
+
+  add(item: QueueItem) {
+    this.items.push(item)
+    this.processNext()
+  }
+
+  private async processNext() {
+    if (this.processing >= this.maxConcurrent || this.items.length === 0) return
+
+    this.processing++
+    const item = this.items.shift()
+
+    try {
+      await this.processItem(item)
+    } finally {
+      this.processing--
+      this.processNext()
+
+      if (this.processing === 0 && this.items.length === 0) {
+        this.onComplete()
+      }
+    }
+  }
+}
+
 export default async function startIndexing(project: string, directory: string, settings?: PathSettings) {
   const index = pinecone.index(process.env.PINECONE_INDEX_NAME)
-    console.log('\n\n ====\n initIndex')
+  console.log('\n\n ====\n initIndex')
 
   const projectSlug = slugify(project)
 
@@ -65,68 +104,72 @@ export default async function startIndexing(project: string, directory: string, 
     'fileIndex.total': total,
   } })
 
-  for (const { content, path } of files) {
-    count++
+  return new Promise<void>((resolve) => {
+    const queue = new Queue(20, async ({ content, path }) => {
+      count++
 
-    try {
-      if (!content) {
+      try {
+        if (!content) {
+          const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
+          IndexedFile.deleteOne({ _id: indexedFile._id })
+          index.deleteOne(indexedFile.vectorId)
+          return
+        }
+
         const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
-        IndexedFile.deleteOne({ _id: indexedFile._id })
-        index.deleteOne(indexedFile.vectorId)
-        continue
-      }
+        if (indexedFile) return
 
-      const indexedFile = await IndexedFile.findOne({ path }).lean().exec()
-      if (indexedFile) continue
+        console.log('\t • Processing file:', path)
 
-      console.log('\t • Processing file:', path)
+        const fileData = await getFileData(content, path)
+        if (!fileData
+          || !fileData.description
+          || !fileData.keywords?.length
+        ) return
+          
+        if (count % 10 === 0) {
+          console.log('Processed', count, 'files')
+          Project.updateOne({ slug: projectSlug }, { $set: {
+            'fileIndex.processed': count,
+          } })
+        }
 
-      const fileData = await getFileData(content, path)
-      if (!fileData
-        || !fileData.description
-        || !fileData.keywords?.length
-      ) continue
+        const embedding = await getEmbedding(JSON.stringify(fileData))
+        const vectorId = uuidv4()
+        const ensuredFileData = ensureLengthLimit(fileData)
+
+        IndexedFile.create({
+          ...ensuredFileData,
+          path,
+          project: projectSlug,
+          vectorId,
+        })
+
+        const records = [{ 
+          id: vectorId, 
+          values: embedding, 
+          metadata: { path }, 
+        }]
+
+        const recordChunks = chunks(records)
+
+        await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
         
-      if (count % 10 === 0) {
-        console.log('Processed', count, 'files')
-        Project.updateOne({ slug: projectSlug }, { $set: {
-          'fileIndex.processed': count,
-        } })
+      } catch (error) {
+        console.error('Error processing file:', path, error)
       }
+    }, async () => {
+      await Project.updateOne({ slug: projectSlug }, { $set: { 
+        'fileIndex.count': count,
+        'fileIndex.status': 'idle',
+      } })
+      resolve()
+    })
 
-      const embedding = await getEmbedding(JSON.stringify(fileData))
-      const vectorId = uuidv4()
-      const ensuredFileData = ensureLengthLimit(fileData)
-
-      IndexedFile.create({
-        ...ensuredFileData,
-        path,
-        project: projectSlug,
-        vectorId,
-      })
-
-      const records = [{ 
-        id: vectorId, 
-        values: embedding, 
-        metadata: { path }, 
-      }]
-
-      const recordChunks = chunks(records)
-
-      await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
-      
-    } catch (error) {
-      console.error('Error processing file:', path, error)
-      continue
-    }
-  }
-
-  await Project.updateOne({ slug: projectSlug }, { $set: { 
-    'fileIndex.count': count,
-    'fileIndex.status': 'idle',
-  } })
+    files.forEach(file => queue.add(file))
+  })
 }
-
+ 
 function chunks(array: any[], batchSize = 100) {
   const chunks = []
 
