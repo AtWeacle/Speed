@@ -63,6 +63,11 @@ app.get('/api/directory-tree', (req, res) => {
 
 app.post('/api/initIndex', (req, res) => {
   initIndex('')
+app.get('/api/file-index/search', async (req, res) => {
+  const search = req.query.search as string
+  const paths = await searchFiles(search)
+  res.json({ paths })
+})
 })
 
 httpServer.listen(PORT, async () => {

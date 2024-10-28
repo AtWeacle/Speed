@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import axios from 'axios'
 import { X, Loader2 } from 'lucide-react'
 
-import { MEDIA } from '@weacle/speed-client/theme/constants'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 
@@ -27,11 +26,6 @@ const InputWrapper = styled.div`
 
   &[data-valid="false"] {
     border-color: var(--color-red);
-  }
-
-  button {
-    width: 42px;
-    height: 30px;
   }
 `
 const Input = styled.input`
@@ -76,24 +70,52 @@ const SuggestionList = styled.ul`
   background-color: var(--color-black-3);
   border: 1px solid var(--color-black-4);
   border-radius: var(--border-radius);
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   z-index: 10;
+  padding: 2px;
 `
 
 const SuggestionItem = styled.li`
-  padding: 3px 12px;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  padding: 3px 3px;
   font-size: .85rem;
   color: var(--color-black-8);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* white-space: nowrap; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
   direction: rtl;
   transition: background-color .2s;
+  border-radius: calc(var(--border-radius) * .8);
+  gap: 4px;
 
   &:hover {
     background-color: var(--color-black-1);
+
+    span {
+      &::before {
+        background: linear-gradient(to right, var(--color-black-1), transparent);
+      }
+    }
+  }
+
+  span {
+    padding: 0 6px 0;
+    position: relative;
+    display: inline-block;
+    overflow: clip;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(to right, var(--color-black-3), transparent);
+      transition: background .2s;
+    }
   }
 `
 const CloseButton = styled.button`
@@ -112,6 +134,30 @@ const CloseButton = styled.button`
 
   &:hover {
     background-color: var(--color-black-2);
+  }
+`
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+`
+const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-black-4);
+  border: none;
+  padding: 0px 6px;
+  height: 22px;
+  cursor: pointer;
+  color: var(--color-black-7);
+  border-radius: calc(var(--border-radius) * .6);
+  transition: background-color .2s, color .2s;
+  font-size: .75rem;
+
+  &:hover {
+    background-color: var(--color-black-5);
+    color: var(--color-black-9);
   }
 `
 function FileSearch() {
@@ -143,8 +189,7 @@ function FileSearch() {
   }
 
   function handleSuggestionClick(path: string) {
-    setSearch(path)
-    setSuggestions([])
+    // Do nothing
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -160,6 +205,19 @@ function FileSearch() {
   function handleClose() {
     setSearch('')
     setSuggestions([])
+  }
+
+  function handleAddToSelection(path: string) {
+  }
+
+  async function handleOpenFile(path: string) {
+    try {
+      await axios.post(`${SERVER_URL}/api/file/open`, null, {
+        params: { path: `${projectPath}/${path}` }
+      })
+    } catch (error) {
+      console.error('Error opening file:', error)
+    }
   }
 
   return (
@@ -190,9 +248,24 @@ function FileSearch() {
               <SuggestionItem
                 key={index}
                 onClick={() => handleSuggestionClick(path)}
-                title={path}
               >
-                {path}
+                <span title={path}>{path}</span>
+
+                <ActionButtons>
+                  <ActionButton onClick={(e) => {
+                    e.stopPropagation()
+                    handleOpenFile(path)
+                  }}>
+                    Open
+                  </ActionButton>
+                
+                  <ActionButton onClick={(e) => {
+                    e.stopPropagation()
+                    handleAddToSelection(path)
+                  }}>
+                    Add
+                  </ActionButton>
+                </ActionButtons>
               </SuggestionItem>
             ))}
           </SuggestionList>
