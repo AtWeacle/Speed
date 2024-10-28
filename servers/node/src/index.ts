@@ -3,10 +3,13 @@ import dotenv from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
+
+import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
+
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
 import initIndex from '@weacle/speed-node-server/src/fileSearch/initIndex'
-import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
+import searchFiles from '@weacle/speed-node-server/src/fileSearch/searchFiles'
 
 import type {
   DirectoryTree,
