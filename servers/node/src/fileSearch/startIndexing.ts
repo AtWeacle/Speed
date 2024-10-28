@@ -5,7 +5,10 @@ import fs from 'fs'
 
 import getEmbedding from '@weacle/speed-node-server/src/llms/openai/getEmbedding'
 import pinecone from '@weacle/speed-node-server/src/fileSearch/pinecone/client'
+
 import { IndexedFile } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/model'
+import { Project } from '@weacle/speed-node-server/src/project/model'
+
 import {
   fileDataSchema,
 } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/schemas'
@@ -52,6 +55,9 @@ export default async function startIndexing(project: string, directory: string, 
   const files = readFilesInPath(directory, settings || defaultSettings)
 
   let count = 0
+  const total = files.length
+
+  await Project.updateOne({ slug: projectSlug }, { $set: { fileIndex: { status: 'indexing', total } } })
 
   for (const { content, path } of files) {
     if (!content) {
@@ -71,6 +77,7 @@ export default async function startIndexing(project: string, directory: string, 
       
     if (count++ % 10 === 0) {
       console.log('Processed', count, 'files')
+      Project.updateOne({ slug: projectSlug }, { $set: { fileIndex: { processed: count } } })
     }
 
     const embedding = await getEmbedding(JSON.stringify(fileData))
@@ -93,6 +100,13 @@ export default async function startIndexing(project: string, directory: string, 
 
     await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
   }
+
+  await Project.updateOne({ slug: projectSlug }, { $set: { 
+    fileIndex: {
+      count,
+      status: 'idle',
+    },
+  } })
 }
 
 function chunks(array: any[], batchSize = 100) {

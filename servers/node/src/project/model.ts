@@ -30,6 +30,15 @@ const ProjectSchema = new Schema<IProject>({
       default: 'idle',
       required: true,
     },
+    processed: {
+      type: Number,
+      default: 0,
+    },
+    total: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
   },
   name: {
     type: String,
