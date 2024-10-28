@@ -81,13 +81,15 @@ app.post('/api/file/open', (req, res) => {
 
 app.get('/api/file-index/search', async (req, res) => {
   const search = req.query.search as string
-  const paths = await searchFiles(search)
+  const project = req.query.project as string
+  const paths = await searchFiles(project, search)
   res.json({ paths })
 })
 
 app.post('/api/file-index/init', (req, res) => {
-  const directory = req.body.directory as string
-  if (directory) initIndex(directory)
+  const directory = req.query.directory as string
+  const project = req.query.project as string
+  if (project && directory) initIndex(project, directory)
   res.json({ message: 'Indexing started' })
 })
 
@@ -106,5 +108,4 @@ httpServer.listen(PORT, async () => {
   }
 
   await mongoConnect()
-  initIndex(process.env.PROJECT_DIR)
 })

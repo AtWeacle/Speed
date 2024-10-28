@@ -47,6 +47,10 @@ const IndexedFileSchema = new Schema<IIndexedFile>({
     type: String,
     required: true,
   },
+  project: {
+    type: String,
+    required: true,
+  },
   vectorId: {
     type: String,
     required: true,
@@ -55,6 +59,7 @@ const IndexedFileSchema = new Schema<IIndexedFile>({
 
 IndexedFileSchema.index({
   path: 1,
+  project: 1,
 }, { unique: true })
 
 export const IndexedFile: Model<IIndexedFile> = mongoose.models.IndexedFile

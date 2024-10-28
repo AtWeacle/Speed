@@ -15,6 +15,10 @@ import type {
   PathSettings,
 } from '@weacle/speed-lib/types'
 
+import {
+  slugify,
+} from '@weacle/speed-node-server/src/utils/helpers'
+
 import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
 import {
   MODELS,
@@ -33,9 +37,11 @@ type FileList = {
 /**
  * @param directory Absolute path to the directory to index
  */
-export default async function initIndex(directory: string) {
+export default async function initIndex(project: string, directory: string) {
   const index = pinecone.index(process.env.PINECONE_INDEX_NAME)
     console.log('\n\n ====\n initIndex')
+
+  const projectSlug = slugify(project)
 
   const files = readFilesInPath(directory, {
     filesToExclude: '',
@@ -71,6 +77,7 @@ export default async function initIndex(directory: string) {
     IndexedFile.create({
       ...fileData,
       path,
+      project,
       vectorId,
     })
 
@@ -82,7 +89,7 @@ export default async function initIndex(directory: string) {
 
     const recordChunks = chunks(records)
 
-    await Promise.all(recordChunks.map((chunk) => index.upsert(chunk)))
+    await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
   }
 }
 

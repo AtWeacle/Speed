@@ -173,10 +173,12 @@ function FileSearch() {
 
   async function fetchSuggestions() {
     try {
+      const { name } = useProjectStore.getState()
+
       setLoading(true)
 
       const response = await axios.get(`${SERVER_URL}/api/file-index/search`, {
-        params: { search }
+        params: { project: name, search }
       })
       const simplePaths = response.data.paths.map((p: string) => p.replace(projectPath+'/', ''))
       setSuggestions(simplePaths)

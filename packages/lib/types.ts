@@ -28,6 +28,7 @@ export type IndexedFile = {
   functions: CodeElement[]
   keywords: string[]
   path: string
+  project: string
   vectorId: string
 }
 
