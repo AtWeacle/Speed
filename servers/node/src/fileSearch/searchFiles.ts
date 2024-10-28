@@ -23,7 +23,7 @@ const fileIdsResponseSchema = z.object({
 
 const getRelevantFilesPrompt = (searchText: string, files: IIndexedFile[]) => `
 Given the search text and the list of files, return the most relevant file IDs ordered by relevance.
-Only return the IDs of files that are relevant to the search text.
+Only return the IDs of files that are relevant to the search text in a JSON object with the key "fileIds".
 
 Search text:
 "${searchText}"
