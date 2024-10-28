@@ -13,8 +13,12 @@ import Button from '@weacle/speed-client/ui/Button'
 import ErrorComp from '@weacle/speed-client/ui/Form/ErrorComp'
 
 const projectSchema = z.object({
-  name: z.string().min(3, 'Name must have at least 3 characters'),
-  path: z.string().min(1, 'Path must have at least 1 character'),
+  name: z.string()
+    .min(3, 'Name must have at least 3 characters')
+    .regex(/^[a-zA-Z0-9\s\-_]+$/, 'Name can only contain letters, numbers, spaces, dashes and underscores'),
+  path: z.string()
+    .min(1, 'Path must have at least 1 character')
+    .regex(/^(?:[a-zA-Z]:)?[\/\\]?(?:[.\/\\][^<>:"|?*]+)*$/, 'Invalid file path format')
 })
 
 const Wrapper = styled.div`
