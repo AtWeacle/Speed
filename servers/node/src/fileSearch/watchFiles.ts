@@ -1,9 +1,10 @@
 import fs from 'fs'
 import chokidar from 'chokidar'
 
+import { App } from '@weacle/speed-node-server/src/app/model'
 import { Project } from '@weacle/speed-node-server/src/project/model'
 import indexFile from '@weacle/speed-node-server/src/fileSearch/indexFile'
-import updateIndexedFile from '@weacle/speed-node-server/src/fileSearch/updateIndexedFile'
+// import updateIndexedFile from '@weacle/speed-node-server/src/fileSearch/updateIndexedFile'
 import removeIndexedFile from '@weacle/speed-node-server/src/fileSearch/removeIndexedFile'
 
 export async function removeFileIndex(projectName: string, path: string) {
@@ -12,8 +13,15 @@ export async function removeFileIndex(projectName: string, path: string) {
 }
 
 export async function updateFileIndex(projectName: string, path: string) {
-  console.log('Updating file index:', path)
-  updateIndexedFile(projectName, path)
+  console.log('Storing file to update in index:', path)
+  // console.log('Updating file index:', path)
+  // updateIndexedFile(projectName, path)
+
+  App.updateOne({}, {
+    $addToSet: {
+      filesToUpdate: { path, project: projectName },
+    },
+  }).exec()
 }
 
 export async function addFileIndex(projectName: string, path: string) {
