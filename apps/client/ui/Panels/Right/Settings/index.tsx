@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
+import { debounce } from 'lodash'
 import {
   Settings as SettingsIcon,
   X,
@@ -19,6 +20,46 @@ import {
   Input,
 } from '@weacle/speed-client/ui/Form'
 import Button from '@weacle/speed-client/ui/Button'
+
+
+const debounceEvent = debounce(() => {
+  document.dispatchEvent(new CustomEvent('we.directoryTree.refetch'))
+}, 1000)
+
+const debounceSave = debounce(async () => {
+  const { getActiveProject } = useStore.getState()
+  const project = getActiveProject()
+  console.log('project', project)
+  if (!project) return
+
+  const { name, path, filesToExclude, filesToInclude, pathsToExclude } = project
+
+  const params = new URLSearchParams({ slug: slugify(name) })
+  
+  try {
+    const response = await fetch(`${SERVER_URL}/api/project?${params.toString()}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        path,
+        settings: {
+          filesToExclude: filesToExclude.split(','),
+          filesToInclude: filesToInclude.split(','),
+          pathsToExclude: pathsToExclude.filter(path => path.length > 0),
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to update project')
+    }
+  } catch (error) {
+    console.error('Error updating project:', error)
+  }
+}, 2000)
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,65 +95,17 @@ function Settings() {
   const setPath = useProjectStore(state => state.setPath)
   const removeProject = useStore(state => state.removeProject)
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  const dispatchRefetchEvent = useCallback(() => {
-    const event = new CustomEvent('we.directoryTree.refetch')
-    document.dispatchEvent(event)
-  }, [])
-
-  const updateProject = useCallback(async () => {
-    const { activeProjectId } = useStore.getState()
-    if (!activeProjectId) return
-
-    const params = new URLSearchParams({ slug: slugify(name) })
-    
-    try {
-      const response = await fetch(`${SERVER_URL}/api/project?${params.toString()}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          path,
-          settings: {
-            filesToExclude: filesToExclude.split(','),
-            filesToInclude: filesToInclude.split(','),
-            pathsToExclude,
-          },
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update project')
-      }
-    } catch (error) {
-      console.error('Error updating project:', error)
-    }
-  }, [name, path, filesToExclude, filesToInclude, pathsToExclude])
-
   const handleDirChange = useCallback((setter: (value: string) => void, value: string) => {
     setter(value)
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(() => {
-      updateProject()
-      dispatchRefetchEvent()
-    }, 2000)
-  }, [dispatchRefetchEvent])
+    debounceEvent()
+    debounceSave()
+  }, [])
 
   const handlePathsChange = useCallback((setter: (value: string[]) => void, value: string[]) => {
     setter(value)
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(() => {
-      updateProject()
-      dispatchRefetchEvent()
-    }, 2000)
-  }, [dispatchRefetchEvent])
+    debounceEvent()
+    debounceSave()
+  }, [])
 
   const handleRemoveProject = useCallback(() => {
     if (window.confirm('Are you sure you want to delete this project?')) {
