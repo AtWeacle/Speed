@@ -15,10 +15,14 @@ export type IStateBackupSchema = Document & {
 }
 
 export type IApp = Document & {
+  state: string
   stateBackups?: IStateBackupSchema[]
 }
 
 const AppSchema = new Schema<IApp>({
+  state: {
+    type: String,
+  },
   stateBackups: {
     type: [stateBackupSchema],
   },

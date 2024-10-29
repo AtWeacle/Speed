@@ -56,6 +56,16 @@ wsServer.on('connection', (ws) => {
   })
 })
 
+app.get('/api/app/state', async (req, res) => {
+  const app = await App.findOne().lean().exec()
+
+  if (!app?.state) {
+    return res.status(404).json({ error: 'App state not found' })
+  }
+
+  res.json({ state: app.state || {} })
+})
+
 app.post('/api/app/backup', async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ error: 'Request body is required' })
