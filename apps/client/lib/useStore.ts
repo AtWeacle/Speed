@@ -189,6 +189,20 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
   name: STORE_NAME,
   storage: {
     getItem: async (name) => {
+      // const response = await fetch(`${SERVER_URL}/api/app/state`)
+      // const data = await response.json()
+
+      // if (!data?.state) return null
+
+      // const existingValue = JSON.parse(data.state)
+      
+      // return {
+      //   ...existingValue,
+      //   state: {
+      //     ...existingValue.state,
+      //     projects: new Map(existingValue.state.projects),
+      //   },
+      // }
       
       const value = await speedStore.getItem<string>(name)
       if (!value) return null
