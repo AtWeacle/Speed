@@ -4,7 +4,7 @@ import pinecone from '@weacle/speed-node-server/src/fileSearch/pinecone/client'
 import { IndexedFile, IIndexedFile } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/model'
 import {
   slugify,
-} from '@weacle/speed-node-server/src/utils/helpers'
+} from '@weacle/speed-lib/utils/helpers'
 import {
   MODELS,
   openai,

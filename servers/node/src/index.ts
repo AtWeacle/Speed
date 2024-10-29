@@ -21,7 +21,7 @@ import watchFiles from '@weacle/speed-node-server/src/fileSearch/watchFiles'
 import type {
   DirectoryTree,
 } from '@weacle/speed-lib/types'
-import { slugify } from '@weacle/speed-node-server/src/utils/helpers'
+import { slugify } from '@weacle/speed-lib/utils/helpers'
 
 dotenv.config({ path: '../../.env' })
 

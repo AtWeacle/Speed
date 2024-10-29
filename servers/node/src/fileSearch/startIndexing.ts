@@ -21,7 +21,7 @@ import type {
 
 import {
   slugify,
-} from '@weacle/speed-node-server/src/utils/helpers'
+} from '@weacle/speed-lib/utils/helpers'
 
 import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
 import {
