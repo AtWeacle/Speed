@@ -5,7 +5,10 @@ import type {
   FileSystemItem,
   PathSettings,
 } from '@weacle/speed-lib/types'
-import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
+import {
+  DEFAULT_FILES_TO_EXCLUDE,
+  DEFAULT_PATHS_TO_EXCLUDE,
+} from '@weacle/speed-lib/constants'
 
 export default function getDirectoryTree(
   rootPath: string,
@@ -15,6 +18,7 @@ export default function getDirectoryTree(
   const name = path.basename(dirPath)
   const stats = fs.statSync(dirPath)
   const allExcludes = [...DEFAULT_FILES_TO_EXCLUDE, ...settings.filesToExclude.split(',')]
+  const allPathExcludes = [...DEFAULT_PATHS_TO_EXCLUDE, ...settings.pathsToExclude]
   const filesToInclude = settings.filesToInclude.split(',')
 
   if (!stats.isDirectory()) {
@@ -27,17 +31,15 @@ export default function getDirectoryTree(
   for (const entry of entries) {
     const fullPath = path.join(dirPath, entry)
 
-    const excludeThisPath = !settings.pathsToExclude
-      ? false
-      : settings
-        .pathsToExclude.filter(p => !!p)
-        .some(excludePath => {
-          if (excludePath.startsWith('*')) {
-            const pathToCheck = excludePath.slice(1)
-            return fullPath.includes(pathToCheck)
-          }
-          return fullPath.startsWith(path.join(rootPath, excludePath))
-        })
+    const excludeThisPath = allPathExcludes
+      .filter(p => !!p)
+      .some(excludePath => {
+        if (excludePath.startsWith('*')) {
+          const pathToCheck = excludePath.slice(1)
+          return fullPath.includes(pathToCheck)
+        }
+        return fullPath.startsWith(path.join(rootPath, excludePath))
+      })
 
     if (excludeThisPath) {
       continue

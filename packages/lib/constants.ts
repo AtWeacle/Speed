@@ -11,7 +11,7 @@ export const DEFAULT_MODEL: LllModel = {
 
 export const DEFAULT_FILES_TO_EXCLUDE: string[] = ['package.json', 'tsconfig.app.json', 'tsconfig.node.json', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
 export const DEFAULT_FILES_TO_INCLUDE: string[] = ['.rs', '.js', '.ts', '.tsx', '.css', '.json', '.html']
-export const DEFAULT_PATHS_TO_EXCLUDE: string[] = ['node_modules', '.git']
+export const DEFAULT_PATHS_TO_EXCLUDE: string[] = ['node_modules', '.git', '.vscode', 'pkg', 'dist', 'build', 'output']
 
 export const FILE_INDEX_STATUS = ['indexing', 'updating', 'idle'] as const
 

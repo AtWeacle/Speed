@@ -23,7 +23,10 @@ import {
   slugify,
 } from '@weacle/speed-lib/utils/helpers'
 
-import { DEFAULT_FILES_TO_EXCLUDE } from '@weacle/speed-lib/constants'
+import {
+  DEFAULT_FILES_TO_EXCLUDE,
+  DEFAULT_PATHS_TO_EXCLUDE,
+} from '@weacle/speed-lib/constants'
 import {
   MODELS,
   openai,
@@ -88,7 +91,7 @@ export default async function startIndexing(project: string, directory: string, 
   const defaultSettings: PathSettings = {
     filesToExclude: '',
     filesToInclude: '*.ts,*.tsx',
-    pathsToExclude: ['node_modules', 'dist', 'build', 'coverage', 'public', 'server', 'src', 'test', 'tests'],
+    pathsToExclude: ['node_modules', 'dist', 'build', 'coverage', 'public', 'test', 'tests'],
   }
 
   const files = readFilesInPath(directory, settings || defaultSettings)
@@ -185,23 +188,22 @@ function readFilesInPath(directory: string, settings: PathSettings) {
   function readDirectory(dirPath: string) {
     const files = fs.readdirSync(dirPath)
     const allExcludes = [...DEFAULT_FILES_TO_EXCLUDE, ...settings.filesToExclude.split(',')]
+    const allPathExcludes = [...DEFAULT_PATHS_TO_EXCLUDE, ...settings.pathsToExclude]
     const filesToInclude = settings.filesToInclude.split(',')
     
     files.forEach(file => {
       const filePath = path.join(dirPath, file)
       const stat = fs.statSync(filePath)
 
-      const excludeThisPath = !settings.pathsToExclude
-        ? false
-        : settings
-          .pathsToExclude.filter(p => !!p)
-          .some(excludePath => {
-            if (excludePath.startsWith('*')) {
-              const pathToCheck = excludePath.slice(1)
-              return filePath.includes(pathToCheck)
-            }
-            return filePath.startsWith(path.join(dirPath, excludePath))
-          })
+      const excludeThisPath = allPathExcludes
+        .filter(p => !!p)
+        .some(excludePath => {
+          if (excludePath.startsWith('*')) {
+            const pathToCheck = excludePath.slice(1)
+            return filePath.includes(pathToCheck)
+          }
+          return filePath.startsWith(path.join(dirPath, excludePath))
+        })
 
       if (excludeThisPath) {
         return
