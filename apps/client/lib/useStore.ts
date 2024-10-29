@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import localforage from 'localforage'
 import { persist } from 'zustand/middleware'
 
 import type { useStoreState, ProjectStore } from '@weacle/speed-client/lib/useStore-types'
@@ -10,6 +11,11 @@ import {
   DEFAULT_MODEL,
   STORE_NAME,
 } from '@weacle/speed-lib/constants'
+import { SERVER_URL } from '@weacle/speed-client/lib/constants'
+
+var speedStore = localforage.createInstance({
+  name: 'speed-store',
+})
 
 const createProject = (
   props: { remove: () => void },
@@ -182,10 +188,12 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
 }), {
   name: STORE_NAME,
   storage: {
-    getItem: (name) => {
-      const str = localStorage.getItem(name)
-      if (!str) return null
-      const existingValue = JSON.parse(str)
+    getItem: async (name) => {
+      
+      const value = await speedStore.getItem<string>(name)
+      if (!value) return null
+
+      const existingValue = JSON.parse(value)
       return {
         ...existingValue,
         state: {
@@ -202,9 +210,9 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
           projects: Array.from(value.state.projects.entries()),
         },
       })
-      localStorage.setItem(name, str)
+      speedStore.setItem(name, str)
     },
-    removeItem: (name) => localStorage.removeItem(name),
+    removeItem: (name) => speedStore.removeItem(name),
   },
   onRehydrateStorage: (state) => {
     function hydrateProjects(state: useStoreState) {
