@@ -68,6 +68,12 @@ const TreeContainer = styled.div`
 const ItemArrow = styled.span`
   display: flex;
   align-items: center;
+  background-color: transparent;
+  transition: background-color .2s ease-in-out;
+
+  &:hover {
+    background-color: var(--color-black-3);
+  }
 `
 const SelectedItems = styled.div`
   display: flex;
@@ -93,7 +99,7 @@ const SelectedItem = styled.li`
   gap: 2px;
   justify-content: space-between;
   max-width: calc(100% - 10px);
-  transition: background-color .2s, color .2s;
+  transition: background-color .2s ease-in-out, color .2s ease-in-out;
 
   &:hover {
     background-color: var(--color-black-2);
@@ -158,7 +164,6 @@ function Directory() {
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
 
-  const [loading, setLoading] = useState(false)
   const [showTree, setShowTree] = useState(true)
 
   useEffect(() => {
@@ -173,8 +178,6 @@ function Directory() {
       } = useProjectStore.getState()
 
       try {
-        setLoading(true)
-
         const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
           params: {
             directory: path,
@@ -190,7 +193,6 @@ function Directory() {
       } catch (error) {
         console.error('Failed to fetch directory tree:', error)
       } finally {
-        setLoading(false)
         dataProvider.onDidChangeTreeDataEmitter.emit(['root'])
       }
     }
@@ -259,7 +261,6 @@ function Directory() {
         {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 ?
           <UncontrolledTreeEnvironment
             dataProvider={dataProvider}
-            // dataProvider={new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({ ...item, data }))}
             getItemTitle={item => item.data}
             onSelectItems={onSelectItems}
             onExpandItem={onExpandItem}
@@ -301,13 +302,13 @@ function Directory() {
                     <span>{itemPath}</span>
                   </ItemContent>
                   <ItemActions>
-                    <ItemButton onClick={() => {
+                    {!isDirectory(item) ? <ItemButton onClick={() => {
                       axios.post(`${SERVER_URL}/api/file/open`, null, {
                         params: { path: `${useProjectStore.getState().path}/${itemPath}` }
                       })
                     }}>
                       <SquareArrowOutUpRight color="var(--color-black-8)" size={11} strokeWidth={2.5} />
-                    </ItemButton>
+                    </ItemButton> : null}
                     <ItemButton onClick={() => {
                       const newSelectedItems = selectedItems.filter(i => i !== item)
                       setSelectedItems(newSelectedItems)
