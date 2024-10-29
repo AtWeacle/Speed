@@ -9,7 +9,7 @@ import bodyparser from 'body-parser'
 import fs from 'fs'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
-import { App } from '@weacle/speed-node-server/src/app/model'
+import { App, IApp } from '@weacle/speed-node-server/src/app/model'
 import { IProject, Project } from '@weacle/speed-node-server/src/project/model'
 
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
@@ -95,11 +95,20 @@ app.post('/api/app/backup', async (req, res) => {
   }
 
   try {
-    await App.updateOne({}, {
-      $addToSet: {
-        stateBackups: { state }
-      },
-    }, { upsert: true })
+    const app = await App.findOne().lean<IApp>().exec()
+
+    if (!app) {
+      await App.updateOne({}, { $addToSet: { stateBackups: { state } }, }, { upsert: true })
+      return res.json({ success: true })
+    }
+
+    const lastBackup = app.stateBackups[app.stateBackups.length - 1]
+
+    if (lastBackup && lastBackup.createdAt.getDate() !== new Date().getDate()) { 
+      await App.updateOne({}, { $addToSet: { stateBackups: { state } } })
+      return res.json({ success: true })
+    }
+
     res.json({ success: true })
 
   } catch (error) {
