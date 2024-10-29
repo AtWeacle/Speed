@@ -4,18 +4,47 @@ import type {
   FileIndexStatusType,
 } from '@weacle/speed-lib/types'
 import {
+  DEFAULT_FILES_TO_EXCLUDE,
+  DEFAULT_FILES_TO_INCLUDE,
+  DEFAULT_PATHS_TO_EXCLUDE,
   FILE_INDEX_STATUS,
 } from '@weacle/speed-lib/constants'
+
+export type IProjectSettings = Document & {
+  filesToExclude: string[]
+  filesToInclude: string[]
+  pathsToExclude: string[]
+}
 
 export type IProject = Document & {
   fileIndex: {
     count: number
     status: FileIndexStatusType
   }
+  initiated: boolean
   name: string
   path: string
+  settings: IProjectSettings
   slug: string
 }
+
+const ProjectSettingsSchema = new Schema<IProjectSettings>({
+  filesToExclude: {
+    type: [String],
+    default: DEFAULT_FILES_TO_EXCLUDE,
+    required: true,
+  },
+  filesToInclude: {
+    type: [String],
+    default: DEFAULT_FILES_TO_INCLUDE,
+    required: true,
+  },
+  pathsToExclude: {
+    type: [String],
+    default: DEFAULT_PATHS_TO_EXCLUDE,
+    required: true,
+  },
+}, { timestamps: true, _id: false })
 
 const ProjectSchema = new Schema<IProject>({
   fileIndex: {
@@ -24,15 +53,19 @@ const ProjectSchema = new Schema<IProject>({
       default: 0,
       required: true,
     },
+    initiated: {
+      type: Boolean,
+      default: false,
+    },
+    processed: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
       enum: FILE_INDEX_STATUS,
       default: 'idle',
       required: true,
-    },
-    processed: {
-      type: Number,
-      default: 0,
     },
     total: {
       type: Number,
@@ -46,6 +79,10 @@ const ProjectSchema = new Schema<IProject>({
   },
   path: {
     type: String,
+    required: true,
+  },
+  settings: {
+    type: ProjectSettingsSchema,
     required: true,
   },
   slug: {

@@ -82,7 +82,6 @@ class Queue {
 
 export default async function startIndexing(project: string, directory: string, settings?: PathSettings) {
   const index = pinecone.index(process.env.PINECONE_INDEX_NAME)
-  console.log('\n\n ====\n initIndex')
 
   const projectSlug = slugify(project)
 

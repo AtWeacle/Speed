@@ -9,6 +9,10 @@ export const DEFAULT_MODEL: LllModel = {
   vendor: 'anthropic',
 }
 
+export const DEFAULT_FILES_TO_EXCLUDE: string[] = ['package.json', 'tsconfig.app.json', 'tsconfig.node.json', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
+export const DEFAULT_FILES_TO_INCLUDE: string[] = ['.rs', '.js', '.ts', '.tsx', '.css', '.json', '.html']
+export const DEFAULT_PATHS_TO_EXCLUDE: string[] = ['node_modules', '.git']
+
 export const FILE_INDEX_STATUS = ['indexing', 'updating', 'idle'] as const
 
 export const MODELS: Models = {
@@ -99,7 +103,5 @@ export const MODELS: Models = {
 export const MODEL_IDS = Object.values(MODELS).reduce((acc, vendor) => {
   return acc.concat(Object.keys(vendor.list))
 }, [] as string[])
-
-export const DEFAULT_FILES_TO_EXCLUDE = ['node_modules', '.git', '.DS_Store', '.vscode', '.lock', 'pkg']
 
 export const STORE_NAME = 'main-store'
