@@ -61,6 +61,14 @@ const createProject = (
     return { errors }
   }),
 
+  expandedItems: [],
+  addExpandedItems: (item) => set((state) => ({
+    expandedItems: [...state.expandedItems, item],
+  })),
+  removeExpandedItems: (item) => set((state) => ({
+    expandedItems: state.expandedItems.filter((i) => i !== item),
+  })),
+
   fileIndex: {
     count: 0,
     status: 'idle',

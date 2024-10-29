@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import {
@@ -152,6 +152,9 @@ const ItemButton = styled.button`
 // `
 function Directory() {
   const directoryTreeConverted = useProjectStore(state => state.directoryTreeConverted)
+  const expandedItems = useProjectStore(state => state.expandedItems)
+  const addExpandedItems = useProjectStore(state => state.addExpandedItems)
+  const removeExpandedItems = useProjectStore(state => state.removeExpandedItems)
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
 
@@ -188,6 +191,7 @@ function Directory() {
         console.error('Failed to fetch directory tree:', error)
       } finally {
         setLoading(false)
+        dataProvider.onDidChangeTreeDataEmitter.emit(['root'])
       }
     }
 
@@ -205,6 +209,13 @@ function Directory() {
       setShowTree(true)
     }, 200)
   }, [directoryTreeConverted])
+
+  const dataProvider = useMemo(() =>
+    new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({
+      ...item,
+      data,
+    })
+  ), [directoryTreeConverted])
 
   function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
     const items: Record<TreeItemIndex, TreeItem<string>> = {}
@@ -228,6 +239,14 @@ function Directory() {
     setSelectedItems(items as string[])
   }
 
+  function onExpandItem(item: TreeItem<any>, treeId: string) {
+    addExpandedItems(item.index)
+  }
+
+  function onCollapseItem(item: TreeItem<any>, treeId: string) {
+    removeExpandedItems(item.index)
+  }
+
   function isDirectory(item: string): boolean {
     return directoryTreeConverted?.[item]?.isFolder || false
   }
@@ -237,13 +256,14 @@ function Directory() {
       <FileSearch />
 
       <TreeContainer className="rct-dark">
-        {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 && (
-          <>{loading ?
-            <div>Loading...</div>
-          : <UncontrolledTreeEnvironment
-            dataProvider={new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({ ...item, data }))}
+        {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 ?
+          <UncontrolledTreeEnvironment
+            dataProvider={dataProvider}
+            // dataProvider={new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({ ...item, data }))}
             getItemTitle={item => item.data}
             onSelectItems={onSelectItems}
+            onExpandItem={onExpandItem}
+            onCollapseItem={onCollapseItem}
             renderItemArrow={({ item, context }) => item.isFolder
               ? <ItemArrow
                 {...context.arrowProps}
@@ -254,13 +274,14 @@ function Directory() {
               </ItemArrow> : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>}
             viewState={{
               'tree-1': {
+                expandedItems,
                 selectedItems,
               },
             }}
           >
             <Tree treeId="tree-1" rootItem="root" treeLabel="Directory Tree" />
           </UncontrolledTreeEnvironment>
-        }</>)}
+        : null}
       </TreeContainer>
 
       <SelectedItems>

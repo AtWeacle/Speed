@@ -27,6 +27,10 @@ export type ProjectStore = {
   clearErrors: () => void
   removeError: (key: string) => void
 
+  expandedItems: string[]
+  addExpandedItems: (item: string) => void
+  removeExpandedItems: (item: string) => void
+
   fileIndex: FileIndex
   setFileIndex: (fileIndex: FileIndex) => void
   updateFileIndex: (fileIndex: Partial<FileIndex>) => void
