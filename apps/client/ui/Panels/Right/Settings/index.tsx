@@ -8,6 +8,9 @@ import {
 
 import useStore from '@weacle/speed-client/lib/useStore'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
+import {
+  slugify,
+} from '@weacle/speed-lib/utils/helpers'
 import SystemPrompt from '@weacle/speed-client/ui/Chat/SystemPrompt'
 import SelectModel from '@weacle/speed-client/ui/Panels/Right/Settings/SelectModel'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
@@ -58,12 +61,46 @@ function Settings() {
     document.dispatchEvent(event)
   }, [])
 
+  const updateProject = useCallback(async () => {
+    const { activeProjectId } = useStore.getState()
+    if (!activeProjectId) return
+
+    const params = new URLSearchParams({ slug: slugify(name) })
+    
+    try {
+      const response = await fetch(`${SERVER_URL}/api/project?${params.toString()}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          path,
+          settings: {
+            filesToExclude: filesToExclude.split(','),
+            filesToInclude: filesToInclude.split(','),
+            pathsToExclude,
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update project')
+      }
+    } catch (error) {
+      console.error('Error updating project:', error)
+    }
+  }, [name, path, filesToExclude, filesToInclude, pathsToExclude])
+
   const handleDirChange = useCallback((setter: (value: string) => void, value: string) => {
     setter(value)
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
-    timeoutRef.current = setTimeout(dispatchRefetchEvent, 2000)
+    timeoutRef.current = setTimeout(() => {
+      updateProject()
+      dispatchRefetchEvent()
+    }, 2000)
   }, [dispatchRefetchEvent])
 
   const handlePathsChange = useCallback((setter: (value: string[]) => void, value: string[]) => {
@@ -71,7 +108,10 @@ function Settings() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
-    timeoutRef.current = setTimeout(dispatchRefetchEvent, 2000)
+    timeoutRef.current = setTimeout(() => {
+      updateProject()
+      dispatchRefetchEvent()
+    }, 2000)
   }, [dispatchRefetchEvent])
 
   const handleRemoveProject = useCallback(() => {
