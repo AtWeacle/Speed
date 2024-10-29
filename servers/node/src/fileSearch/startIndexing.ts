@@ -147,9 +147,7 @@ export default async function startIndexing(project: string, directory: string, 
           metadata: { path }, 
         }]
 
-        const recordChunks = chunks(records)
-
-        await Promise.all(recordChunks.map((chunk) => index.namespace(projectSlug).upsert(chunk)))
+        index.namespace(projectSlug).upsert(records)
         
       } catch (error) {
         console.error('Error processing file:', path, error)
@@ -164,16 +162,6 @@ export default async function startIndexing(project: string, directory: string, 
 
     files.forEach(file => queue.add(file))
   })
-}
- 
-function chunks(array: any[], batchSize = 100) {
-  const chunks = []
-
-  for (let i = 0; i < array.length; i += batchSize) {
-    chunks.push(array.slice(i, i + batchSize))
-  }
-
-  return chunks
 }
 
 function readFilesInPath(directory: string, settings: PathSettings) {

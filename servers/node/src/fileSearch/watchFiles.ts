@@ -3,6 +3,7 @@ import chokidar from 'chokidar'
 
 import { Project } from '@weacle/speed-node-server/src/project/model'
 import indexFile from '@weacle/speed-node-server/src/fileSearch/indexFile'
+import updateIndexedFile from '@weacle/speed-node-server/src/fileSearch/updateIndexedFile'
 
 export async function removeFileIndex(projectName: string, path: string) {
   console.log('Removing file index:', path)
@@ -10,6 +11,7 @@ export async function removeFileIndex(projectName: string, path: string) {
 
 export async function updateFileIndex(projectName: string, path: string) {
   console.log('Updating file index:', path)
+  updateIndexedFile(projectName, path)
 }
 
 export async function addFileIndex(projectName: string, path: string) {

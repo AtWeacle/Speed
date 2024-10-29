@@ -12,6 +12,16 @@ import {
   openai,
 } from '@weacle/speed-node-server/src/llms/openai/client'
 
+/** Use for upserting more than 100 records in pinecone */
+export function chunkRecords(array: any[], batchSize = 100) {
+  const chunks = []
+
+  for (let i = 0; i < array.length; i += batchSize) {
+    chunks.push(array.slice(i, i + batchSize))
+  }
+
+  return chunks
+}
 
 export function ensureLengthLimit(indexedFile: FileData): FileData {
   function sliceArray(arr: any[], maxLength: number): any[] {

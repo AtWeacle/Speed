@@ -261,5 +261,5 @@ httpServer.listen(PORT, async () => {
   }
 
   await mongoConnect()
-  // watchFiles()
+  watchFiles()
 })
