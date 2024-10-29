@@ -197,26 +197,14 @@ function readFilesInPath(directory: string, settings: PathSettings) {
 
       const excludeThisPath = allPathExcludes
         .filter(p => !!p)
-        .some(excludePath => {
-          if (excludePath.startsWith('*')) {
-            const pathToCheck = excludePath.slice(1)
-            return filePath.includes(pathToCheck)
-          }
-          return filePath.startsWith(path.join(dirPath, excludePath))
-        })
+        .some(excludePath => filePath.includes('/' + excludePath + '/'))
 
-      if (excludeThisPath) {
-        return
-      }
+      if (excludeThisPath) return
 
-      if (allExcludes.some(exclude => {
-        if (exclude.startsWith('*')) {
-          return file.endsWith(exclude.slice(1))
-        }
-        return file === exclude
-      })) {
-        return
-      }
+      const excludeThisFile = allExcludes
+        .filter(f => !!f)
+        .some(exclude => filePath.endsWith(exclude.slice(1)))
+      if (excludeThisFile) return
 
       if (stat.isDirectory()) {
         readDirectory(filePath)

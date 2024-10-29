@@ -33,26 +33,14 @@ export default function getDirectoryTree(
 
     const excludeThisPath = allPathExcludes
       .filter(p => !!p)
-      .some(excludePath => {
-        if (excludePath.startsWith('*')) {
-          const pathToCheck = excludePath.slice(1)
-          return fullPath.includes(pathToCheck)
-        }
-        return fullPath.startsWith(path.join(rootPath, excludePath))
-      })
+      .some(excludePath => fullPath.includes('/' + excludePath + '/'))
 
-    if (excludeThisPath) {
-      continue
-    }
+    if (excludeThisPath) continue
 
-    if (allExcludes.some(exclude => {
-      if (exclude.startsWith('*')) {
-        return entry.endsWith(exclude.slice(1))
-      }
-      return entry === exclude
-    })) {
-      continue
-    }
+    const excludeThisFile = allExcludes
+      .filter(f => !!f)
+      .some(exclude => entry.endsWith(exclude.slice(1)))
+    if (excludeThisFile) continue
 
     const entryStats = fs.statSync(fullPath)
 
