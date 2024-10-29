@@ -10,7 +10,7 @@ import fs from 'fs'
 
 import mongoConnect from '@weacle/speed-node-server/src/utils/mongoConnect'
 import { App } from '@weacle/speed-node-server/src/app/model'
-import { Project } from '@weacle/speed-node-server/src/project/model'
+import { IProject, Project } from '@weacle/speed-node-server/src/project/model'
 
 import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleIncomingMessage'
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
@@ -30,6 +30,7 @@ const CODING_APP = 'Visual Studio Code'
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
 })
@@ -195,6 +196,41 @@ app.post('/api/project', async (req, res) => {
 
     await project.save()
     res.json(project)
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+app.put('/api/project', async (req, res) => {
+  const { slug } = req.query
+  const { name, path, settings } = req.body
+
+  if (!slug) {
+    return res.status(400).json({ error: 'Slug is required' })
+  }
+
+  try {
+    const project = await Project.findOne({ slug })
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' })
+    }
+
+    const updateData: Partial<IProject> = {}
+    if (name) {
+      updateData.name = name
+      updateData.slug = slugify(name as string)
+    }
+    if (path) updateData.path = path
+    if (settings) updateData.settings = settings
+
+    const updatedProject = await Project.findOneAndUpdate(
+      { slug },
+      { $set: updateData },
+      { new: true }
+    )
+
+    res.json(updatedProject)
 
   } catch (error) {
     res.status(500).json({ error: error.message })
