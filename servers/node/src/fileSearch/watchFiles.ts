@@ -1,9 +1,8 @@
 import fs from 'fs'
 import chokidar from 'chokidar'
-import pinecone from '@weacle/speed-node-server/src/fileSearch/pinecone/client'
 
-import { IndexedFile } from '@weacle/speed-node-server/src/fileSearch/indexedFiles/model'
 import { Project } from '@weacle/speed-node-server/src/project/model'
+import indexFile from '@weacle/speed-node-server/src/fileSearch/indexFile'
 
 export async function removeFileIndex(projectName: string, path: string) {
   console.log('Removing file index:', path)
@@ -15,6 +14,7 @@ export async function updateFileIndex(projectName: string, path: string) {
 
 export async function addFileIndex(projectName: string, path: string) {
   console.log('Adding file index:', path)
+  indexFile(projectName, path)
 }
 
 export default async function watchFiles() {
