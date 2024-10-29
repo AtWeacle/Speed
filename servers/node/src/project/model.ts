@@ -44,7 +44,7 @@ const ProjectSettingsSchema = new Schema<IProjectSettings>({
     default: DEFAULT_PATHS_TO_EXCLUDE,
     required: true,
   },
-}, { timestamps: true, _id: false })
+}, { timestamps:  true, _id: false })
 
 const ProjectSchema = new Schema<IProject>({
   fileIndex: {
