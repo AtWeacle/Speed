@@ -66,6 +66,22 @@ app.get('/api/app/state', async (req, res) => {
   res.json({ state: app.state || {} })
 })
 
+app.put('/api/app/state', async (req, res) => {
+  const { state } = req.body
+
+  if (!state) {
+    return res.status(400).json({ error: 'State is required' })
+  }
+
+  if (typeof state !== 'string') {
+    return res.status(400).json({ error: 'State must be a string' })
+  }
+
+  await App.updateOne({}, { state }).lean().exec()
+
+  res.json({ success: true })
+})
+
 app.post('/api/app/backup', async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ error: 'Request body is required' })

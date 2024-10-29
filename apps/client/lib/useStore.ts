@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import localforage from 'localforage'
 import { persist } from 'zustand/middleware'
+import { debounce } from 'lodash'
 
 import type { useStoreState, ProjectStore } from '@weacle/speed-client/lib/useStore-types'
 import { nanoid } from '@weacle/speed-lib/utils/nanoid'
@@ -13,9 +14,19 @@ import {
 } from '@weacle/speed-lib/constants'
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
 
-var speedStore = localforage.createInstance({
+const speedStore = localforage.createInstance({
   name: 'speed-store',
 })
+
+const debounceSaveStore = debounce((state: string) => {
+  fetch(`${SERVER_URL}/api/app/state`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ state }),
+  })
+}, 5000)
 
 const createProject = (
   props: { remove: () => void },
@@ -224,6 +235,11 @@ const useStore = create<useStoreState>()(persist((set, get) => ({
           projects: Array.from(value.state.projects.entries()),
         },
       })
+
+      if (value.state.projects.size > 0) {
+        debounceSaveStore(str)
+      }
+
       speedStore.setItem(name, str)
     },
     removeItem: (name) => speedStore.removeItem(name),

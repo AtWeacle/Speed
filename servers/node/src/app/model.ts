@@ -11,12 +11,16 @@ const stateBackupSchema = new mongoose.Schema({
 stateBackupSchema.index({  createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 })
 
 export type IStateBackupSchema = Document & {
+  createdAt: Date
   state: string
+  updatedAt: Date
 }
 
 export type IApp = Document & {
+  createdAt: Date
   state: string
   stateBackups?: IStateBackupSchema[]
+  updatedAt: Date
 }
 
 const AppSchema = new Schema<IApp>({
