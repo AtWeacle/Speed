@@ -1,3 +1,4 @@
+import fs from 'fs'
 import chokidar from 'chokidar'
 import pinecone from '@weacle/speed-node-server/src/fileSearch/pinecone/client'
 
@@ -22,9 +23,17 @@ export default async function watchFiles() {
   }).lean().exec()
 
   projects.forEach(project => {
+    const { filesToExclude, filesToInclude, pathsToExclude } = project.settings
+
     const watcher = chokidar.watch(project.path, {
       awaitWriteFinish: true,
-      ignored: /(^|[\/\\])\../,
+      ignored: (path, stats) => {
+        if (pathsToExclude.filter(p => !!p).some(p => path.includes('/' + p + '/'))) return true
+        if (fs.lstatSync(path).isDirectory()) return false
+        if (filesToExclude.filter(f => !!f).some(f => path.endsWith(f))) return true
+        if (!filesToInclude.filter(f => !!f).some(f => path.endsWith(f))) return true
+        return false
+      },
       ignoreInitial: true,
       persistent: true
     })
