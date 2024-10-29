@@ -152,8 +152,6 @@ const ItemButton = styled.button`
 // `
 function Directory() {
   const directoryTreeConverted = useProjectStore(state => state.directoryTreeConverted)
-  const setDirectoryTreeConverted = useProjectStore(state => state.setDirectoryTreeConverted)
-  const setDirectoryTree = useProjectStore(state => state.setDirectoryTree)
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
 
@@ -161,14 +159,42 @@ function Directory() {
   const [showTree, setShowTree] = useState(true)
 
   useEffect(() => {
-    function handleRefetchEvent() {
-      fetchDirectoryTree()
+    async function fetchDirectoryTree() {
+      const {
+        path,
+        filesToInclude,
+        filesToExclude,
+        pathsToExclude,
+        setDirectoryTree,
+        setDirectoryTreeConverted,
+      } = useProjectStore.getState()
+
+      try {
+        setLoading(true)
+
+        const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
+          params: {
+            directory: path,
+            filesToExclude,
+            filesToInclude,
+            pathsToExclude,
+          }
+        })
+
+        setDirectoryTree(response.data)
+        setDirectoryTreeConverted(convertToTreeData(response.data))
+
+      } catch (error) {
+        console.error('Failed to fetch directory tree:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    document.addEventListener('we.directoryTree.refetch', handleRefetchEvent)
+    document.addEventListener('we.directoryTree.refetch', fetchDirectoryTree)
 
     return () => {
-      document.removeEventListener('we.directoryTree.refetch', handleRefetchEvent)
+      document.removeEventListener('we.directoryTree.refetch', fetchDirectoryTree)
     }
   }, [])
 
@@ -179,36 +205,6 @@ function Directory() {
       setShowTree(true)
     }, 200)
   }, [directoryTreeConverted])
-
-  async function fetchDirectoryTree() {
-    const {
-      path,
-      filesToInclude,
-      filesToExclude,
-      pathsToExclude,
-    } = useProjectStore.getState()
-
-    try {
-      setLoading(true)
-
-      const response = await axios.get(`${SERVER_URL}/api/directory-tree`, {
-        params: {
-          directory: path,
-          filesToExclude,
-          filesToInclude,
-          pathsToExclude,
-        }
-      })
-
-      setDirectoryTree(response.data)
-      setDirectoryTreeConverted(convertToTreeData(response.data))
-
-    } catch (error) {
-      console.error('Failed to fetch directory tree:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
     const items: Record<TreeItemIndex, TreeItem<string>> = {}
