@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import {
@@ -56,25 +56,64 @@ const TreeContainer = styled.div`
   --rct-arrow-container-size: 24px;
   --rct-color-focustree-item-selected-bg: oklch(from var(--color-deepblue) l c h / 0.15);
 
-  .rct-tree-item-arrow {
-    svg {
-      width: 20px;
-      stroke: var(--color-black-8);
-    }
+  [role="tree"] {
+    margin-right: 4px;
   }
 
-  .rct-tree-item-li {
-    width: calc(100% - 5px);
+  .rct-tree-items-container {
+    li {
+      margin: 0 0 0 4px;
+
+      ul {
+        li {
+          margin: 0 0 0 10px;
+        }
+      }
+    }
+
+    .rct-tree-item-li {
+      width: calc(100% - 5px);
+    }
+
+    .rct-tree-item-arrow {
+      margin-right: 0px;
+
+      svg {
+        width: 20px;
+        stroke: var(--color-black-8);
+      }
+    }
+
+    [role="treeitem"] {
+      display: flex;
+      flex-direction: column;
+
+      [data-rct-item-container="true"] {
+        display: flex;
+        background-color: transparent;
+        align-items: center;
+        border-radius: calc(var(--border-radius) * .4);
+        cursor: pointer;
+        transition: background-color .2s ease-in-out, color .2s ease-in-out;
+        padding: 0px 10px 0 0;
+        font-size: .85rem;
+        color: var(--color-black-7);
+
+        &:hover {
+          background-color: var(--color-black-2);
+          color: var(--color-black-9);
+        }
+      }
+    }
   }
 `
 const ItemArrow = styled.span`
   display: flex;
   align-items: center;
-  background-color: transparent;
-  transition: background-color .2s ease-in-out;
+  color: var(--color-black-4);
 
-  &:hover {
-    background-color: var(--color-black-3);
+  svg path {
+    stroke: var(--color-black-5);
   }
 `
 const SelectedItems = styled.div`
@@ -252,17 +291,33 @@ function Directory() {
           <ControlledTreeEnvironment
             getItemTitle={item => item.data}
             items={directoryTreeConverted}
-            onSelectItems={onSelectItems}
+            // onSelectItems={onSelectItems}
             onExpandItem={onExpandItem}
             onCollapseItem={onCollapseItem}
             renderItemArrow={({ item, context }) => item.isFolder
               ? <ItemArrow
-                {...context.arrowProps}
-                className='rct-tree-item-arrow'
-                onClick={() => context.toggleExpandedState()}
-              >
-                {context.isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-              </ItemArrow> : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>}
+                  {...context.arrowProps}
+                  className='rct-tree-item-arrow'
+                  onClick={() => context.toggleExpandedState()}
+                >
+                  {context.isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </ItemArrow>
+              : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>
+            }
+
+            renderItem={({ title, arrow, depth, context, children }) => {
+              const InteractiveComponent = context.isRenaming ? 'div' : 'span';
+              return (
+                <li {...context.itemContainerWithChildrenProps}>
+                  <InteractiveComponent {...context.itemContainerWithoutChildrenProps} {...context.interactiveElementProps}>
+                    {arrow}
+                    {title}
+                  </InteractiveComponent>
+                  {children}
+                </li>
+              )
+            }}
+
             viewState={{
               'tree-1': {
                 expandedItems,
