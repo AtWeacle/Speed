@@ -57,7 +57,7 @@ const TreeContainer = styled.div`
   --rct-color-focustree-item-selected-bg: oklch(from var(--color-deepblue) l c h / 0.15);
 
   [role="tree"] {
-    margin-right: 4px;
+    margin: 0 4px;
   }
 
   .rct-tree-items-container {
@@ -66,19 +66,12 @@ const TreeContainer = styled.div`
     gap: 1px;
 
     li {
-      margin: 0 0 0 4px;
       gap: 1px;
-
-      ul {
-
-        li {
-          margin: 0 0 0 10px;
-        }
-      }
     }
 
     .rct-tree-item-li {
       width: calc(100% - 5px);
+      gap: 1px;
     }
 
     [role="treeitem"] {
@@ -102,7 +95,6 @@ const TreeContainer = styled.div`
         }
 
         [data-rct-item-action="add"] {
-          /* background-color: oklch(from var(--color-deepblue) l c h / 0.8); */
           outline-color: oklch(from var(--color-deepblue) l c h / 0.4);
           position: relative;
 
@@ -127,7 +119,6 @@ const TreeContainer = styled.div`
         align-items: center;
         border-radius: calc(var(--border-radius) * .4);
         cursor: pointer;
-        transition: background-color .2s ease-in-out, color .2s ease-in-out;
         padding: 0px 2px 0 0;
         font-size: .85rem;
         color: var(--color-black-7);
@@ -138,22 +129,24 @@ const TreeContainer = styled.div`
           color: var(--color-black-9);
 
           [data-rct-item-action="add"] {
-            display: block;
+            background-color: var(--color-black-1);
+            outline: 1px solid var(--color-black-4);
           }
         }
 
         [data-rct-item-action="add"] {
-          display: none;
           width: 18px;
           height: 18px;
           display: flex;
           align-items: center;
           border-radius: calc(var(--border-radius) * .4);
-          background-color: var(--color-black-2);
-          outline: 1.5px solid var(--color-black-4);
-          outline-offset: -2px;
+          background-color: transparent;
+          outline: 1px solid var(--color-black-4);
+          outline: 1px solid transparent;
+          outline-offset: -1px;
           cursor: pointer;
-          margin: 0 0 0 auto;
+          margin-left: 2px;
+          margin-right: calc(var(--depth) * 10px);
         }
       }
 
@@ -170,16 +163,6 @@ const TreeContainer = styled.div`
       }
     }
   }
-`
-const AddItemButton = styled.div`
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  border-radius: 50%;
-  background-color: var(--color-black-2);
-  cursor: pointer;
-  margin: 0 0 0 auto;
 `
 const ItemArrow = styled.span`
   display: flex;
@@ -385,17 +368,17 @@ function Directory() {
               : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>
             }
 
-            renderItem={({ item, title, arrow, context, children }) => {
+            renderItem={({ item, title, arrow, context, depth, children }) => {
               const InteractiveComponent = context.isRenaming ? 'div' : 'span';
               return (
-                <li {...context.itemContainerWithChildrenProps}>
+                <li {...context.itemContainerWithChildrenProps} style={{ '--depth': `${depth}` } as React.CSSProperties}>
                   <InteractiveComponent {...context.itemContainerWithoutChildrenProps} {...context.interactiveElementProps}>
-                    {arrow}
-                    {title}
                     <div
                       data-rct-item-action="add"
                       onClick={(event) => onSelectItem(event, item)}
                     />
+                    {arrow}
+                    {title}
                   </InteractiveComponent>
                   {children}
                 </li>
