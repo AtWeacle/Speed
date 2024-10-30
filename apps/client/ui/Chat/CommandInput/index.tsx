@@ -21,6 +21,7 @@ import { MEDIA } from '@weacle/speed-client/theme/constants'
 import { WS_URL } from '@weacle/speed-client/lib/constants'
 import type {
   MessageStatus,
+  MessageSystem,
   SocketMessagePrompt,
 } from '@weacle/speed-lib/types'
 
@@ -362,7 +363,7 @@ export default function CommandInput({
     streamedMessageContentRef.current = ''
 
     const systemMessageId = nanoid()
-    const systemMessage = { id: systemMessageId, status: 'pending', role: 'system' }
+    const systemMessage: MessageSystem = { id: systemMessageId, status: 'pending', role: 'system' }
     addMessage(systemMessage)
     setActiveMessageId(systemMessageId)
 

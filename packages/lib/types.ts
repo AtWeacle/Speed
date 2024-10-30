@@ -58,6 +58,10 @@ export type Message = {
   text?: string
 }
 
+export type MessageSystem = Omit<Message, 'role'> & {
+  role: 'system'
+}
+
 export type MessageRole = 'system' | 'user'
 export type MessageStatus = 'pending' | 'done' | 'error'
 export type MessageType = 'error' | 'prompt' | 'response'
@@ -152,9 +156,4 @@ export type SocketMessagePrompt = SocketMessageBase & {
   settings: PathSettings
   systemPrompt: string
   type: 'prompt'
-}
-
-export type MessageSystem = {
-  role: 'system'
-  status: 'pending'
 }
