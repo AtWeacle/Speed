@@ -4,35 +4,36 @@ import chokidar from 'chokidar'
 import { App } from '@weacle/speed-node-server/src/app/model'
 import { Project } from '@weacle/speed-node-server/src/project/model'
 import indexFile from '@weacle/speed-node-server/src/fileSearch/indexFile'
-// import updateIndexedFile from '@weacle/speed-node-server/src/fileSearch/updateIndexedFile'
 import removeIndexedFile from '@weacle/speed-node-server/src/fileSearch/removeIndexedFile'
 
 export async function removeFileIndex(projectName: string, path: string) {
   console.log('Removing file index:', path)
-  removeIndexedFile(projectName, path)
+  const removed = await removeIndexedFile(projectName, path)
+
+  if (removed) {
+    App.updateOne({}, { $set: { 'directoryTree.rebuild': true } }).exec()
+  }
 }
 
 export async function updateFileIndex(projectName: string, path: string) {
   console.log('Storing file to update in index:', path)
-  // console.log('Updating file index:', path)
-  // updateIndexedFile(projectName, path)
 
-  App.updateOne({}, {
-    $addToSet: {
-      filesToUpdate: { path, project: projectName },
-    },
-  }).exec()
+  App.updateOne({}, { $addToSet: {
+    filesToUpdate: { path, project: projectName },
+  } }).exec()
 }
 
 export async function addFileIndex(projectName: string, path: string) {
   console.log('Adding file index:', path)
-  indexFile(projectName, path)
+  const added = await indexFile(projectName, path)
+
+  if (added) {
+    App.updateOne({}, { $set: { 'directoryTree.rebuild': true } }).exec()
+  }
 }
 
 export default async function watchFiles() {
-  const projects = await Project.find({
-    'fileIndex.initiated': true
-  }).lean().exec()
+  const projects = await Project.find({ 'fileIndex.initiated': true }).lean().exec()
 
   projects.forEach(project => {
     const { filesToExclude, filesToInclude, pathsToExclude } = project.settings

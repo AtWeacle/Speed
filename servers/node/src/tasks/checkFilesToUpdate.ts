@@ -22,6 +22,5 @@ export default function checkFilesToUpdate() {
     for (const file of filesToUpdate) {
       await updateIndexedFile(file.project, file.path)
     }
-
   }, 5 * 60 * 1000)
 }
