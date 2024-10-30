@@ -12,8 +12,13 @@ import SeePresets from './SeePresets'
 
 const Wrapper = styled.div`
   display: flex;
-  gap: 5px;
-  margin: 0 10px;
+  margin: 0 0 0 auto;
+  gap: 4px;
+
+  button {
+    color: var(--color-black-8);
+    padding: 2px 2px;
+  }
 `
 
 const presetSchema = z.object({
@@ -45,17 +50,17 @@ function FileSelectionPreset() {
     <Wrapper>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <Button title="Create Preset">
+          <Button title="Create Preset" appearance="text">
             <ListPlus size={16} />
           </Button>
         </Dialog.Trigger>
-        
+
         <CreatePreset onCreatePreset={handleCreatePreset} />
       </Dialog.Root>
 
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <Button title="See Presets">
+          <Button title="See Presets" appearance="text">
             <List size={16} />
           </Button>
         </Dialog.Trigger>

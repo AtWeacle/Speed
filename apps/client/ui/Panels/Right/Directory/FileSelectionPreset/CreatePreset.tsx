@@ -19,7 +19,8 @@ const SelectedItems = styled.ul`
   padding: 0;
   margin: 0;
   max-height: 200px;
-  overflow-y: auto;
+  overflow: auto;
+  font-size: .8rem;
 `
 
 type Props = {
@@ -62,7 +63,7 @@ function CreatePreset({ onCreatePreset }: Props) {
           <label>Selected Items</label>
           <SelectedItems>
             {selectedItems.map(item => (
-              <li key={item}>{item}</li>
+              <li key={item}>{item.replace('root/', '')}</li>
             ))}
           </SelectedItems>
         </InputWrapper>

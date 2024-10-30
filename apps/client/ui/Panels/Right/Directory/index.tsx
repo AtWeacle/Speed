@@ -84,6 +84,10 @@ const SelectedItems = styled.div`
   background-color: var(--color-black-3);
   border-radius: 0 0 calc(var(--border-radius) * .8) calc(var(--border-radius) * .8);
 `
+const SelectedItemsHead = styled.div`
+  display: flex;
+  gap: 2px;
+`
 const SelectedItemsList = styled.ul`
   list-style-type: none;
   padding: 0 5px;
@@ -214,7 +218,7 @@ function Directory() {
   }, [directoryTreeConverted])
 
   const dataProvider = useMemo(() =>
-    new StaticTreeDataProvider(directoryTreeConverted, (item, data) => ({
+    new StaticTreeDataProvider(directoryTreeConverted || {}, (item, data) => ({
       ...item,
       data,
     })
@@ -243,11 +247,11 @@ function Directory() {
   }
 
   function onExpandItem(item: TreeItem<any>, treeId: string) {
-    addExpandedItems(item.index)
+    addExpandedItems(item.index as string)
   }
 
   function onCollapseItem(item: TreeItem<any>, treeId: string) {
-    removeExpandedItems(item.index)
+    removeExpandedItems(item.index as string)
   }
 
   function isDirectory(item: string): boolean {
@@ -287,8 +291,10 @@ function Directory() {
       </TreeContainer>
 
       <SelectedItems>
-        <Title>Selection</Title>
-        <FileSelectionPreset />
+        <SelectedItemsHead>
+          <Title>Selection</Title>
+          <FileSelectionPreset />
+        </SelectedItemsHead>
 
         {selectedItems.length > 0 ? (
           <SelectedItemsList>
