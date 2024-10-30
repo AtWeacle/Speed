@@ -149,7 +149,7 @@ const createProject = (
 
   selectedItems: [],
   addSelectedItem: (item) => set((state) => ({
-    selectedItems: [...state.selectedItems, item],
+    selectedItems: Array.from(new Set([...state.selectedItems, item])),
   })),
   setSelectedItems: (items) => set(() => ({ selectedItems: items })),
   clearSelectedItems: () => set(() => ({ selectedItems: [] })),
