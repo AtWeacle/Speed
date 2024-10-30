@@ -5,7 +5,7 @@ import { X } from 'lucide-react'
 
 import Button from '@weacle/speed-client/ui/Button'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
-import Preset from './Preset'
+import Preset from '@weacle/speed-client/ui/Panels/Right/Directory/FileSelectionPreset/Preset'
 
 const PresetList = styled.div`
   display: flex;

@@ -7,8 +7,8 @@ import { z } from 'zod'
 
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import Button from '@weacle/speed-client/ui/Button'
-import CreatePreset from './CreatePreset'
-import SeePresets from './SeePresets'
+import CreatePreset from '@weacle/speed-client/ui/Panels/Right/Directory/FileSelectionPreset/CreatePreset'
+import SeePresets from '@weacle/speed-client/ui/Panels/Right/Directory/FileSelectionPreset/SeePresets'
 
 const Wrapper = styled.div`
   display: flex;
