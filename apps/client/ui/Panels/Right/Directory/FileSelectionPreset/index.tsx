@@ -35,7 +35,7 @@ function FileSelectionPreset() {
 
   const [open, setOpen] = useState(false)
 
-  function handleRemoveSelectedItems(name: string, description?: string) {
+  function handleRemoveSelectedItems() {
     clearSelectedItems()
   }
 

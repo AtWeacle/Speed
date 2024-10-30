@@ -16,12 +16,14 @@ import {
   SquareArrowOutUpRight,
   X,
 } from 'lucide-react'
+import useWebSocket from 'react-use-websocket'
 
 import type {
   DirectoryTree,
   FileSystemItem,
 } from '@weacle/speed-lib/types'
-import { SERVER_URL } from '@weacle/speed-client/lib/constants'
+import { SERVER_URL, WS_URL } from '@weacle/speed-client/lib/constants'
+import { REFRESH_DIRECTORY_TREE } from '@weacle/speed-lib/constants'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import FileSearch from '@weacle/speed-client/ui/Panels/Right/Directory/FileSearch'
 import FileSelectionPreset from '@weacle/speed-client/ui/Panels/Right/Directory/FileSelectionPreset'
@@ -154,7 +156,22 @@ function Directory() {
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
 
-  const [showTree, setShowTree] = useState(true)
+  useWebSocket(WS_URL, {
+    share: true,
+    shouldReconnect: () => true,
+    onMessage: (event) => {
+      try {
+        const data = JSON.parse(event.data)
+
+        if (data.type === REFRESH_DIRECTORY_TREE) {
+          document.dispatchEvent(new Event('we.directoryTree.refetch'))
+        }
+
+      } catch (error) {
+        console.error('Error parsing event data:', error)
+      }
+    },
+  })
 
   useEffect(() => {
     async function fetchDirectoryTree() {
@@ -192,14 +209,6 @@ function Directory() {
     }
   }, [])
 
-  useEffect(() => {
-    setShowTree(false)
-
-    setTimeout(() => {
-      setShowTree(true)
-    }, 200)
-  }, [directoryTreeConverted])
-
   function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
     const items: Record<TreeItemIndex, TreeItem<string>> = {}
 
@@ -222,11 +231,11 @@ function Directory() {
     setSelectedItems(items as string[])
   }
 
-  function onExpandItem(item: TreeItem<any>, treeId: string) {
+  function onExpandItem(item: TreeItem<any>) {
     addExpandedItems(item.index as string)
   }
 
-  function onCollapseItem(item: TreeItem<any>, treeId: string) {
+  function onCollapseItem(item: TreeItem<any>) {
     removeExpandedItems(item.index as string)
   }
 
@@ -239,7 +248,7 @@ function Directory() {
       <FileSearch />
 
       <TreeContainer className="rct-dark">
-        {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 ?
+        {directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 ?
           <ControlledTreeEnvironment
             getItemTitle={item => item.data}
             items={directoryTreeConverted}
