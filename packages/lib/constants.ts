@@ -104,4 +104,6 @@ export const MODEL_IDS = Object.values(MODELS).reduce((acc, vendor) => {
   return acc.concat(Object.keys(vendor.list))
 }, [] as string[])
 
+export const REFRESH_DIRECTORY_TREE = 'refresh-directory-tree'
+
 export const STORE_NAME = 'main-store'
