@@ -95,6 +95,7 @@ function Preset({ preset }: Props) {
   const [description, setDescription] = useState(preset.description || '')
   const [isExpanded, setIsExpanded] = useState(false)
 
+  const addSelectedItem = useProjectStore(state => state.addSelectedItem)
   const removeFileSelectionPreset = useProjectStore(state => state.removeFileSelectionPreset)
   const updateFileSelectionPreset = useProjectStore(state => state.updateFileSelectionPreset)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
@@ -111,6 +112,10 @@ function Preset({ preset }: Props) {
 
     updateFileSelectionPreset(preset.id, { name, description })
     setIsUpdateOpen(false)
+  }
+
+  function handleAdd() {
+    preset.files.forEach(file => addSelectedItem(file))
   }
 
   function handleLoad() {
@@ -146,6 +151,8 @@ function Preset({ preset }: Props) {
       
       <PresetActions>
         <Button onClick={handleLoad}>Use</Button>
+        <Button onClick={handleAdd}>Add to selection</Button>
+
         <Dialog.Root open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
           <Dialog.Trigger asChild>
             <Button>Update</Button>
