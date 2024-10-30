@@ -61,10 +61,16 @@ const TreeContainer = styled.div`
   }
 
   .rct-tree-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
     li {
       margin: 0 0 0 4px;
+      gap: 1px;
 
       ul {
+
         li {
           margin: 0 0 0 10px;
         }
@@ -75,18 +81,45 @@ const TreeContainer = styled.div`
       width: calc(100% - 5px);
     }
 
-    .rct-tree-item-arrow {
-      margin-right: 0px;
-
-      svg {
-        width: 20px;
-        stroke: var(--color-black-8);
-      }
-    }
-
     [role="treeitem"] {
       display: flex;
       flex-direction: column;
+
+      &[aria-selected="true"] > [data-rct-item-container="true"]:first-child {
+        background-color: oklch(from var(--color-deepblue) l c h / 0.1);
+        color: oklch(from var(--color-deepblue) l c h / 1);
+
+        .rct-tree-item-arrow {
+          svg {
+            path {
+              stroke: var(--color-deepblue);
+            }
+          }
+        }
+
+        &:hover {
+          background-color: oklch(from var(--color-deepblue) l c h / 0.2);
+        }
+
+        [data-rct-item-action="add"] {
+          /* background-color: oklch(from var(--color-deepblue) l c h / 0.8); */
+          outline-color: oklch(from var(--color-deepblue) l c h / 0.4);
+          position: relative;
+
+          &::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: oklch(from var(--color-deepblue) l c h / 0.8);
+            border-radius: calc(var(--border-radius) * .2);
+            z-index: 1;
+          }
+        }
+      }
 
       [data-rct-item-container="true"] {
         display: flex;
@@ -95,17 +128,58 @@ const TreeContainer = styled.div`
         border-radius: calc(var(--border-radius) * .4);
         cursor: pointer;
         transition: background-color .2s ease-in-out, color .2s ease-in-out;
-        padding: 0px 10px 0 0;
+        padding: 0px 2px 0 0;
         font-size: .85rem;
         color: var(--color-black-7);
+        user-select: none;
 
         &:hover {
           background-color: var(--color-black-2);
           color: var(--color-black-9);
+
+          [data-rct-item-action="add"] {
+            display: block;
+          }
+        }
+
+        [data-rct-item-action="add"] {
+          display: none;
+          width: 18px;
+          height: 18px;
+          display: flex;
+          align-items: center;
+          border-radius: calc(var(--border-radius) * .4);
+          background-color: var(--color-black-2);
+          outline: 1.5px solid var(--color-black-4);
+          outline-offset: -2px;
+          cursor: pointer;
+          margin: 0 0 0 auto;
+        }
+      }
+
+      .rct-tree-item-arrow {
+        margin-right: 0px;
+
+        svg {
+          width: 20px;
+
+          path {
+            stroke: var(--color-black-8);
+          }
         }
       }
     }
   }
+`
+const AddItemButton = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  background-color: var(--color-black-2);
+  cursor: pointer;
+  margin: 0 0 0 auto;
 `
 const ItemArrow = styled.span`
   display: flex;
@@ -194,6 +268,8 @@ function Directory() {
   const removeExpandedItems = useProjectStore(state => state.removeExpandedItems)
   const selectedItems = useProjectStore(state => state.selectedItems)
   const setSelectedItems = useProjectStore(state => state.setSelectedItems)
+  const addSelectedItem = useProjectStore(state => state.addSelectedItem)
+  const removeSelectedItem = useProjectStore(state => state.removeSelectedItem)
 
   useWebSocket(WS_URL, {
     share: true,
@@ -266,15 +342,20 @@ function Directory() {
     return items
   }
 
-  function onSelectItems(items: TreeItemIndex[]) {
-    setSelectedItems(items as string[])
+  function onSelectItem(event: React.MouseEvent<HTMLDivElement>, item: TreeItem) {
+    event.stopPropagation()
+    if (selectedItems.includes(item.index as string)) {
+      removeSelectedItem(item.index as string)
+    } else {
+      addSelectedItem(item.index as string)
+    }
   }
 
-  function onExpandItem(item: TreeItem<any>) {
+  function onExpandItem(item: TreeItem) {
     addExpandedItems(item.index as string)
   }
 
-  function onCollapseItem(item: TreeItem<any>) {
+  function onCollapseItem(item: TreeItem) {
     removeExpandedItems(item.index as string)
   }
 
@@ -291,7 +372,6 @@ function Directory() {
           <ControlledTreeEnvironment
             getItemTitle={item => item.data}
             items={directoryTreeConverted}
-            // onSelectItems={onSelectItems}
             onExpandItem={onExpandItem}
             onCollapseItem={onCollapseItem}
             renderItemArrow={({ item, context }) => item.isFolder
@@ -305,13 +385,17 @@ function Directory() {
               : <div className="rct-tree-item-arrow" aria-hidden="true" tabIndex={-1}></div>
             }
 
-            renderItem={({ title, arrow, depth, context, children }) => {
+            renderItem={({ item, title, arrow, context, children }) => {
               const InteractiveComponent = context.isRenaming ? 'div' : 'span';
               return (
                 <li {...context.itemContainerWithChildrenProps}>
                   <InteractiveComponent {...context.itemContainerWithoutChildrenProps} {...context.interactiveElementProps}>
                     {arrow}
                     {title}
+                    <div
+                      data-rct-item-action="add"
+                      onClick={(event) => onSelectItem(event, item)}
+                    />
                   </InteractiveComponent>
                   {children}
                 </li>

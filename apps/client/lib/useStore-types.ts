@@ -78,6 +78,7 @@ export type ProjectStore = {
 
   selectedItems: string[]
   addSelectedItem: (item: string) => void
+  removeSelectedItem: (item: string) => void
   setSelectedItems: (items: string[]) => void
   clearSelectedItems: () => void
   selectAllItems: () => void

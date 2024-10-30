@@ -151,6 +151,9 @@ const createProject = (
   addSelectedItem: (item) => set((state) => ({
     selectedItems: Array.from(new Set([...state.selectedItems, item])),
   })),
+  removeSelectedItem: (item) => set((state) => ({
+    selectedItems: state.selectedItems.filter((i) => i !== item),
+  })),
   setSelectedItems: (items) => set(() => ({ selectedItems: items })),
   clearSelectedItems: () => set(() => ({ selectedItems: [] })),
   selectAllItems: () => set((state) => ({
