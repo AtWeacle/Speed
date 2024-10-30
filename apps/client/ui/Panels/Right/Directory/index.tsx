@@ -129,7 +129,7 @@ const TreeContainer = styled.div`
           color: var(--color-black-9);
 
           [data-rct-item-action="add"] {
-            background-color: var(--color-black-1);
+            background-color: var(--color-black-2);
             outline: 1px solid var(--color-black-4);
           }
         }
@@ -147,6 +147,24 @@ const TreeContainer = styled.div`
           cursor: pointer;
           margin-left: 2px;
           margin-right: calc(var(--depth) * 10px);
+
+          &[data-rct-item-selected-child="true"] {
+            outline-color: oklch(from var(--color-deepblue) l c h / 0.4);
+            position: relative;
+
+            &::before {
+              content: '';
+              width: 8px;
+              height: 2px;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background-color: oklch(from var(--color-deepblue) l c h / 0.4);
+              border-radius: calc(var(--border-radius) * .2);
+              z-index: 1;
+            }
+          }
         }
       }
 
@@ -346,6 +364,10 @@ function Directory() {
     return directoryTreeConverted?.[item]?.isFolder || false
   }
 
+  function isChildSelected(item: string): boolean {
+    return selectedItems.some(i => i.startsWith(item) && i.length > item.length)
+  }
+
   return (
     <Wrapper>
       <FileSearch />
@@ -369,13 +391,20 @@ function Directory() {
             }
 
             renderItem={({ item, title, arrow, context, depth, children }) => {
-              const InteractiveComponent = context.isRenaming ? 'div' : 'span';
+              const InteractiveComponent = context.isRenaming ? 'div' : 'span'
               return (
-                <li {...context.itemContainerWithChildrenProps} style={{ '--depth': `${depth}` } as React.CSSProperties}>
-                  <InteractiveComponent {...context.itemContainerWithoutChildrenProps} {...context.interactiveElementProps}>
+                <li
+                  {...context.itemContainerWithChildrenProps}
+                  style={{ '--depth': `${depth}` } as React.CSSProperties}
+                >
+                  <InteractiveComponent
+                    {...context.itemContainerWithoutChildrenProps}
+                    {...context.interactiveElementProps}
+                  >
                     <div
                       data-rct-item-action="add"
                       onClick={(event) => onSelectItem(event, item)}
+                      data-rct-item-selected-child={isChildSelected(item.index as string)}
                     />
                     {arrow}
                     {title}
