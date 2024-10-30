@@ -122,6 +122,22 @@ const createProject = (
   pathsToExclude: [],
   setPathsToExclude: (pathsToExclude) => set(() => ({ pathsToExclude })),
 
+  fileSelectionPresets: [],
+  addFileSelectionPreset: (preset) => set((state) => ({
+    fileSelectionPresets: [...state.fileSelectionPresets, preset],
+  })),
+  removeFileSelectionPreset: (presetId) => set((state) => ({
+    fileSelectionPresets: state.fileSelectionPresets.filter((preset) => preset.id !== presetId),
+  })),
+  updateFileSelectionPreset: (presetId, update) => set((state) => ({
+    fileSelectionPresets: state.fileSelectionPresets.map((preset) => {
+      if (preset.id === presetId) {
+        return { ...preset, ...update }
+      }
+      return preset
+    }),
+  })),
+
   prompt: '',
   setPrompt: (prompt) => set(() => ({ prompt })),
 

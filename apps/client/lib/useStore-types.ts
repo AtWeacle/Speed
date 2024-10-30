@@ -3,6 +3,7 @@ import type {
   DirectoryTreeConverted,
   ErrorsType,
   FileIndex,
+  FileSelectionPreset,
   LllModel,
   Message,
   Project,
@@ -60,6 +61,11 @@ export type ProjectStore = {
   setName: (name: string) => void
   path: string
   setPath: (path: string) => void
+
+  fileSelectionPresets: FileSelectionPreset[]
+  addFileSelectionPreset: (preset: FileSelectionPreset) => void
+  removeFileSelectionPreset: (presetId: string) => void
+  updateFileSelectionPreset: (presetId: string, update: Partial<FileSelectionPreset>) => void
 
   prompt: string
   setPrompt: (prompt: string) => void

@@ -33,6 +33,13 @@ export type FileIndex = {
 
 export type FileIndexStatusType = typeof FILE_INDEX_STATUS[number]
 
+export type FileSelectionPreset = {
+  description?: string
+  files: string[]
+  id: string
+  name: string
+}
+
 export type IndexedFile = {
   components: CodeElement[]
   description: string

@@ -25,6 +25,7 @@ import type {
 import { SERVER_URL } from '@weacle/speed-client/lib/constants'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import FileSearch from '@weacle/speed-client/ui/Panels/Right/Directory/FileSearch'
+import FileSelectionPreset from '@weacle/speed-client/ui/Panels/Right/Directory/FileSelectionPreset'
 
 const Wrapper = styled.div`
   display: flex;
@@ -287,6 +288,7 @@ function Directory() {
 
       <SelectedItems>
         <Title>Selection</Title>
+        <FileSelectionPreset />
 
         {selectedItems.length > 0 ? (
           <SelectedItemsList>
