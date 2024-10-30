@@ -29,7 +29,6 @@ const debounceEvent = debounce(() => {
 const debounceSave = debounce(async () => {
   const { getActiveProject } = useStore.getState()
   const project = getActiveProject()
-  console.log('project', project)
   if (!project) return
 
   const { name, path, filesToExclude, filesToInclude, pathsToExclude } = project

@@ -7,13 +7,6 @@ import Button from '@weacle/speed-client/ui/Button'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 import Preset from './Preset'
 
-const StyledContent = styled(Dialog.Content)`
-  max-width: 400px;
-  gap: 15px;
-  display: flex;
-  flex-direction: column;
-`
-
 const PresetList = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,7 +19,16 @@ function SeePresets() {
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="DialogOverlay" />
-      <StyledContent className="DialogContent">
+      <Dialog.Content
+        className="DialogContent"
+        aria-describedby={undefined}
+        style={{
+          maxWidth: '400px',
+          gap: '15px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Dialog.Title className="DialogTitle">Presets</Dialog.Title>
 
         <PresetList>
@@ -40,7 +42,7 @@ function SeePresets() {
             <X size={24} />
           </Button>
         </Dialog.Close>
-      </StyledContent>
+      </Dialog.Content>
     </Dialog.Portal>
   )
 }

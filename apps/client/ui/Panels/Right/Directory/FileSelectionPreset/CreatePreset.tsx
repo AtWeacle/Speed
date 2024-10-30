@@ -7,13 +7,6 @@ import Button from '@weacle/speed-client/ui/Button'
 import { Input, InputWrapper } from '@weacle/speed-client/ui/Form'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
 
-const StyledContent = styled(Dialog.Content)`
-  max-width: 400px;
-  gap: 15px;
-  display: flex;
-  flex-direction: column;
-`
-
 const SelectedItems = styled.ul`
   list-style: none;
   padding: 0;
@@ -35,7 +28,16 @@ function CreatePreset({ onCreatePreset }: Props) {
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="DialogOverlay" />
-      <StyledContent className="DialogContent">
+      <Dialog.Content
+        className="DialogContent"
+        aria-describedby={undefined}
+        style={{
+          maxWidth: '400px',
+          gap: '15px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Dialog.Title className="DialogTitle">Create Preset</Dialog.Title>
 
         <InputWrapper>
@@ -77,7 +79,7 @@ function CreatePreset({ onCreatePreset }: Props) {
             <X size={24} />
           </Button>
         </Dialog.Close>
-      </StyledContent>
+      </Dialog.Content>
     </Dialog.Portal>
   )
 }

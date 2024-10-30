@@ -82,13 +82,6 @@ const PresetFiles = styled.div`
   width: 100%;
 `
 
-const StyledContent = styled(Dialog.Content)`
-  max-width: 400px;
-  gap: 15px;
-  display: flex;
-  flex-direction: column;
-`
-
 function Preset({ preset }: Props) {
   const [isUpdateOpen, setIsUpdateOpen] = useState(false)
   const [name, setName] = useState(preset.name)
@@ -139,7 +132,7 @@ function Preset({ preset }: Props) {
         >
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </Button>
-        
+
         {isExpanded ?
           <PresetFiles>
             {preset.files.map(f => f.replace('root/', '')).map(file => (
@@ -159,8 +152,23 @@ function Preset({ preset }: Props) {
           </Dialog.Trigger>
 
           <Dialog.Portal>
-            <Dialog.Overlay className="DialogOverlay" />
-            <StyledContent className="DialogContent">
+            <Dialog.Overlay
+              className="DialogOverlay"
+              style={{
+                zIndex: 'calc(var(--z-index-dialog) + 1)',
+              }}
+            />
+            <Dialog.Content
+              className="DialogContent"
+              aria-describedby={undefined}
+              style={{
+                maxWidth: '400px',
+                gap: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                zIndex: 'calc(var(--z-index-dialog) + 2)',
+              }}
+            >
               <Dialog.Title className="DialogTitle">Update Preset</Dialog.Title>
 
               <InputWrapper>
@@ -191,7 +199,7 @@ function Preset({ preset }: Props) {
                   <X size={24} />
                 </Button>
               </Dialog.Close>
-            </StyledContent>
+            </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
 
