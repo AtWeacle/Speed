@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
-import { List, ListPlus } from 'lucide-react'
+import { List, Plus, X } from 'lucide-react'
 import { nanoid } from '@weacle/speed-lib/utils/nanoid'
 import { z } from 'zod'
 
@@ -30,7 +30,12 @@ const presetSchema = z.object({
 
 function FileSelectionPreset() {
   const selectedItems = useProjectStore(state => state.selectedItems)
+  const clearSelectedItems = useProjectStore(state => state.clearSelectedItems)
   const addFileSelectionPreset = useProjectStore(state => state.addFileSelectionPreset)
+
+  function handleRemoveSelectedItems(name: string, description?: string) {
+    clearSelectedItems()
+  }
 
   function handleCreatePreset(name: string, description?: string) {
     const preset = {
@@ -51,7 +56,7 @@ function FileSelectionPreset() {
       <Dialog.Root>
         <Dialog.Trigger asChild>
           <Button title="Create Preset" appearance="text">
-            <ListPlus size={16} />
+            <Plus size={16} />
           </Button>
         </Dialog.Trigger>
 
@@ -67,6 +72,10 @@ function FileSelectionPreset() {
 
         <SeePresets />
       </Dialog.Root>
+
+      <Button title="Clear Selection" appearance="text"  onClick={handleRemoveSelectedItems}>
+        <X size={14} />
+      </Button>
     </Wrapper>
   )
 }
