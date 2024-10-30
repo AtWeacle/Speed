@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch --clear-screen=false --include src --include .env src/index.ts"
+    "dev": "tsx watch --clear-screen=false --include src --include .env src/index.ts",
+    "watch": "tsx watch --clear-screen=false --include watcher --include .env watcher/index.ts"
   },
   "engines": {
     "npm": "10.x",

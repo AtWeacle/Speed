@@ -16,7 +16,7 @@ import handleIncomingMessage from '@weacle/speed-node-server/src/message/handleI
 import getDirectoryTree from '@weacle/speed-node-server/src/utils/getDirectoryTree'
 import startIndexing from '@weacle/speed-node-server/src/fileSearch/startIndexing'
 import searchFiles from '@weacle/speed-node-server/src/fileSearch/searchFiles'
-import watchFiles from '@weacle/speed-node-server/src/fileSearch/watchFiles'
+import checkFilesToUpdate from '@weacle/speed-node-server/src/fileSearch/checkFilesToUpdate'
 
 import type {
   DirectoryTree,
@@ -261,5 +261,5 @@ httpServer.listen(PORT, async () => {
   }
 
   await mongoConnect()
-  watchFiles()
+  checkFilesToUpdate()
 })
