@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import * as Dialog from '@radix-ui/react-dialog'
 import { List, Plus, X } from 'lucide-react'
@@ -22,8 +22,8 @@ const Wrapper = styled.div`
 `
 
 const presetSchema = z.object({
-  name: z.string().min(1).max(20),
-  description: z.string().max(150).optional(),
+  name: z.string().min(1, 'Name must have at least 1 character').max(20, 'Name must have at most 20 characters'),
+  description: z.string().max(150, 'Description must have at most 150 characters').optional(),
   id: z.string(),
   files: z.array(z.string())
 })
@@ -32,6 +32,8 @@ function FileSelectionPreset() {
   const selectedItems = useProjectStore(state => state.selectedItems)
   const clearSelectedItems = useProjectStore(state => state.clearSelectedItems)
   const addFileSelectionPreset = useProjectStore(state => state.addFileSelectionPreset)
+
+  const [open, setOpen] = useState(false)
 
   function handleRemoveSelectedItems(name: string, description?: string) {
     clearSelectedItems()
@@ -46,21 +48,27 @@ function FileSelectionPreset() {
     }
 
     const result = presetSchema.safeParse(preset)
-    if (!result.success) return
+    if (!result.success) {
+      return { 
+        success: false, 
+        error: result.error.issues[0].message 
+      }
+    }
 
     addFileSelectionPreset(preset)
+    return { success: true }
   }
 
   return (
     <Wrapper>
-      <Dialog.Root>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger asChild>
           <Button title="Create Preset" appearance="text">
             <Plus size={16} />
           </Button>
         </Dialog.Trigger>
 
-        <CreatePreset onCreatePreset={handleCreatePreset} />
+        <CreatePreset onCreatePreset={handleCreatePreset} onClose={() => setOpen(false)} />
       </Dialog.Root>
 
       <Dialog.Root>

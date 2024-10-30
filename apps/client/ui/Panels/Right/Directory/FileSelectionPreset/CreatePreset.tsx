@@ -15,15 +15,32 @@ const SelectedItems = styled.ul`
   overflow: auto;
   font-size: .8rem;
 `
+const Error = styled.span`
+  color: var(--color-red);
+  font-size: 0.8rem;
+  margin-top: 4px;
+`
 
-type Props = {
-  onCreatePreset: (name: string, description?: string) => void
-}
-
-function CreatePreset({ onCreatePreset }: Props) {
+function CreatePreset({
+  onCreatePreset,
+  onClose,
+}: {
+  onCreatePreset: (name: string, description?: string) => { success: boolean, error?: string }
+  onClose: () => void
+}) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [error, setError] = useState('')
   const selectedItems = useProjectStore(state => state.selectedItems)
+
+  function handleCreatePreset() {
+    const result = onCreatePreset(name, description)
+    if (result.success) {
+      onClose()
+    } else {
+      setError(result.error || 'An error occurred')
+    }
+  }
 
   return (
     <Dialog.Portal>
@@ -49,6 +66,7 @@ function CreatePreset({ onCreatePreset }: Props) {
             maxLength={20}
             required
           />
+          {error ? <Error>{error}</Error> : null}
         </InputWrapper>
 
         <InputWrapper>
@@ -70,7 +88,7 @@ function CreatePreset({ onCreatePreset }: Props) {
           </SelectedItems>
         </InputWrapper>
 
-        <Button onClick={() => onCreatePreset(name, description)}>
+        <Button onClick={handleCreatePreset}>
           Create Preset
         </Button>
 
