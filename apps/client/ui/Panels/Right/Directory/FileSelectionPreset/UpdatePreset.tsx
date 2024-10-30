@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { z } from 'zod'
 import * as Dialog from '@radix-ui/react-dialog'
-import { X, Plus, Trash2 } from 'lucide-react'
+import { X, Plus } from 'lucide-react'
 
 import type { FileSelectionPreset } from '@weacle/speed-lib/types'
 import Button from '@weacle/speed-client/ui/Button'
@@ -147,7 +147,7 @@ function UpdatePreset({ preset }: { preset: FileSelectionPreset }) {
                   <FileItem key={index}>
                     <span title={file.replace('root/', '')}>{file.replace('root/', '')}</span>
                     <Button onClick={() => handleRemoveFile(file)} appearance="text">
-                      <Trash2 size={14} />
+                      <X size={14} color="var(--color-black-6)" />
                     </Button>
                   </FileItem>
                 ))}
