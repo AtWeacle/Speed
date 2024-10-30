@@ -2,9 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import axios from 'axios'
 import {
-  UncontrolledTreeEnvironment,
+  ControlledTreeEnvironment,
   Tree,
-  StaticTreeDataProvider,
   type TreeItem,
   type TreeItemIndex,
 } from 'react-complex-tree'
@@ -147,20 +146,6 @@ const ItemButton = styled.button`
     color: var(--color-black-9);
   }
 `
-// const ButtonContainer = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   padding: 10px;
-// `
-// const Button = styled.button`
-//   padding: 5px 10px;
-//   background-color: var(--color-black-4);
-//   color: var(--color-black-8);
-//   font-size: .8rem;
-//   border: none;
-//   border-radius: calc(var(--border-radius) * .5);
-//   cursor: pointer;
-// `
 function Directory() {
   const directoryTreeConverted = useProjectStore(state => state.directoryTreeConverted)
   const expandedItems = useProjectStore(state => state.expandedItems)
@@ -197,8 +182,6 @@ function Directory() {
 
       } catch (error) {
         console.error('Failed to fetch directory tree:', error)
-      } finally {
-        dataProvider.onDidChangeTreeDataEmitter.emit(['root'])
       }
     }
 
@@ -216,13 +199,6 @@ function Directory() {
       setShowTree(true)
     }, 200)
   }, [directoryTreeConverted])
-
-  const dataProvider = useMemo(() =>
-    new StaticTreeDataProvider(directoryTreeConverted || {}, (item, data) => ({
-      ...item,
-      data,
-    })
-  ), [directoryTreeConverted])
 
   function convertToTreeData(tree: DirectoryTree): Record<TreeItemIndex, TreeItem<string>> {
     const items: Record<TreeItemIndex, TreeItem<string>> = {}
@@ -264,9 +240,9 @@ function Directory() {
 
       <TreeContainer className="rct-dark">
         {showTree && directoryTreeConverted && Object.keys(directoryTreeConverted).length > 0 ?
-          <UncontrolledTreeEnvironment
-            dataProvider={dataProvider}
+          <ControlledTreeEnvironment
             getItemTitle={item => item.data}
+            items={directoryTreeConverted}
             onSelectItems={onSelectItems}
             onExpandItem={onExpandItem}
             onCollapseItem={onCollapseItem}
@@ -286,7 +262,7 @@ function Directory() {
             }}
           >
             <Tree treeId="tree-1" rootItem="root" treeLabel="Directory Tree" />
-          </UncontrolledTreeEnvironment>
+          </ControlledTreeEnvironment>
         : null}
       </TreeContainer>
 
@@ -330,12 +306,6 @@ function Directory() {
           </SelectedItemsList>
         ) : null}
       </SelectedItems>
-      
-
-      {/* <ButtonContainer>
-        <Button onClick={clearSelectedItems}>Deselect All</Button>
-        <Button onClick={selectAllItems}>Select All</Button>
-      </ButtonContainer> */}
     </Wrapper>
   )
 }
