@@ -49,6 +49,7 @@ function FileSelectionPreset() {
             <ListPlus size={16} />
           </Button>
         </Dialog.Trigger>
+        
         <CreatePreset onCreatePreset={handleCreatePreset} />
       </Dialog.Root>
 
@@ -58,6 +59,7 @@ function FileSelectionPreset() {
             <List size={16} />
           </Button>
         </Dialog.Trigger>
+
         <SeePresets />
       </Dialog.Root>
     </Wrapper>
