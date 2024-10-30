@@ -1,34 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import * as Dialog from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
 import { z } from 'zod'
+import * as Dialog from '@radix-ui/react-dialog'
+import { X, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 
 import type { FileSelectionPreset } from '@weacle/speed-lib/types'
 import Button from '@weacle/speed-client/ui/Button'
 import { Input, InputWrapper } from '@weacle/speed-client/ui/Form'
 import useProjectStore from '@weacle/speed-client/lib/useProjectStore'
-
-const PresetWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 10px;
-  background-color: var(--color-black-2);
-  border-radius: var(--border-radius);
-`
-
-const PresetActions = styled.div`
-  display: flex;
-  gap: 5px;
-`
-
-const StyledContent = styled(Dialog.Content)`
-  max-width: 400px;
-  gap: 15px;
-  display: flex;
-  flex-direction: column;
-`
 
 const presetSchema = z.object({
   name: z.string().min(1).max(20),
@@ -39,10 +18,82 @@ type Props = {
   preset: FileSelectionPreset
 }
 
+const PresetWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  background-color: var(--color-black-2);
+  border-radius: var(--border-radius);
+
+  button {
+    font-size: .8rem;
+    color: var(--color-black-8);
+    padding: 4px 8px;
+  }
+`
+
+const Head = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 5px;
+`
+
+const Name = styled.div`
+  font-size: .85rem;
+  font-weight: 500;
+`
+
+const Description = styled.div`
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--color-black-6);
+`
+
+const PresetActions = styled.div`
+  display: flex;
+  gap: 5px;
+`
+
+const PresetHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  background-color: var(--color-black-1);
+  padding: 5px 10px 5px 5px;
+  border-radius: calc(var(--border-radius) * .8);
+  min-height: 34px;
+
+  span {
+    font-size: .8rem;
+  }
+`
+
+const PresetFiles = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: .7rem;
+  color: var(--color-gray-1);
+  overflow-x: auto;
+  max-height: 100px;
+  width: 100%;
+`
+
+const StyledContent = styled(Dialog.Content)`
+  max-width: 400px;
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+`
+
 function Preset({ preset }: Props) {
   const [isUpdateOpen, setIsUpdateOpen] = useState(false)
   const [name, setName] = useState(preset.name)
   const [description, setDescription] = useState(preset.description || '')
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const removeFileSelectionPreset = useProjectStore(state => state.removeFileSelectionPreset)
   const updateFileSelectionPreset = useProjectStore(state => state.updateFileSelectionPreset)
@@ -68,12 +119,33 @@ function Preset({ preset }: Props) {
 
   return (
     <PresetWrapper>
-      <div>{preset.name}</div>
-      {preset.description && <div>{preset.description}</div>}
+      <Head>
+        <Name>{preset.name}</Name>
+        {preset.description ?
+          <Description aria-describedby={undefined}>{preset.description}</Description>
+        : null}
+      </Head>
+
+      <PresetHeader onClick={() => setIsExpanded(!isExpanded)}>
+        <Button
+          title={isExpanded ? 'Collapse' : 'Expand'}
+          appearance="text"
+          style={{ padding: '2px', height: 'auto' }}
+        >
+          
+          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </Button>
+        {isExpanded ?
+          <PresetFiles>
+            {preset.files.map(f => f.replace('root/', '')).map(file => (
+              <div key={file}>{file}</div>
+            ))}
+          </PresetFiles>
+        : <span>File list</span>}
+      </PresetHeader>
       
       <PresetActions>
-        <Button onClick={handleLoad}>Load</Button>
-        <Button onClick={handleDelete}>Delete</Button>
+        <Button onClick={handleLoad}>Use</Button>
         <Dialog.Root open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
           <Dialog.Trigger asChild>
             <Button>Update</Button>
@@ -115,6 +187,10 @@ function Preset({ preset }: Props) {
             </StyledContent>
           </Dialog.Portal>
         </Dialog.Root>
+
+        <Button onClick={handleDelete} appearance="text" title="Delete">
+          <Trash2 size={16} color="var(--color-black-6)" />
+        </Button>
       </PresetActions>
     </PresetWrapper>
   )
