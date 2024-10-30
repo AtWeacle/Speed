@@ -118,7 +118,7 @@ function Preset({ preset }: Props) {
     preset.files.forEach(file => addSelectedItem(file))
   }
 
-  function handleLoad() {
+  function handleUse() {
     setSelectedItems(preset.files)
   }
 
@@ -137,9 +137,9 @@ function Preset({ preset }: Props) {
           appearance="text"
           style={{ padding: '2px', height: 'auto' }}
         >
-          
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </Button>
+        
         {isExpanded ?
           <PresetFiles>
             {preset.files.map(f => f.replace('root/', '')).map(file => (
@@ -150,7 +150,7 @@ function Preset({ preset }: Props) {
       </PresetHeader>
       
       <PresetActions>
-        <Button onClick={handleLoad}>Use</Button>
+        <Button onClick={handleUse}>Use</Button>
         <Button onClick={handleAdd}>Add to selection</Button>
 
         <Dialog.Root open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
