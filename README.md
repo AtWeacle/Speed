@@ -34,6 +34,21 @@ PINECONE_INDEX_NAME
 8. The directory panel should list the project folders and files. Select the ones you want to include in the prompt.
 9. Type your prompt, send it, enjoy!
 
+## Features
+- **Project Based**
+   - Prompt in the context of a project.
+- **File Handling and Search**
+   - Select files and directories to include in prompts.
+   - Project files are indexed for search.
+   - Open files in the editor.
+- **File Watcher**
+   - Separate Node server to monitor file changes.
+   - Manage indexed files and update the directory tree on the client side.
+- **File Selection Preset**
+- **System Prompt Customization**
+- **Model Usage**
+   - Supports models like `claude-3-5-sonnet` (default), `gpt-4o`, and `gpt-4o-mini`.
+
 ## Example of system prompt
 You are an experienced software engineer. You write code in typescript.
 When you write code encapsulate it in a markdown code tag with the name of the code language.
@@ -62,9 +77,6 @@ The project uses:
 - Yarn 4 ([how to install](https://yarnpkg.com/getting-started/install))
 - NodeJs, ViteJs, React
 - MongoDB, Pinecone, OpenAI, Anthropics API
-
-## About the models used
-Models used are `claude-3-5-sonnet`(default), `gpt-4o` and `gpt-4o-mini`.
 
 ## Author
 • Carl Brenner [@carlbrn](https://github.com/carlbrn)
