@@ -66,7 +66,7 @@ export type MessageRole = 'system' | 'user'
 export type MessageStatus = 'pending' | 'done' | 'error'
 export type MessageType = 'error' | 'prompt' | 'response'
 
-export type ModelVendor = 'anthropic' | 'google' | 'groq' | 'openai'
+export type ModelVendor = 'anthropic' /* | 'google' | 'groq' */ | 'openai'
 
 export type Models = {
   [key in ModelVendor]: {
