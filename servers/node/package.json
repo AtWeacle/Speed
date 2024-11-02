@@ -4,23 +4,27 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch --clear-screen=false --include src --include .env src/index.ts",
-    "watch": "tsx watch --clear-screen=false --include watcher --include .env watcher/index.ts"
+    "dev": "nodemon --config nodemon.server.json",
+    "dev_": "tsx watch --clear-screen=false --include src --include .env src/index.ts",
+    "watch": "nodemon --config nodemon.watcher.json"
   },
   "engines": {
     "npm": "10.x",
-    "node": "20.x",
+    "node": "18.x",
     "yarn": "4.x"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.1",
     "@pinecone-database/pinecone": "^4.0.0",
+    "@weacle/speed-lib": "*",
     "body-parser": "^1.20.3",
     "chokidar": "^4.0.1",
     "chromadb": "^1.9.2",
     "dotenv": "^16.4.5",
+    "esbuild-register": "^3.6.0",
     "express": "^4.17.1",
     "mongoose": "^8.7.3",
+    "nodemon": "^3.1.7",
     "openai": "^4.68.3",
     "react-markdown": "^9.0.1",
     "uuid": "^10.0.0",

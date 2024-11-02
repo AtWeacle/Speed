@@ -11,12 +11,13 @@
   },
   "engines": {
     "npm": "10.x",
-    "node": "20.x",
+    "node": "18.x",
     "yarn": "4.x"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-select": "^2.1.1",
+    "@weacle/speed-lib": "*",
     "axios": "^1.7.5",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
